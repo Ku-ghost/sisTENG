@@ -1,0 +1,2677 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MERS - PONEK Multi-Portal Hub</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans untuk keterbacaan tinggi di dashboard -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons untuk ikon modern minimalis -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#dff0e6',
+                            soft: '#52B788',
+                            primary: '#2D6A4F',
+                            dark: '#081C15',
+                            accent: '#D4AF37',
+                            danger: '#E63946',
+                            warning: '#FF9F1C'
+                        }
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            /* Warna latar belakang hijau sage-mint premium yang dipisahkan dari warna kotak */
+            background: radial-gradient(circle at 50% 50%, #cfead9 0%, #b7dac7 100%);
+            min-height: 100vh;
+            color: #081C15;
+            background-attachment: fixed;
+        }
+
+        /* Glassmorphism Menonjol (Panel & Kotak Mengambang) */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 15px 45px -8px rgba(4, 24, 15, 0.15),
+                        0 4px 12px rgba(4, 24, 15, 0.05);
+            border-radius: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel:hover {
+            box-shadow: 0 20px 55px -6px rgba(4, 24, 15, 0.2),
+                        0 6px 16px rgba(4, 24, 15, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 8px 24px -6px rgba(4, 24, 15, 0.08);
+            border-radius: 18px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .glass-card.active-selection {
+            border-color: #2D6A4F;
+            background: rgba(235, 247, 241, 0.95);
+            box-shadow: 0 10px 25px -4px rgba(45, 106, 79, 0.22);
+        }
+
+        .glass-danger {
+            background: rgba(230, 57, 70, 0.96);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 12px 36px rgba(230, 57, 70, 0.3);
+            color: white;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(45, 106, 79, 0.25); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(45, 106, 79, 0.45); }
+
+        .tab-btn.active {
+            background-color: #2D6A4F;
+            color: white;
+            box-shadow: 0 6px 16px rgba(45, 106, 79, 0.3);
+        }
+
+        /* Standardisasi Kolom Isian agar Rata & Konsisten */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(45, 106, 79, 0.25);
+            border-radius: 12px;
+            padding: 8px 14px;
+            outline: none;
+            height: 42px; /* Tinggi seragam */
+            transition: all 0.2s ease-in-out;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+        .glass-input:focus {
+            border-color: #2D6A4F;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.01);
+        }
+
+        .custom-checkbox {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #52B788;
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            background: rgba(255,255,255,0.7);
+            transition: all 0.15s;
+        }
+        .custom-checkbox:checked {
+            background: #2D6A4F;
+            border-color: #2D6A4F;
+        }
+        .custom-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #init-overlay {
+            background: rgba(4, 20, 14, 0.92);
+            backdrop-filter: blur(15px);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-6 font-sans antialiased relative">
+
+    <!-- OVERLAY INISIALISASI MULAI SHIFT JAGA -->
+    <div id="init-overlay" class="fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500">
+        <div class="glass-panel p-8 max-w-md w-full mx-4 text-center border border-white/50 shadow-2xl">
+            <div class="inline-flex bg-brand-light p-4 rounded-full text-brand-primary mb-4 animate-pulse">
+                <i class="ph ph-shield-check text-5xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-brand-dark mb-2">Hospital Readiness System</h2>
+            <p class="text-gray-600 text-xs leading-relaxed mb-6">Mulai giliran kerja (shift) Anda untuk mengaktifkan audit ketersediaan sumber daya medis secara real-time dan mengizinkan sistem audio vokal darurat.</p>
+            <button onclick="startSystem()" class="w-full bg-brand-primary hover:bg-brand-soft text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                MULAI SHIFT JAGA (AKTIFKAN)
+            </button>
+        </div>
+    </div>
+
+    <!-- SIMULATOR CONTROLLER SANDBOX (Testing Perpindahan Halaman) -->
+    <div class="max-w-screen-2xl mx-auto mb-4 bg-slate-900 text-slate-100 rounded-2xl px-4 py-3 shadow-xl border border-slate-700 flex flex-col md:flex-row justify-between items-center gap-3">
+        <div class="flex items-center gap-2">
+            <span class="inline-block w-2.5 h-2.5 bg-brand-soft rounded-full animate-ping"></span>
+            <span class="text-xs font-extrabold uppercase tracking-widest text-slate-400 font-mono">Simulator Akses:</span>
+            <span id="active-route-badge" class="bg-brand-primary text-white text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Memuat Route...</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-1.5">
+            <span class="text-[10px] text-slate-500 font-bold mr-1">Simulasi Peran Pengguna:</span>
+            <button onclick="simulateRoute('#/hospital')" class="bg-slate-800 hover:bg-brand-primary text-slate-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-colors border border-slate-700">
+                <i class="ph ph-hospital"></i> UPT RSUD Sinjai
+            </button>
+            <button onclick="simulateRoute('#/admin')" class="bg-slate-800 hover:bg-brand-primary text-slate-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-colors border border-slate-700">
+                <i class="ph ph-user-gear"></i> Admin Portal
+            </button>
+            <span class="text-slate-700 font-bold">|</span>
+            <button onclick="simulateRoute('#/sender')" class="bg-slate-800 hover:bg-amber-600 text-slate-200 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors border border-slate-700 animate-pulse">
+                <i class="ph ph-ambulance"></i> Portal Rujukan (Shareable Link)
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER -->
+    <div class="max-w-screen-2xl mx-auto space-y-6">
+
+        <!-- ============================================== -->
+        <!-- PORTAL 1: SENDER PORTAL (Puskesmas/Klinik/BPM) -->
+        <!-- ============================================== -->
+        <div id="portal-sender" class="hidden space-y-6">
+            <header class="glass-panel px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="bg-amber-600 p-3 rounded-xl text-white shadow-md">
+                        <i class="ph-fill ph-ambulance text-3xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-extrabold text-brand-dark tracking-tight leading-none">Portal Rujukan Maternal</h1>
+                        <p class="text-amber-800 text-[11px] font-semibold mt-1">INTEGRASI PROSES KESIAPAN IGD PONEK & LAYANAN KLINIS</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/90 border border-white px-3 py-1.5 rounded-xl text-center shadow-sm">
+                        <p class="text-[9px] text-gray-400 font-bold uppercase leading-none">Otoritas Pengirim</p>
+                        <p class="text-xs font-extrabold text-brand-dark mt-0.5">Faskes / Bidan Jaga</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Sisi Kiri: Formulir Rujukan Instan -->
+                <div class="lg:col-span-5 glass-panel p-6 flex flex-col justify-between">
+                    <h2 class="text-base font-extrabold text-brand-dark mb-4 flex items-center gap-2">
+                        <i class="ph ph-paper-plane-tilt text-amber-600"></i> Kirim Formulir Rujukan Instan
+                    </h2>
+                    <form id="referral-form" onsubmit="submitReferral(event)" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Fasilitas Pengirim</label>
+                                <select id="form-sender-facility" class="glass-input cursor-pointer font-bold text-xs">
+                                    <!-- Diisi dinamis oleh JS -->
+                                </select>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Rumah Sakit Tujuan</label>
+                                <select id="form-target-hospital" class="glass-input cursor-pointer font-bold text-xs text-brand-primary bg-emerald-50">
+                                    <option value="UPT RSUD Sinjai">UPT RSUD Sinjai (Utama)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Nama Pasien Maternal</label>
+                            <input type="text" id="form-patient-name" required placeholder="Ny. Ratna Sari" class="glass-input text-xs font-semibold">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Usia Ibu (Tahun)</label>
+                                <input type="number" id="form-patient-age" required placeholder="26" class="glass-input text-xs">
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Kategori Kasus</label>
+                                <select id="form-case-category" onchange="suggestTargetHospital()" class="glass-input cursor-pointer text-xs">
+                                    <option value="Perdarahan Berat">Perdarahan Berat</option>
+                                    <option value="Preeklamsia Berat">Preeklamsia Berat</option>
+                                    <option value="Partus Macet">Partus Macet</option>
+                                    <option value="Sepsis">Demam Tinggi / Sepsis</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3 bg-gray-50 rounded-xl border border-gray-200/80 space-y-2">
+                            <p class="text-[10px] font-extrabold text-brand-dark uppercase tracking-wider mb-1">Kondisi Klinis & Tanda Vital</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-[9px] text-gray-400 font-bold uppercase">Tensi</label>
+                                    <input type="text" id="form-td" required placeholder="120/80" class="glass-input text-xs py-1.5 px-2">
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-[9px] text-gray-400 font-bold uppercase">DJJ</label>
+                                    <input type="text" id="form-djj" required placeholder="140" class="glass-input text-xs py-1.5 px-2">
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-[9px] text-gray-400 font-bold uppercase">Kesadaran</label>
+                                    <select id="form-kesadaran" class="glass-input text-[11px] py-1 px-1.5">
+                                        <option value="Compos Mentis">Compos Mentis</option>
+                                        <option value="Apatis">Apatis</option>
+                                        <option value="Somnolen">Somnolen</option>
+                                        <option value="Sopor/Koma">Sopor/Koma</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[9px] text-gray-400 font-bold uppercase">Catatan Pendukung</label>
+                                <input type="text" id="form-patient-cond" placeholder="Ketuban pecah dini, panggul sempit, kejang..." class="glass-input text-xs py-1.5 px-2">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Perkiraan Waktu Tiba (ETA)</label>
+                            <select id="form-eta" class="glass-input cursor-pointer text-xs">
+                                <option value="10">10 Menit</option>
+                                <option value="15" selected>15 Menit</option>
+                                <option value="20">20 Menit</option>
+                                <option value="30">30 Menit</option>
+                                <option value="45">45 Menit</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Peringatan Kapasitas RS -->
+                        <div id="hospital-capacity-warning" class="bg-emerald-50 text-emerald-800 border border-emerald-200/80 p-3 rounded-lg text-[11px] font-medium leading-relaxed">
+                            <i class="ph ph-info"></i> UPT RSUD Sinjai terpantau siap menerima rujukan dengan kapasitas optimal.
+                        </div>
+
+                        <button type="submit" class="w-full bg-brand-primary hover:bg-brand-soft text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                            <i class="ph ph-paper-plane-tilt text-lg"></i> KIRIM RUJUKAN MATERNAL
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Sisi Kanan: Live Status Rujukan Pengirim -->
+                <div class="lg:col-span-7 glass-panel p-6">
+                    <h2 class="text-base font-extrabold text-brand-dark mb-4 flex items-center gap-2">
+                        <i class="ph ph-radar text-brand-primary"></i> Status & Pelacakan Rujukan Aktif Anda
+                    </h2>
+                    <div id="puskesmas-cases-list" class="space-y-4">
+                        <!-- Diinjeksi oleh JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- PORTAL 2: HOSPITAL PORTAL (Command Center) -->
+        <!-- ============================================== -->
+        <div id="portal-hospital" class="hidden space-y-6">
+            <header class="glass-panel px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-white">
+                <div class="flex items-center gap-4">
+                    <div class="bg-brand-primary p-3 rounded-xl text-white shadow-lg">
+                        <i class="ph ph-hospital text-3xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-extrabold text-brand-dark tracking-tight leading-none">Portal Rumah Sakit Rujukan</h1>
+                        <p class="text-brand-primary text-xs font-semibold mt-1">UPT RSUD SINJAI COMMAND CENTER & MONITOR LIVE</p>
+                    </div>
+                </div>
+
+                <!-- Navigasi Internal RS -->
+                <div class="flex items-center bg-gray-100 p-1.5 rounded-xl border border-gray-200 shadow-inner">
+                    <button onclick="switchHospitalTab('monitor')" id="tab-hospital-monitor" class="tab-btn active px-4 py-2 text-xs font-bold rounded-lg text-gray-600 transition-all flex items-center gap-1.5">
+                        <i class="ph ph-desktop"></i> Command Center Monitor
+                    </button>
+                    <button onclick="switchHospitalTab('unit')" id="tab-hospital-unit" class="tab-btn px-4 py-2 text-xs font-bold rounded-lg text-gray-600 transition-all flex items-center gap-1.5">
+                        <i class="ph ph-stethoscope"></i> Portal Unit (Persiapan)
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div id="hospital-clock" class="text-2xl font-black text-brand-dark tracking-tighter">00:00:00</div>
+                        <div id="hospital-date" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Memuat...</div>
+                    </div>
+                    <button onclick="toggleAudioMute()" class="p-2.5 rounded-full bg-brand-light text-brand-primary hover:bg-emerald-100 transition-colors shadow-sm">
+                        <i class="ph-fill ph-speaker-high text-lg hospital-mute-icon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- EMERGENCY ALARM BANNER -->
+            <div id="emergency-banner" class="hidden glass-danger px-6 py-4 rounded-2xl flex flex-col md:flex-row items-center justify-between animate-pulse-fast">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white/20 p-2 rounded-full animate-ping">
+                        <i class="ph-fill ph-warning-circle text-4xl text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-extrabold tracking-wide uppercase" id="banner-title">Rujukan Baru Masuk!</h2>
+                        <p class="text-red-100 text-xs font-medium" id="banner-desc">Unit wajib sedang dipetakan. Menunggu respon Command Center.</p>
+                    </div>
+                </div>
+                <div class="mt-4 md:mt-0 flex gap-3">
+                    <button onclick="performAction('ACCEPTED')" class="bg-white text-brand-primary px-5 py-2.5 rounded-xl text-xs font-extrabold hover:bg-brand-light transition-all shadow hover:shadow-lg">
+                        TERIMA (ACCEPT)
+                    </button>
+                    <button onclick="showRedirectModal()" class="bg-amber-400 text-brand-dark px-5 py-2.5 rounded-xl text-xs font-extrabold hover:bg-amber-300 transition-all shadow hover:shadow-lg">
+                        ALIHKAN (REDIRECT)
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUB-VIEW 2A: Command Center Monitor (Satu Layar Penuh) -->
+            <div id="sub-view-hospital-monitor" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Col 1: Kasus Aktif -->
+                <div class="lg:col-span-4 glass-panel p-5 flex flex-col h-[75vh]">
+                    <div class="flex justify-between items-center mb-4 border-b pb-3 border-gray-200/50">
+                        <h2 class="text-sm font-extrabold text-brand-dark flex items-center gap-2">
+                            <i class="ph ph-shield-warning text-brand-primary text-xl"></i> Monitoring Rujukan Aktif
+                        </h2>
+                        <span id="hospital-case-count" class="bg-brand-light text-brand-primary text-xs font-bold px-2.5 py-1 rounded-full border border-brand-primary/10">0 Kasus</span>
+                    </div>
+
+                    <div id="hospital-cases-scroller" class="flex-1 overflow-y-auto space-y-4 pr-1">
+                        <!-- Diinjeksi oleh JS -->
+                    </div>
+                </div>
+
+                <!-- Col 2: Live Kesiapan RS & Info Unit Lengkap -->
+                <div class="lg:col-span-5 glass-panel p-5 flex flex-col h-[75vh]">
+                    <!-- Panel Tindakan CC -->
+                    <div class="mb-4 bg-white/70 p-3 rounded-2xl border border-gray-100 shadow-sm">
+                        <p class="text-[10px] font-extrabold text-brand-dark mb-2.5 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="ph ph-shield-check text-brand-primary"></i> Otentikasi Tindakan Command Center
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="performAction('ACCEPTED')" class="flex-1 min-w-[75px] bg-brand-primary text-white text-[10px] font-extrabold py-2 px-3 rounded-xl hover:bg-brand-soft transition-colors shadow">
+                                ACCEPT
+                            </button>
+                            <button onclick="performAction('ARRIVED')" class="flex-1 min-w-[75px] bg-blue-600 text-white text-[10px] font-extrabold py-2 px-3 rounded-xl hover:bg-blue-500 transition-colors shadow">
+                                ARRIVED
+                            </button>
+                            <button onclick="showRedirectModal()" class="flex-1 min-w-[75px] bg-red-500 text-white text-[10px] font-extrabold py-2 px-3 rounded-xl hover:bg-red-400 transition-colors shadow">
+                                REDIRECT
+                            </button>
+                            <button onclick="triggerManualEscalation()" class="flex-1 min-w-[75px] bg-yellow-500 text-brand-dark text-[10px] font-extrabold py-2 px-3 rounded-xl hover:bg-yellow-400 transition-colors shadow">
+                                ESCALATE
+                            </button>
+                        </div>
+                        <!-- Panel Outcome Pasien Tiba -->
+                        <div id="outcome-action-panel" class="hidden mt-3 pt-3 border-t border-gray-200">
+                            <p class="text-[9px] font-bold text-gray-500 uppercase mb-2">Pasien Telah Tiba - Selesaikan Outcome:</p>
+                            <div class="flex gap-2">
+                                <select id="select-outcome" class="flex-1 glass-input text-xs py-1.5 px-2">
+                                    <option value="Discharged">Discharged (Sembuh / Rawat Jalan)</option>
+                                    <option value="Control">Control (Pemantauan Lanjutan)</option>
+                                    <option value="Referred Again">Referred Again (Dirujuk Lanjutan)</option>
+                                    <option value="Left Against Medical Advice">Left Against Medical Advice (Pulang Paksa)</option>
+                                    <option value="Near Miss">Near Miss (Kritis & Selamat)</option>
+                                    <option value="Deceased">Deceased (Kematian Ibu)</option>
+                                    <option value="Dead On Arrival">Dead On Arrival (Meninggal di Jalan)</option>
+                                </select>
+                                <button onclick="declareFinalOutcome()" class="bg-brand-dark text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-brand-primary transition-colors">
+                                    Selesai
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Computed Kesiapan RS -->
+                    <div class="mb-4 bg-white border rounded-xl p-3 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Kesiapan Rumah Sakit (Computed)</p>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="inline-block w-2.5 h-2.5 rounded-full bg-orange-400 animate-ping shadow-lg shadow-orange-500/50" id="readiness-ping"></span>
+                                <h4 class="text-xs font-extrabold text-brand-dark uppercase" id="hospital-readiness-label">PENDING</h4>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-bold bg-brand-light text-brand-primary px-3 py-1 rounded-full border border-brand-soft/20 uppercase" id="mandatory-count-label">0 Unit Wajib</span>
+                    </div>
+
+                    <!-- Detail Checklist Live Kesiapan Fisik -->
+                    <div class="flex-1 flex flex-col min-h-0 bg-white/70 p-4 rounded-2xl border border-gray-200/50 shadow-sm">
+                        <h3 class="text-xs font-extrabold text-brand-dark flex items-center gap-1.5 mb-3">
+                            <i class="ph ph-activity text-brand-primary text-base"></i> Detail Live Kesiapan Fisik Per Unit Pelayanan wajib
+                        </h3>
+                        <div id="unit-detail-monitor-body" class="flex-1 overflow-y-auto space-y-3 pr-1">
+                            <!-- Diinjeksi oleh JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Col 3: SLA, Grup Summary & Timeline Audit -->
+                <div class="lg:col-span-3 glass-panel p-5 flex flex-col h-[75vh]">
+                    <div class="mb-4 bg-brand-light p-3 rounded-xl border border-brand-soft/30 flex items-center justify-between shadow-sm">
+                        <div>
+                            <p class="text-[9px] font-extrabold text-brand-primary uppercase">SLA RESPONS UNIT</p>
+                            <div id="sla-timer" class="text-xl font-black text-brand-dark">00:00</div>
+                        </div>
+                        <span id="sla-status-badge" class="text-[9px] font-extrabold uppercase px-2 py-1 rounded bg-brand-primary text-white shadow-md">ON TARGET</span>
+                    </div>
+
+                    <div class="mb-4 space-y-3">
+                        <div>
+                            <p class="text-[9px] font-bold text-red-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                                <i class="ph-fill ph-warning"></i> Belum Bertindak (Pending)
+                            </p>
+                            <div id="unit-pending-summary" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-bold text-brand-primary uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                                <i class="ph-fill ph-check-circle"></i> Sudah Verifikasi / Proses
+                            </p>
+                            <div id="unit-verified-summary" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex flex-col min-h-0 border-t pt-2 border-gray-200/50">
+                        <h3 class="text-xs font-extrabold text-brand-dark flex items-center gap-1.5 mb-2">
+                            <i class="ph ph-clock-counter-clockwise text-brand-primary text-lg"></i> Audit Traceability Timeline
+                        </h3>
+                        <div class="flex-1 overflow-y-auto pl-3 relative pr-1">
+                            <div class="absolute left-[7px] top-2 bottom-2 w-[1.5px] bg-gray-200"></div>
+                            <ul id="live-timeline" class="space-y-3 relative z-10"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-VIEW 2B: Portal Unit (Verifikasi Mandiri Keamanan PIN) -->
+            <div id="sub-view-hospital-unit" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Sisi Kiri: Otoritas PIN Unit -->
+                <div class="lg:col-span-4 glass-panel p-6 flex flex-col h-[75vh]">
+                    <h2 class="text-sm font-extrabold text-brand-dark mb-2 flex items-center gap-2">
+                        <i class="ph ph-stethoscope text-brand-primary text-lg"></i> Portal Verifikasi Unit Pelayanan
+                    </h2>
+                    <p class="text-xs text-gray-500 mb-6 leading-relaxed">
+                        Pilih unit pelayanan medis Anda, masukkan PIN identitas unit, dan mulailah proses pencatatan kesiapan fisik secara aman.
+                    </p>
+
+                    <!-- Pilihan Unit Button -->
+                    <div class="grid grid-cols-2 gap-2.5 mb-6">
+                        <button onclick="switchSimulatedUnit('PONEK')" id="btn-portal-PONEK" class="p-3.5 rounded-xl border font-bold text-xs flex flex-col items-center gap-2 transition-all shadow-sm">
+                            <i class="ph ph-hospital text-xl"></i> IGD PONEK
+                        </button>
+                        <button onclick="switchSimulatedUnit('OK')" id="btn-portal-OK" class="p-3.5 rounded-xl border font-bold text-xs flex flex-col items-center gap-2 transition-all shadow-sm">
+                            <i class="ph ph-scissors text-xl"></i> Kamar Bedah (OK)
+                        </button>
+                        <button onclick="switchSimulatedUnit('BloodBank')" id="btn-portal-BloodBank" class="p-3.5 rounded-xl border font-bold text-xs flex flex-col items-center gap-2 transition-all shadow-sm">
+                            <i class="ph ph-drop text-xl"></i> Bank Darah
+                        </button>
+                        <button onclick="switchSimulatedUnit('ICU')" id="btn-portal-ICU" class="p-3.5 rounded-xl border font-bold text-xs flex flex-col items-center gap-2 transition-all shadow-sm">
+                            <i class="ph ph-activity text-xl"></i> Ruang ICU
+                        </button>
+                    </div>
+
+                    <!-- Input PIN Section -->
+                    <div id="portal-unit-auth-section" class="bg-white p-5 rounded-2xl border border-gray-200 shadow-md space-y-4">
+                        <div class="flex items-center gap-2 text-brand-dark font-extrabold text-xs">
+                            <i class="ph ph-lock text-lg text-red-500 animate-pulse"></i> Otentikasi Unit: <span id="current-selected-unit-label" class="text-brand-primary">PONEK</span>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <input type="password" id="sim-unit-pin-input" placeholder="PIN Keamanan 4-Digit" class="glass-input text-center text-sm font-bold tracking-widest py-2 px-3 w-full border border-gray-300">
+                            <button onclick="verifyUnitPIN()" class="w-full bg-brand-primary hover:bg-brand-soft text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-md">
+                                Verifikasi & Buka Kunci Ceklist
+                            </button>
+                            <p id="pin-feedback-msg" class="text-[9px] text-gray-400 font-bold uppercase text-center"></p>
+                        </div>
+                    </div>
+
+                    <!-- Sesi Aktif -->
+                    <div id="portal-unit-active-section" class="hidden bg-emerald-50/50 p-5 rounded-2xl border border-emerald-200 space-y-4 shadow-sm">
+                        <div class="flex items-center justify-between text-xs font-bold text-brand-primary">
+                            <span><i class="ph ph-shield-check"></i> Sesi Jaga Aktif</span>
+                            <button onclick="lockUnitSim(simulatedUnitRole)" class="text-[10px] bg-red-100 text-red-700 font-bold px-2.5 py-1 rounded-lg hover:bg-red-200 transition-colors">
+                                Kunci Sesi
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-emerald-800 leading-relaxed">
+                            Anda berwenang mengonfirmasi kesiapan logistik fisik untuk unit ini. Seluruh rekam audit akan dicatat secara permanen.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Sisi Kanan: Form Pengisian Checklist Kesiapan Fisik -->
+                <div class="lg:col-span-8 glass-panel p-6 flex flex-col h-[75vh]">
+                    <div class="flex justify-between items-center mb-4 border-b pb-3 border-gray-200/50">
+                        <h2 class="text-sm font-extrabold text-brand-dark flex items-center gap-2">
+                            <i class="ph ph-clipboard-text text-brand-primary"></i> Pengisian Checklist & Status Fisik Unit
+                        </h2>
+                        <span id="unit-form-active-badge" class="bg-red-100 text-red-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">Terkunci</span>
+                    </div>
+
+                    <div id="unit-simulator-body" class="flex-1 overflow-y-auto space-y-4 pr-1">
+                        <!-- Diinjeksi oleh JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- PORTAL 3: ADMINISTRATOR & DATA MASTER -->
+        <!-- ============================================== -->
+        <div id="portal-admin" class="hidden space-y-6">
+            
+            <!-- ADMIN LOGIN CONTAINER -->
+            <div id="admin-login" class="block">
+                <div class="glass-panel p-8 max-w-md w-full mx-auto my-12 space-y-5 border border-white shadow-2xl">
+                    <div class="text-center space-y-2">
+                        <div class="inline-flex bg-slate-900 text-white p-4 rounded-full text-3xl shadow-lg border border-slate-700">
+                            <i class="ph ph-lock-key"></i>
+                        </div>
+                        <h3 class="text-base font-extrabold text-slate-800">Login Administrator</h3>
+                        <p class="text-[11px] text-gray-500 leading-relaxed">Gunakan kredensial resmi Dinas Kesehatan / RS untuk mengelola sistem MERS</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Username</label>
+                            <input type="text" id="admin-username" placeholder="Masukkan Username" class="glass-input text-xs font-semibold border border-gray-300">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Password</label>
+                            <input type="password" id="admin-password" placeholder="Masukkan Password" class="glass-input text-xs font-semibold border border-gray-300">
+                        </div>
+                        <button onclick="handleAdminLogin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-3 rounded-xl text-xs transition-all shadow-md transform hover:-translate-y-0.5">
+                            Masuk ke Portal Admin
+                        </button>
+                        <p id="admin-login-feedback" class="text-[10px] text-red-600 font-extrabold text-center uppercase tracking-wider"></p>
+                    </div>
+                    <!-- Petunjuk kredensial untuk mempermudah evaluasi -->
+                    <div class="p-3 bg-brand-light rounded-xl text-[10px] text-brand-primary space-y-1 shadow-inner">
+                        <p class="font-extrabold"><i class="ph ph-info"></i> Kredensial Pengujian Default:</p>
+                        <ul class="list-disc list-inside">
+                            <li><strong>Username:</strong> Pasien1234</li>
+                            <li><strong>Password:</strong> 1234Pasien</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN WORKSPACE CONTAINER -->
+            <div id="admin-workspace" class="hidden space-y-6">
+                <header class="glass-panel px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4 border border-white">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-slate-800 p-3 rounded-xl text-white shadow-lg">
+                            <i class="ph ph-user-gear text-3xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-lg font-extrabold text-slate-900 tracking-tight leading-none">Portal Administrator center</h1>
+                            <p class="text-slate-500 text-xs font-semibold mt-1">DINAS KESEHATAN & SISTEM MASTER CONTROL PANEL</p>
+                        </div>
+                    </div>
+
+                    <!-- Sub-navigasi Admin -->
+                <div class="flex items-center bg-gray-100 p-1.5 rounded-xl border border-gray-200 shadow-inner">
+                    <button onclick="switchAdminTab('kpi')" id="tab-admin-kpi" class="tab-btn active px-4 py-2 text-xs font-bold rounded-lg text-gray-600 transition-all flex items-center gap-1.5">
+                        <i class="ph ph-chart-line-up"></i> Laporan KPI & Outcomes
+                    </button>
+                    <button onclick="switchAdminTab('links')" id="tab-admin-links" class="tab-btn px-4 py-2 text-xs font-bold rounded-lg text-gray-600 transition-all flex items-center gap-1.5">
+                        <i class="ph ph-link-simple"></i> Portal & Access Link
+                    </button>
+                    <button onclick="switchAdminTab('master')" id="tab-admin-master" class="tab-btn px-4 py-2 text-xs font-bold rounded-lg text-gray-600 transition-all flex items-center gap-1.5">
+                        <i class="ph ph-database font-bold text-amber-600"></i> Kelola Data Master
+                    </button>
+                    <button onclick="switchAdminTab('backup')" id="tab-admin-backup" class="tab-btn px-4 py-2 text-xs font-bold rounded-lg text-gray-600 transition-all flex items-center gap-1.5">
+                        <i class="ph ph-shield-check text-brand-primary"></i> Backup & Restore
+                    </button>
+                    <button onclick="switchAdminTab('config')" id="tab-admin-config" class="tab-btn px-4 py-2 text-xs font-bold rounded-lg text-gray-600 transition-all flex items-center gap-1.5">
+                        <i class="ph ph-sliders"></i> Konfigurasi Sistem
+                    </button>
+                </div>
+            </header>
+
+                <!-- VIEW ADMIN A: Laporan KPI -->
+                <div id="sub-view-admin-kpi" class="space-y-6">
+                    <!-- KPI Widgets -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="glass-panel p-4 flex items-center gap-4 shadow-sm border border-white">
+                            <div class="p-3 bg-brand-light text-brand-primary rounded-xl text-2xl">
+                                <i class="ph ph-arrows-merge"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400">Total Rujukan</p>
+                                <h4 class="text-xl font-extrabold text-brand-dark" id="stat-total-referrals">0</h4>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-4 flex items-center gap-4 shadow-sm border border-white">
+                            <div class="p-3 bg-emerald-100 text-emerald-800 rounded-xl text-2xl">
+                                <i class="ph ph-timer"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400">Rerata Respon SLA</p>
+                                <h4 class="text-xl font-extrabold text-brand-dark" id="stat-avg-sla">48 Detik</h4>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-4 flex items-center gap-4 shadow-sm border border-white">
+                            <div class="p-3 bg-red-100 text-red-700 rounded-xl text-2xl">
+                                <i class="ph ph-activity"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400">Tingkat Selamat</p>
+                                <h4 class="text-xl font-extrabold text-brand-dark" id="stat-save-rate">100%</h4>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-4 flex items-center gap-4 shadow-sm border border-white">
+                            <div class="p-3 bg-amber-100 text-amber-700 rounded-xl text-2xl">
+                                <i class="ph ph-shield-check"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-400">Hospital Readiness</p>
+                                <h4 class="text-xl font-extrabold text-brand-dark">96.5%</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-6 space-y-6">
+                        <div class="flex justify-between items-center border-b pb-3 border-gray-200/50">
+                            <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2">
+                                <i class="ph ph-chart-line-up text-brand-primary"></i> Laporan Outcome Kematian & Near Miss (KPI Dinkes)
+                            </h3>
+                            <button onclick="exportReport()" class="bg-brand-primary text-white px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-brand-soft transition-colors flex items-center gap-1.5 shadow-md">
+                                <i class="ph ph-download"></i> Ekspor Immutable Logs
+                            </button>
+                        </div>
+
+                        <div id="clinical-outcomes-progress-bars" class="space-y-4">
+                            <!-- Diinjeksi oleh JS -->
+                        </div>
+
+                        <!-- Permanent Forensic Audit Trail Table -->
+                        <div class="pt-4 border-t border-gray-200/50">
+                            <h3 class="text-xs font-extrabold text-red-600 uppercase tracking-widest mb-3 flex items-center gap-1">
+                                <i class="ph ph-shield"></i> Immutable Audit Forensics (Perekaman Permanen)
+                            </h3>
+                            <div class="overflow-x-auto max-h-[35vh] rounded-xl border border-gray-100 shadow-inner">
+                                <table class="w-full text-left border-collapse text-xs">
+                                    <thead class="bg-gray-100 text-gray-500 font-bold border-b">
+                                        <tr>
+                                            <th class="p-3">Waktu</th>
+                                            <th class="p-3">Petugas / Aktor</th>
+                                            <th class="p-3">Peristiwa Operasional</th>
+                                            <th class="p-3">Unit Pelayanan</th>
+                                            <th class="p-3">Status Log</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="audit-table-body">
+                                        <!-- Diinjeksi oleh JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW ADMIN B: Portal & Access Link (Pusat Informasi PIN disimpan di sini) -->
+                <div id="sub-view-admin-links" class="hidden space-y-6">
+                    <div class="glass-panel p-6 space-y-6">
+                        <div class="border-b pb-3 border-gray-200/50">
+                            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                                <i class="ph ph-link-simple text-brand-primary"></i> Pusat Distribusi Akses Sistem & Tautan Portal
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+                                Salin tautan mandiri khusus faskes pengirim di bawah ini dan bagikan ke Puskesmas, Klinik, maupun Bidan di wilayah Sinjai.
+                            </p>
+                        </div>
+
+                        <!-- Access Cards Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Portal Rujukan Mandiri (Tautan Khusus) -->
+                            <div class="bg-white border border-gray-200 rounded-2xl p-5 space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-24 h-24 bg-brand-light/20 rounded-full translate-x-8 -translate-y-8"></div>
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-amber-100 text-amber-700 p-2.5 rounded-xl text-xl">
+                                        <i class="ph ph-ambulance"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-extrabold text-slate-800 leading-none">Portal Rujukan Mandiri</h4>
+                                        <p class="text-[9px] text-gray-400 font-bold mt-1 uppercase">Faskes Pengirim</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <span class="text-[9px] text-gray-400 font-bold uppercase block">Alamat URL:</span>
+                                    <input readonly id="url-sender" type="text" class="w-full text-[10px] bg-slate-50 border p-2 rounded-lg text-slate-600 font-mono focus:outline-none" value="">
+                                </div>
+                                <button onclick="copyPortalLink('url-sender', 'btn-copy-sender')" id="btn-copy-sender" class="w-full bg-brand-primary hover:bg-brand-soft text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow flex items-center justify-center gap-1.5">
+                                    <i class="ph ph-copy"></i> Salin Tautan Portal Rujukan
+                                </button>
+                            </div>
+
+                            <!-- Portal Utama Rumah Sakit -->
+                            <div class="bg-emerald-50/50 border border-brand-soft/40 rounded-2xl p-5 space-y-4 shadow-sm relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-24 h-24 bg-brand-soft/10 rounded-full translate-x-8 -translate-y-8"></div>
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-brand-primary text-white p-2.5 rounded-xl text-xl">
+                                        <i class="ph ph-hospital"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-extrabold text-slate-800 leading-none">Portal RSUD Sinjai</h4>
+                                        <p class="text-[9px] text-brand-primary font-bold mt-1 uppercase">Command Center</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <span class="text-[9px] text-gray-400 font-bold uppercase block">Alamat URL:</span>
+                                    <input readonly id="url-hospital" type="text" class="w-full text-[10px] bg-slate-50 border border-brand-soft/25 p-2 rounded-lg text-slate-600 font-mono focus:outline-none" value="">
+                                </div>
+                                <button onclick="copyPortalLink('url-hospital', 'btn-copy-hospital')" id="btn-copy-hospital" class="w-full bg-brand-primary hover:bg-brand-soft text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow flex items-center justify-center gap-1.5">
+                                    <i class="ph ph-copy"></i> Salin Tautan Portal RS
+                                </button>
+                            </div>
+
+                            <!-- Portal Administrator System -->
+                            <div class="bg-slate-100 border border-slate-350 rounded-2xl p-5 space-y-4 shadow-sm relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-24 h-24 bg-slate-300/20 rounded-full translate-x-8 -translate-y-8"></div>
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-slate-800 text-white p-2.5 rounded-xl text-xl">
+                                        <i class="ph ph-user-gear"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-extrabold text-slate-800 leading-none">Portal Administrator Center</h4>
+                                        <p class="text-[9px] text-slate-500 font-bold mt-1 uppercase">Master Control Panel</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <span class="text-[9px] text-gray-400 font-bold uppercase block">Alamat URL:</span>
+                                    <input readonly id="url-admin" type="text" class="w-full text-[10px] bg-slate-50 border p-2 rounded-lg text-slate-600 font-mono focus:outline-none" value="">
+                                </div>
+                                <button onclick="copyPortalLink('url-admin', 'btn-copy-admin')" id="btn-copy-admin" class="w-full bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow flex items-center justify-center gap-1.5">
+                                    <i class="ph ph-copy"></i> Salin Tautan Admin
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- PANEL DATA PIN KEAMANAN UNIT (Dipindahkan ke Admin Portal agar Aman) -->
+                        <div class="p-5 bg-amber-50 border border-amber-200/80 rounded-2xl space-y-3 shadow-inner">
+                            <h4 class="text-xs font-black text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="ph ph-key"></i> Kunci PIN Otorisasi Unit Pelayanan (Mencegah Intervensi Unit Lain)
+                            </h4>
+                            <p class="text-xs text-amber-900 leading-relaxed">
+                                Sesuai regulasi audit keselamatan, otentikasi PIN di bawah ini harus dirahasiakan dan hanya didistribusikan kepada masing-masing kepala ruangan atau staf unit terkait:
+                            </p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-1">
+                                <div class="p-3 bg-white rounded-xl border border-amber-200 shadow-sm text-center">
+                                    <p class="text-[9px] text-gray-400 font-bold uppercase">IGD PONEK</p>
+                                    <p class="text-sm font-black text-brand-primary mt-0.5">1111</p>
+                                </div>
+                                <div class="p-3 bg-white rounded-xl border border-amber-200 shadow-sm text-center">
+                                    <p class="text-[9px] text-gray-400 font-bold uppercase">Kamar Bedah (OK)</p>
+                                    <p class="text-sm font-black text-brand-primary mt-0.5">2222</p>
+                                </div>
+                                <div class="p-3 bg-white rounded-xl border border-amber-200 shadow-sm text-center">
+                                    <p class="text-[9px] text-gray-400 font-bold uppercase">Bank Darah</p>
+                                    <p class="text-sm font-black text-brand-primary mt-0.5">3333</p>
+                                </div>
+                                <div class="p-3 bg-white rounded-xl border border-amber-200 shadow-sm text-center">
+                                    <p class="text-[9px] text-gray-400 font-bold uppercase">Ruang ICU</p>
+                                    <p class="text-sm font-black text-brand-primary mt-0.5">4444</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW ADMIN C: DATA MASTER MANAGEMENT -->
+                <div id="sub-view-admin-master" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left Side: Kelola Fasilitas Pengirim -->
+                    <div class="lg:col-span-5 glass-panel p-6 flex flex-col h-[70vh]">
+                        <div class="border-b pb-3 mb-4 border-gray-200/50">
+                            <h3 class="text-xs font-bold text-brand-dark flex items-center gap-2">
+                                <i class="ph ph-ambulance text-amber-600 text-lg"></i> Kelola Fasilitas Pengirim (Asal Rujukan)
+                            </h3>
+                        </div>
+                        <!-- Form Tambah/Edit Faskes -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-gray-200 mb-4 space-y-3">
+                            <input type="hidden" id="master-facility-index" value="">
+                            <div class="flex flex-col gap-1">
+                                <label class="text-[9px] text-gray-500 font-bold uppercase" id="master-facility-form-title">Tambah Fasilitas Baru</label>
+                                <input type="text" id="master-facility-name" placeholder="Nama Puskesmas / Klinik / BPM..." class="glass-input text-xs py-2 px-3 border border-gray-300">
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="saveSenderFacility()" class="flex-1 bg-brand-primary hover:bg-brand-soft text-white text-xs font-bold py-2 rounded-lg transition-colors">
+                                    Simpan Data
+                                </button>
+                                <button onclick="clearFacilityForm()" class="bg-gray-300 text-gray-700 text-xs font-bold py-2 px-3 rounded-lg hover:bg-gray-400 transition-colors">
+                                    Batal
+                                </button>
+                            </div>
+                        </div>
+                        <!-- List Scrollable -->
+                        <div class="flex-1 overflow-y-auto space-y-2 pr-1 border rounded-xl bg-white/50 p-2 shadow-inner">
+                            <div id="master-facilities-list" class="divide-y divide-gray-100">
+                                <!-- Diisi oleh JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Kelola Alur Pengalihan Rujukan (Redirection) -->
+                    <div class="lg:col-span-7 glass-panel p-6 flex flex-col h-[70vh]">
+                        <div class="border-b pb-3 mb-4 border-gray-200/50">
+                            <h3 class="text-xs font-bold text-brand-dark flex items-center gap-2">
+                                <i class="ph ph-arrows-split text-brand-primary text-lg"></i> Kelola Alur Pengalihan (Eskalasi / Redirection)
+                            </h3>
+                        </div>
+                        <!-- Form Tambah/Edit Pengalihan -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-gray-200 mb-4 space-y-3 shadow-sm">
+                            <input type="hidden" id="master-redirect-index" value="">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div class="flex flex-col gap-1 col-span-1 md:col-span-2">
+                                    <label class="text-[9px] text-gray-500 font-bold uppercase">Nama Rumah Sakit Tujuan</label>
+                                    <input type="text" id="master-redirect-name" placeholder="Contoh: RSUP Dr. Wahidin Makassar" class="glass-input text-xs py-2 px-3 border border-gray-300">
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-[9px] text-gray-500 font-bold uppercase">ETA Tambahan (Menit)</label>
+                                    <input type="number" id="master-redirect-eta" placeholder="45" class="glass-input text-xs py-2 px-3 border border-gray-300">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-[9px] text-gray-500 font-bold uppercase">Tipe Tingkat Rujukan</label>
+                                    <select id="master-redirect-type" class="glass-input text-xs py-2 px-3 border border-gray-300 cursor-pointer">
+                                        <option value="Tersier">Tersier (Provinsi)</option>
+                                        <option value="Regional">Regional (Kabupaten)</option>
+                                        <option value="Mitra">Mitra Alternatif (Setara)</option>
+                                    </select>
+                                </div>
+                                <div class="flex flex-col gap-1 col-span-1 md:col-span-2">
+                                    <label class="text-[9px] text-gray-500 font-bold uppercase">Keterangan / Status Kesiapan Fisik</label>
+                                    <input type="text" id="master-redirect-note" placeholder="Contoh: Rujukan Tersier • Kapasitas ICU/Bedah: ALWAYS READY" class="glass-input text-xs py-2 px-3 border border-gray-300">
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="saveRedirectDestination()" class="flex-1 bg-brand-primary hover:bg-brand-soft text-white text-xs font-bold py-2 rounded-lg transition-colors">
+                                    Simpan Data Pengalihan
+                                </button>
+                                <button onclick="clearRedirectForm()" class="bg-gray-300 text-gray-700 text-xs font-bold py-2 px-3 rounded-lg hover:bg-gray-400 transition-colors">
+                                    Batal
+                                </button>
+                            </div>
+                        </div>
+                        <!-- List Scrollable -->
+                        <div class="flex-1 overflow-y-auto space-y-2 pr-1 border rounded-xl bg-white/50 p-2 shadow-inner">
+                            <div id="master-redirects-list" class="divide-y divide-gray-100">
+                                <!-- Diisi oleh JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW ADMIN D: Konfigurasi Sistem -->
+                <div id="sub-view-admin-config" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-6 glass-panel p-6 space-y-4">
+                        <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2 border-b pb-3 border-gray-200/50">
+                            <i class="ph ph-gear text-brand-primary"></i> Konfigurasi Batas Waktu & Notifikasi
+                        </h3>
+                        
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Warning SLA Threshold (Menit)</label>
+                            <input type="number" id="cfg-sla-warning" value="3" class="glass-input">
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Critical Escalation Threshold (Menit)</label>
+                            <input type="number" id="cfg-sla-critical" value="5" class="glass-input">
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-gray-500 uppercase">Integrasi Webhook Discord</label>
+                            <input type="text" id="cfg-discord-webhook" value="https://discord.com/api/webhooks/ponek-command-center" readonly class="glass-input text-gray-400 bg-gray-100 text-[10px]">
+                        </div>
+                        
+                        <button onclick="saveConfiguration()" class="w-full bg-brand-primary hover:bg-brand-soft text-white font-bold py-3 rounded-lg text-xs transition-all shadow-md mt-4">
+                            SIMPAN KONFIGURASI SISTEM
+                        </button>
+                    </div>
+                    <div class="lg:col-span-6 glass-panel p-6">
+                        <div class="p-4 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-xl text-xs space-y-2 border-l-4 border-yellow-500">
+                            <p class="font-bold flex items-center gap-1.5"><i class="ph ph-warning"></i> Catatan Keamanan:</p>
+                            <p class="leading-relaxed">Seluruh perubahan parameter waktu akan dicatat pada Audit Trail dan diawasi otomatis oleh sistem pelaporan audit dinkes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW ADMIN E: Backup & Restore Data Manual -->
+                <div id="sub-view-admin-backup" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Sisi Kiri: Ekspor & Unduh Backup -->
+                    <div class="lg:col-span-6 glass-panel p-6 flex flex-col space-y-4">
+                        <div class="border-b pb-3 border-gray-200/50">
+                            <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2">
+                                <i class="ph ph-download-simple text-brand-primary text-lg"></i> Backup Manual & Ekspor Sistem
+                            </h3>
+                            <p class="text-xs text-gray-500 mt-1 leading-relaxed">
+                                Cadangkan seluruh konfigurasi sistem, data master, daftar rujukan aktif, serta logs audit traceability secara manual ke dalam format berkas data JSON terenkripsi.
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col gap-1.5 flex-1">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">String Kode Enkripsi Data Backup (Salin Manual)</label>
+                            <textarea id="backup-json-textarea" readonly class="glass-input text-[11px] font-mono h-[30vh] resize-none focus:bg-white text-gray-600" onclick="this.select();"></textarea>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button onclick="copyBackupToClipboard()" class="flex-1 bg-brand-primary hover:bg-brand-soft text-white text-xs font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5">
+                                <i class="ph ph-copy"></i> Salin Kode Backup
+                            </button>
+                            <button onclick="downloadBackupFile()" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5">
+                                <i class="ph ph-file-arrow-down"></i> Unduh Berkas .JSON
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sisi Kanan: Impor Restore & Reset Data Darurat -->
+                    <div class="lg:col-span-6 glass-panel p-6 flex flex-col space-y-4">
+                        <div class="border-b pb-3 border-gray-200/50">
+                            <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2">
+                                <i class="ph ph-upload-simple text-amber-600 text-lg"></i> Restore Manual & Impor Sistem
+                            </h3>
+                            <p class="text-xs text-gray-500 mt-1 leading-relaxed">
+                                Pulihkan kembali data operasional dari cadangan sebelumnya saat terjadi masalah sinkronisasi server atau kegagalan cloudflare.
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Metode A: Unggah Berkas Cadangan (.JSON)</label>
+                            <input type="file" id="restore-file-input" accept=".json" onchange="handleRestoreFileInput(event)" class="text-xs file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-light file:text-brand-primary hover:file:bg-emerald-100 cursor-pointer w-full">
+                        </div>
+
+                        <div class="flex flex-col gap-1.5 flex-1 pt-2">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Metode B: Tempel Kode Enkripsi Backup</label>
+                            <textarea id="restore-json-textarea" placeholder="Tempelkan string JSON hasil backup di sini..." class="glass-input text-[11px] font-mono h-[15vh] resize-none focus:bg-white"></textarea>
+                            <button onclick="restoreBackupFromString()" class="w-full bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5">
+                                <i class="ph ph-activity"></i> Pulihkan Dari Kode Tempel
+                            </button>
+                        </div>
+
+                        <!-- Zona Bahaya: Reset Total Darurat -->
+                        <div class="p-4 bg-red-50 border border-red-200 rounded-xl space-y-2 border-l-4 border-red-500 mt-2">
+                            <h4 class="text-xs font-black text-red-800 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="ph ph-shield-warning text-base"></i> Bersihkan Data & Reset Pabrik
+                            </h4>
+                            <p class="text-[11px] text-red-700 leading-relaxed">
+                                Jika terjadi kegagalan penyimpanan lokal atau isu sinkronisasi cloudflare, bersihkan data untuk mengembalikannya ke awal.
+                            </p>
+                            <div class="pt-1 flex gap-2">
+                                <input type="password" id="reset-confirm-password" placeholder="Sandi Admin" class="glass-input text-xs py-1.5 px-3 border border-red-300 w-1/2 h-9">
+                                <button onclick="executeDangerousSystemReset()" class="w-1/2 bg-red-600 hover:bg-red-500 text-white text-xs font-black py-1.5 px-3 rounded-lg transition-all shadow flex items-center justify-center gap-1.5">
+                                    <i class="ph ph-trash-simple"></i> RESET TOTAL
+                                </button>
+                            </div>
+                            <p id="reset-feedback-msg" class="text-[9px] text-red-600 font-extrabold uppercase tracking-wide"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Redirect Modal -->
+    <div id="redirect-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div class="glass-panel p-6 max-w-lg w-full border border-white/40 shadow-2xl">
+            <h2 class="text-lg font-extrabold text-brand-dark mb-4 flex items-center gap-2">
+                <i class="ph ph-arrows-split text-red-500"></i> Alur Pengalihan Rujukan (Redirection / Eskalasi)
+            </h2>
+            <p class="text-xs text-gray-600 mb-4 font-semibold leading-relaxed">Pilih rumah sakit rujukan eskalasi regional/tersier lanjutan jika pasien membutuhkan tindakan medis intensif di luar kapasitas UPT RSUD Sinjai saat ini.</p>
+            
+            <div class="space-y-3">
+                <!-- Diisi secara dinamis dari database redirectDestinations -->
+            </div>
+            
+            <div class="mt-6 flex justify-end gap-2">
+                <button onclick="closeRedirectModal()" class="text-xs font-bold text-gray-500 px-4 py-2 hover:bg-gray-100 rounded-lg">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Business & Simulation Logic Script -->
+    <script>
+        let isSystemStarted = false;
+        let isMuted = false;
+        let audioCtx = null;
+        let audioInterval = null;
+
+        // Session authentication state
+        let isAdminAuthenticated = false;
+
+        // Current UI views
+        let currentPortal = 'hospital'; // 'hospital', 'admin', 'sender'
+        let currentHospitalTab = 'monitor'; // 'monitor', 'unit'
+        let currentAdminTab = 'kpi'; // 'kpi', 'links', 'config', 'master'
+        let simulatedUnitRole = 'PONEK';
+
+        // PIN Security Database untuk unit-unit RSUD Sinjai
+        const unitPasswords = {
+            'PONEK': '1111',
+            'OK': '2222',
+            'BloodBank': '3333',
+            'ICU': '4444'
+        };
+
+        // Lacak sesi otorisasi unit
+        let unlockedUnits = {
+            'PONEK': false,
+            'OK': false,
+            'BloodBank': false,
+            'ICU': false
+        };
+
+        // Database dinamis yang dapat dikelola admin
+        let senderFacilities = [
+            "Puskesmas Pulau Sembilan",
+            "Puskesmas Balangnipa",
+            "Puskesmas Sinjai Tengah",
+            "Puskesmas Sinjai Barat",
+            "Klinik Bersalin Bunda",
+            "BPM Bidan Hartati Mandiri"
+        ];
+
+        let redirectDestinations = [
+            { name: "RSUP Dr. Wahidin Sudirohusodo Makassar", eta: 45, type: "Tersier", note: "Rujukan Tersier (Provinsi) • Kapasitas ICU/Bedah: ALWAYS READY" },
+            { name: "RSUD Tenriawaru Bone", eta: 30, type: "Regional", note: "Rujukan Regional (Kab. Bone) • Kapasitas ICU/Bedah: READY" },
+            { name: "RSUD Pratama Sinjai", eta: 15, type: "Mitra", note: "Mitra Faskes Alternatif • Kapasitas Unit: LIMITED" }
+        ];
+
+        // Template Checklist Fisik Unit
+        const unitTemplates = {
+            'PONEK': {
+                label: 'IGD PONEK',
+                checklists: [
+                    'Tim Jaga PONEK Lengkap di Ruangan',
+                    'Ruang Resusitasi Bersih & Bed Siap',
+                    'Alat Resusitasi Ibu (Laringoskop, Suction, Oksigen) Berfungsi',
+                    'Obat-Obatan Uterotonika & MgSO4 Lengkap & Siap'
+                ]
+            },
+            'OK': {
+                label: 'Kamar Bedah (OK)',
+                checklists: [
+                    'Ruangan Operasi Cito Kosong & Steril',
+                    'Instrumen Bedah Sesar (SC) Siap Guna',
+                    'Dokter Operator Kandungan On-Call Terhubung',
+                    'Dokter Spesialis Anestesi Siap di Tempat',
+                    'Perawat Asisten Bedah & Instrumen Siap'
+                ]
+            },
+            'BloodBank': {
+                label: 'Bank Darah / Laboratorium',
+                checklists: [
+                    'Minimal 2 Labu PRC Tersedia (Atau Golongan Darah O Cadangan)',
+                    'Sistem Reaksi Silang (Crossmatch) Siap Digunakan',
+                    'Tenaga Pelaksana Laboratorium Standby'
+                ]
+            },
+            'ICU': {
+                label: 'Ruang Perawatan Intensif (ICU)',
+                checklists: [
+                    'Bed ICU Siap Pakai',
+                    'Ventilator Mekanis Terkalibrasi & Berfungsi',
+                    'Patient Monitor Vital Signs Aktif',
+                    'Dokter Spesialis Anestesi/Kritis & Perawat ICU Standby'
+                ]
+            }
+        };
+
+        // Database Kasus Aktif
+        let cases = [
+            {
+                id: 'case_default',
+                name: 'Ny. Siti Aminah',
+                age: 28,
+                diagnosis: 'Perdarahan Antepartum (Plasenta Previa) - DJJ Lemah',
+                category: 'Perdarahan Berat',
+                td: '90/60 mmHg',
+                djj: '142 dpm',
+                kesadaran: 'Compos Mentis',
+                puskesmas: 'Puskesmas Pulau Sembilan',
+                eta: 15,
+                timestamp: Date.now() - 120000,
+                status: 'PENDING_REVIEW',
+                outcome: '',
+                mandatoryUnits: ['PONEK', 'OK', 'BloodBank', 'ICU'],
+                slaElapsed: 120,
+                hasWarned: false,
+                hasEscalated: false,
+                unitStatuses: {
+                    'PONEK': { status: 'CHECKING', checked: [0, 1], petugas: 'Bidan Ningsih', notes: 'Menyiapkan ruang resusitasi IGD' },
+                    'OK': { status: 'PENDING', checked: [], petugas: '', notes: '' },
+                    'BloodBank': { status: 'PENDING', checked: [], petugas: '', notes: '' },
+                    'ICU': { status: 'PENDING', checked: [], petugas: '', notes: '' }
+                },
+                readiness: 'PENDING'
+            }
+        ];
+
+        let selectedCaseId = 'case_default';
+        let tickerInterval = null;
+
+        // Immutable Audit Log
+        let auditLogs = [
+            { time: new Date(Date.now() - 120000).toLocaleTimeString('id-ID'), actor: 'Bidan Puskesmas', event: 'Mengirim rujukan Ny. Siti Aminah ke UPT RSUD Sinjai', unit: 'Puskesmas Pulau Sembilan', status: 'REFERRED' },
+            { time: new Date(Date.now() - 120000).toLocaleTimeString('id-ID'), actor: 'Sistem MERS', event: 'Menentukan Unit Wajib Terlibat: PONEK, Kamar Bedah, Bank Darah, ICU', unit: 'Sistem Pusat', status: 'INITIATED' },
+            { time: new Date(Date.now() - 60000).toLocaleTimeString('id-ID'), actor: 'Staf IGD PONEK', event: 'Bidan Ningsih mengubah status unit IGD PONEK menjadi CHECKING', unit: 'PONEK', status: 'CHECKING' }
+        ];
+
+        // ROUTER SYSTEM
+        function handleRouting() {
+            const hash = window.location.hash || '#/hospital';
+            const badge = document.getElementById('active-route-badge');
+            
+            currentPortal = hash.replace('#/', '');
+            if (badge) {
+                badge.innerText = currentPortal;
+            }
+
+            // Sembunyikan semua portal
+            document.getElementById('portal-sender').classList.add('hidden');
+            document.getElementById('portal-hospital').classList.add('hidden');
+            document.getElementById('portal-admin').classList.add('hidden');
+
+            if (hash === '#/sender') {
+                document.getElementById('portal-sender').classList.remove('hidden');
+                renderSenderFacilitiesDropdown();
+            } else if (hash === '#/hospital') {
+                document.getElementById('portal-hospital').classList.remove('hidden');
+                switchHospitalTab(currentHospitalTab);
+            } else if (hash === '#/admin') {
+                document.getElementById('portal-admin').classList.remove('hidden');
+                
+                // Cek status otentikasi Admin
+                const loginForm = document.getElementById('admin-login');
+                const workspace = document.getElementById('admin-workspace');
+                
+                if (isAdminAuthenticated) {
+                    loginForm.classList.add('hidden');
+                    workspace.classList.remove('hidden');
+                    switchAdminTab(currentAdminTab);
+                } else {
+                    loginForm.classList.remove('hidden');
+                    workspace.classList.add('hidden');
+                }
+            } else {
+                window.location.hash = '#/hospital';
+            }
+
+            renderAll();
+        }
+
+        // HANDLERS FOR ADMIN AUTHENTICATION
+        function handleAdminLogin() {
+            const user = document.getElementById('admin-username').value;
+            const pass = document.getElementById('admin-password').value;
+            const feedback = document.getElementById('admin-login-feedback');
+
+            if (user === 'Pasien1234' && pass === '1234Pasien') {
+                isAdminAuthenticated = true;
+                feedback.innerText = '';
+                logEvent('Sistem Keamanan', 'Login Administrator Berhasil Terotentikasi', 'Admin Portal', 'AUTHORIZED');
+                
+                document.getElementById('admin-username').value = '';
+                document.getElementById('admin-password').value = '';
+                
+                handleRouting();
+            } else {
+                feedback.innerText = 'Username atau Password salah!';
+                playMedicalBeep();
+            }
+        }
+
+        function handleAdminLogout() {
+            isAdminAuthenticated = false;
+            logEvent('Sistem Keamanan', 'Sesi Jaga Administrator Diakhiri', 'Admin Portal', 'DEAUTHORIZED');
+            handleRouting();
+        }
+
+        function simulateRoute(newHash) {
+            window.location.hash = newHash;
+        }
+
+        // TABS CONTROLLERS
+        function switchHospitalTab(tabId) {
+            currentHospitalTab = tabId;
+            document.getElementById('sub-view-hospital-monitor').classList.add('hidden');
+            document.getElementById('sub-view-hospital-unit').classList.add('hidden');
+            document.getElementById('tab-hospital-monitor').classList.remove('active');
+            document.getElementById('tab-hospital-unit').classList.remove('active');
+
+            if (tabId === 'monitor') {
+                document.getElementById('sub-view-hospital-monitor').classList.remove('hidden');
+                document.getElementById('tab-hospital-monitor').classList.add('active');
+            } else {
+                document.getElementById('sub-view-hospital-unit').classList.remove('hidden');
+                document.getElementById('tab-hospital-unit').classList.add('active');
+                renderUnitSimulator();
+            }
+        }
+
+        function switchAdminTab(tabId) {
+            currentAdminTab = tabId;
+            document.getElementById('sub-view-admin-kpi').classList.add('hidden');
+            document.getElementById('sub-view-admin-links').classList.add('hidden');
+            document.getElementById('sub-view-admin-config').classList.add('hidden');
+            document.getElementById('sub-view-admin-master').classList.add('hidden');
+            document.getElementById('sub-view-admin-backup').classList.add('hidden');
+
+            document.getElementById('tab-admin-kpi').classList.remove('active');
+            document.getElementById('tab-admin-links').classList.remove('active');
+            document.getElementById('tab-admin-config').classList.remove('active');
+            document.getElementById('tab-admin-master').classList.remove('active');
+            document.getElementById('tab-admin-backup').classList.remove('active');
+
+            if (tabId === 'kpi') {
+                document.getElementById('sub-view-admin-kpi').classList.remove('hidden');
+                document.getElementById('tab-admin-kpi').classList.add('active');
+            } else if (tabId === 'links') {
+                document.getElementById('sub-view-admin-links').classList.remove('hidden');
+                document.getElementById('tab-admin-links').classList.add('active');
+                generateDistributionLinks();
+            } else if (tabId === 'master') {
+                document.getElementById('sub-view-admin-master').classList.remove('hidden');
+                document.getElementById('tab-admin-master').classList.add('active');
+                renderMasterFacilitiesList();
+                renderMasterRedirectsList();
+            } else if (tabId === 'backup') {
+                document.getElementById('sub-view-admin-backup').classList.remove('hidden');
+                document.getElementById('tab-admin-backup').classList.add('active');
+                generateBackupDataJson();
+            } else {
+                document.getElementById('sub-view-admin-config').classList.remove('hidden');
+                document.getElementById('tab-admin-config').classList.add('active');
+            }
+        }
+
+        // DYNAMIC SENDER FACILITIES DROPDOWN
+        function renderSenderFacilitiesDropdown() {
+            const dropdown = document.getElementById('form-sender-facility');
+            if (!dropdown) return;
+            dropdown.innerHTML = senderFacilities.map(f => `<option value="${f}">${f}</option>`).join('');
+        }
+
+        // DYNAMIC REDIRECT MODAL DESTINATIONS
+        function renderRedirectModalDestinations() {
+            const container = document.querySelector('#redirect-modal .space-y-3');
+            if (!container) return;
+            container.innerHTML = redirectDestinations.map((d, index) => {
+                let borderClass = "border-l-4 border-gray-200";
+                if (d.type === 'Tersier') borderClass = "border-l-4 border-red-500 animate-pulse";
+                if (d.type === 'Regional') borderClass = "border-l-4 border-amber-500";
+                
+                return `
+                    <div onclick="executeRedirect('${d.name}', ${d.eta})" class="p-3 border rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors flex justify-between items-center bg-white shadow-sm ${borderClass}">
+                        <div>
+                            <h4 class="text-xs font-bold text-brand-dark">${d.name}</h4>
+                            <p class="text-[10px] text-gray-400">${d.note}</p>
+                        </div>
+                        <span class="text-[10px] font-bold bg-brand-light text-brand-primary px-2.5 py-0.5 rounded-full">ETA: +${d.eta} Menit</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // DATA MASTER CRUD: FASILITAS PENGIRIM
+        function renderMasterFacilitiesList() {
+            const list = document.getElementById('master-facilities-list');
+            if (!list) return;
+            list.innerHTML = senderFacilities.map((f, idx) => `
+                <div class="flex justify-between items-center p-2.5 hover:bg-slate-50 transition-colors rounded-lg">
+                    <span class="text-xs font-semibold text-slate-700">${f}</span>
+                    <div class="flex gap-1">
+                        <button onclick="editSenderFacility(${idx})" class="p-1 text-blue-600 hover:bg-blue-50 rounded" title="Ubah">
+                            <i class="ph ph-pencil-simple text-sm"></i>
+                        </button>
+                        <button onclick="deleteSenderFacility(${idx})" class="p-1 text-red-600 hover:bg-red-50 rounded" title="Hapus">
+                            <i class="ph ph-trash text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editSenderFacility(idx) {
+            document.getElementById('master-facility-index').value = idx;
+            document.getElementById('master-facility-name').value = senderFacilities[idx];
+            document.getElementById('master-facility-form-title').innerText = "Ubah Data Fasilitas:";
+        }
+
+        function clearFacilityForm() {
+            document.getElementById('master-facility-index').value = "";
+            document.getElementById('master-facility-name').value = "";
+            document.getElementById('master-facility-form-title').innerText = "Tambah Fasilitas Baru center";
+        }
+
+        function saveSenderFacility() {
+            const nameInput = document.getElementById('master-facility-name');
+            const name = nameInput.value.trim();
+            if (!name) return;
+
+            const idx = document.getElementById('master-facility-index').value;
+            if (idx !== "") {
+                const oldName = senderFacilities[idx];
+                senderFacilities[idx] = name;
+                logEvent('Administrator', `Mengubah faskes pengirim: "${oldName}" menjadi "${name}"`, 'Data Master', 'UPDATE');
+            } else {
+                senderFacilities.push(name);
+                logEvent('Administrator', `Menambahkan faskes pengirim baru: "${name}"`, 'Data Master', 'CREATE');
+            }
+
+            clearFacilityForm();
+            renderMasterFacilitiesList();
+            renderSenderFacilitiesDropdown();
+        }
+
+        function deleteSenderFacility(idx) {
+            const name = senderFacilities[idx];
+            senderFacilities.splice(idx, 1);
+            logEvent('Administrator', `Menghapus faskes pengirim: "${name}"`, 'Data Master', 'DELETE');
+            renderMasterFacilitiesList();
+            renderSenderFacilitiesDropdown();
+        }
+
+        // DATA MASTER CRUD: RUJUKAN PENGALIHAN (REDIRECT)
+        function renderMasterRedirectsList() {
+            const list = document.getElementById('master-redirects-list');
+            if (!list) return;
+            list.innerHTML = redirectDestinations.map((d, idx) => {
+                let badgeColor = "bg-gray-100 text-gray-800";
+                if (d.type === "Tersier") badgeColor = "bg-red-100 text-red-800";
+                if (d.type === "Regional") badgeColor = "bg-amber-100 text-amber-800";
+                
+                return `
+                    <div class="flex justify-between items-center p-3 hover:bg-slate-50 transition-colors rounded-lg">
+                        <div>
+                            <span class="text-xs font-bold text-slate-800">${d.name}</span>
+                            <span class="text-[9px] uppercase font-extrabold px-1.5 py-0.5 rounded ml-1.5 ${badgeColor}">${d.type}</span>
+                            <p class="text-[10px] text-gray-500 mt-1">${d.note}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-mono font-black text-brand-accent pr-2">+${d.eta} Mnt</span>
+                            <div class="flex gap-0.5">
+                                <button onclick="editRedirectDestination(${idx})" class="p-1 text-blue-600 hover:bg-blue-50 rounded" title="Ubah">
+                                    <i class="ph ph-pencil-simple text-sm"></i>
+                                </button>
+                                <button onclick="deleteRedirectDestination(${idx})" class="p-1 text-red-600 hover:bg-red-50 rounded" title="Hapus">
+                                    <i class="ph ph-trash text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function editRedirectDestination(idx) {
+            const d = redirectDestinations[idx];
+            document.getElementById('master-redirect-index').value = idx;
+            document.getElementById('master-redirect-name').value = d.name;
+            document.getElementById('master-redirect-eta').value = d.eta;
+            document.getElementById('master-redirect-type').value = d.type;
+            document.getElementById('master-redirect-note').value = d.note;
+        }
+
+        function clearRedirectForm() {
+            document.getElementById('master-redirect-index').value = "";
+            document.getElementById('master-redirect-name').value = "";
+            document.getElementById('master-redirect-eta').value = "";
+            document.getElementById('master-redirect-type').value = "Tersier";
+            document.getElementById('master-redirect-note').value = "";
+        }
+
+        function saveRedirectDestination() {
+            const name = document.getElementById('master-redirect-name').value.trim();
+            const eta = parseInt(document.getElementById('master-redirect-eta').value) || 0;
+            const type = document.getElementById('master-redirect-type').value;
+            const note = document.getElementById('master-redirect-note').value.trim();
+
+            if (!name) return;
+
+            const idx = document.getElementById('master-redirect-index').value;
+            if (idx !== "") {
+                const oldName = redirectDestinations[idx].name;
+                redirectDestinations[idx] = { name, eta, type, note };
+                logEvent('Administrator', `Mengubah alur eskalasi: "${oldName}" menjadi "${name}"`, 'Data Master', 'UPDATE');
+            } else {
+                redirectDestinations.push({ name, eta, type, note });
+                logEvent('Administrator', `Menambahkan alur eskalasi baru: "${name}"`, 'Data Master', 'CREATE');
+            }
+
+            clearRedirectForm();
+            renderMasterRedirectsList();
+            renderRedirectModalDestinations();
+        }
+
+        function deleteRedirectDestination(idx) {
+            const name = redirectDestinations[idx].name;
+            redirectDestinations.splice(idx, 1);
+            logEvent('Administrator', `Menghapus alur eskalasi: "${name}"`, 'Data Master', 'DELETE');
+            renderMasterRedirectsList();
+            renderRedirectModalDestinations();
+        }
+
+        // GENERATE ACCESS LINKS
+        function generateDistributionLinks() {
+            const baseUri = window.location.origin + window.location.pathname;
+            document.getElementById('url-sender').value = baseUri + '#/sender';
+            document.getElementById('url-hospital').value = baseUri + '#/hospital';
+            document.getElementById('url-admin').value = baseUri + '#/admin';
+        }
+
+        function copyPortalLink(inputId, buttonId) {
+            const inputEl = document.getElementById(inputId);
+            if (!inputEl) return;
+
+            const textToCopy = inputEl.value;
+            const tempEl = document.createElement('textarea');
+            tempEl.value = textToCopy;
+            document.body.appendChild(tempEl);
+            tempEl.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempEl);
+
+            const btn = document.getElementById(buttonId);
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<i class="ph ph-check-square"></i> Tersalin!`;
+            btn.className = btn.className.replace('bg-brand-primary', 'bg-emerald-600').replace('bg-slate-800', 'bg-emerald-600');
+
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+                if (buttonId === 'btn-copy-admin') {
+                    btn.className = "w-full bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold py-2 rounded-xl transition-all shadow flex items-center justify-center gap-1.5";
+                } else {
+                    btn.className = "w-full bg-brand-primary hover:bg-brand-soft text-white text-xs font-bold py-2 rounded-xl transition-all shadow flex items-center justify-center gap-1.5";
+                }
+            }, 1800);
+        }
+
+        // REAL-TIME SYSTEM CLOCK
+        setInterval(() => {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID', { hour12: false });
+            const dateString = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            const hc = document.getElementById('hospital-clock');
+            const hd = document.getElementById('hospital-date');
+            if (hc) hc.innerText = timeString;
+            if (hd) hd.innerText = dateString;
+        }, 1000);
+
+        function startSystem() {
+            document.getElementById('init-overlay').classList.add('opacity-0');
+            setTimeout(() => {
+                document.getElementById('init-overlay').style.display = 'none';
+            }, 500);
+
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            isSystemStarted = true;
+
+            startSlaGlobalTicker();
+            triggerReferralAlarm("Perhatian! Rujukan Darurat Baru Masuk. Kasus Perdarahan Berat. Harap verifikasi kesiapan seluruh unit terkait.");
+            renderAll();
+        }
+
+        // SPEECH SYNTHESIS AND AUDIO SIGNALS
+        function playMedicalBeep() {
+            if (!audioCtx || isMuted || !isSystemStarted) return;
+            
+            let osc1 = audioCtx.createOscillator();
+            let osc2 = audioCtx.createOscillator();
+            let gainNode = audioCtx.createGain();
+
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(880, audioCtx.currentTime);
+            osc2.type = 'triangle';
+            osc2.frequency.setValueAtTime(440, audioCtx.currentTime);
+
+            gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+
+            osc1.connect(gainNode);
+            osc2.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            osc1.start();
+            osc2.start();
+            osc1.stop(audioCtx.currentTime + 0.4);
+            osc2.stop(audioCtx.currentTime + 0.4);
+        }
+
+        function triggerReferralAlarm(textMessage) {
+            clearInterval(audioInterval);
+            audioInterval = setInterval(playMedicalBeep, 1500);
+
+            if ('speechSynthesis' in window && !isMuted) {
+                let speech = new SpeechSynthesisUtterance(textMessage);
+                speech.lang = 'id-ID';
+                speech.rate = 0.9;
+                speech.volume = 0.8;
+                window.speechSynthesis.speak(speech);
+            }
+        }
+
+        function toggleAudioMute() {
+            isMuted = !isMuted;
+            const icons = document.querySelectorAll('.hospital-mute-icon');
+            icons.forEach(icon => {
+                icon.className = isMuted ? "ph-fill ph-speaker-slash text-lg" : "ph-fill ph-speaker-high text-lg";
+            });
+        }
+
+        // PORTAL UNIT: SECURITY LOCKS
+        function verifyUnitPIN() {
+            const pinInput = document.getElementById('sim-unit-pin-input').value;
+            const correctPIN = unitPasswords[simulatedUnitRole];
+
+            if (pinInput === correctPIN) {
+                unlockedUnits[simulatedUnitRole] = true;
+                logEvent(`Sistem Keamanan`, `Akses Unit ${unitTemplates[simulatedUnitRole].label} berhasil dibuka dengan otentikasi PIN`, simulatedUnitRole, 'UNLOCKED');
+                
+                const feedback = document.getElementById('pin-feedback-msg');
+                feedback.className = "text-xs font-bold text-emerald-600 mt-2 text-center";
+                feedback.innerHTML = "PIN Benar! Membuka halaman kesiapan...";
+                
+                setTimeout(() => {
+                    renderUnitSimulator();
+                    renderAll();
+                }, 800);
+            } else {
+                const feedback = document.getElementById('pin-feedback-msg');
+                feedback.className = "text-xs font-bold text-red-500 mt-2 text-center";
+                feedback.innerHTML = "PIN Salah! Gagal membuka akses.";
+                playMedicalBeep();
+            }
+        }
+
+        function lockUnitSim(unitKey) {
+            unlockedUnits[unitKey] = false;
+            logEvent(`Sistem Keamanan`, `Akses Unit ${unitTemplates[unitKey].label} kembali dikunci`, unitKey, 'LOCKED');
+            renderUnitSimulator();
+            renderAll();
+        }
+
+        function switchSimulatedUnit(unitKey) {
+            simulatedUnitRole = unitKey;
+            
+            const labelEl = document.getElementById('current-selected-unit-label');
+            if (labelEl) {
+                labelEl.innerText = unitTemplates[unitKey].label;
+            }
+
+            const pinVal = document.getElementById('sim-unit-pin-input');
+            const feedVal = document.getElementById('pin-feedback-msg');
+            if (pinVal) pinVal.value = '';
+            if (feedVal) feedVal.innerText = '';
+
+            renderUnitSimulator();
+        }
+
+        function renderUnitSimulator() {
+            const activeCase = cases.find(c => c.id === selectedCaseId);
+            const container = document.getElementById('unit-simulator-body');
+            const activeBadge = document.getElementById('unit-form-active-badge');
+            
+            const authSection = document.getElementById('portal-unit-auth-section');
+            const activeSection = document.getElementById('portal-unit-active-section');
+            
+            ['PONEK', 'OK', 'BloodBank', 'ICU'].forEach(u => {
+                const btn = document.getElementById(`btn-portal-${u}`);
+                if (btn) {
+                    if (u === simulatedUnitRole) {
+                        btn.className = "p-3.5 rounded-xl border bg-brand-primary border-brand-primary text-white font-bold text-xs flex flex-col items-center gap-2 shadow-md";
+                    } else {
+                        btn.className = "p-3.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-100 font-bold text-xs text-gray-600 flex flex-col items-center gap-2 transition-all shadow-sm";
+                    }
+                }
+            });
+
+            if (!activeCase) {
+                if (activeBadge) {
+                    activeBadge.innerText = "Tidak Ada Kasus";
+                    activeBadge.className = "bg-gray-100 text-gray-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider";
+                }
+                container.innerHTML = `
+                    <div class="text-center py-20 text-gray-400">
+                        <i class="ph ph-stethoscope text-5xl mb-3 text-gray-300"></i>
+                        <h4 class="font-bold text-brand-dark text-sm">Menunggu Rujukan Aktif</h4>
+                        <p class="text-xs max-w-sm mx-auto mt-1">Harap kirim rujukan maternal terlebih dahulu dari portal pengirim.</p>
+                    </div>
+                `;
+                if (authSection) authSection.classList.add('hidden');
+                if (activeSection) activeSection.classList.add('hidden');
+                return;
+            }
+
+            const isMandatory = activeCase.mandatoryUnits.includes(simulatedUnitRole);
+            const unitData = unitTemplates[simulatedUnitRole];
+            const unitState = activeCase.unitStatuses[simulatedUnitRole] || { status: 'PENDING', checked: [], petugas: '', notes: '' };
+
+            if (!isMandatory) {
+                if (activeBadge) {
+                    activeBadge.innerText = "BEBAS TUGAS";
+                    activeBadge.className = "bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm";
+                }
+                container.innerHTML = `
+                    <div class="p-8 text-center text-gray-500 space-y-3">
+                        <div class="inline-flex bg-brand-light text-brand-primary p-4 rounded-full">
+                            <i class="ph ph-shield-check text-4xl"></i>
+                        </div>
+                        <h4 class="text-sm font-extrabold text-brand-dark">Unit Bebas Tugas</h4>
+                        <p class="text-xs max-w-sm mx-auto leading-relaxed">Unit ${unitData.label} tidak dibutuhkan wajib untuk kasus rujukan "${activeCase.name}" (${activeCase.category}).</p>
+                    </div>
+                `;
+                if (authSection) authSection.classList.add('hidden');
+                if (activeSection) activeSection.classList.add('hidden');
+                return;
+            }
+
+            // PIN PROTECTION CHECK
+            if (!unlockedUnits[simulatedUnitRole]) {
+                if (activeBadge) {
+                    activeBadge.innerText = "TERKUNCI PIN";
+                    activeBadge.className = "bg-red-100 text-red-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm";
+                }
+                if (authSection) authSection.classList.remove('hidden');
+                if (activeSection) activeSection.classList.add('hidden');
+
+                container.innerHTML = `
+                    <div class="p-10 border border-dashed border-gray-300 rounded-2xl bg-gray-50/50 flex flex-col items-center justify-center text-center space-y-4">
+                        <div class="p-4 bg-red-50 text-red-500 rounded-full shadow">
+                            <i class="ph ph-lock-key text-4xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-extrabold text-brand-dark uppercase">Akses Terkunci: ${unitData.label}</h4>
+                            <p class="text-xs text-gray-500 mt-1 max-w-sm leading-relaxed">Masukkan kode PIN keamanan khusus unit pada kolom otentikasi sebelah kiri untuk mengakses dokumen verifikasi kesiapan fisik.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (activeBadge) {
+                activeBadge.innerText = "TERVERIFIKASI";
+                activeBadge.className = "bg-brand-soft text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm";
+            }
+            if (authSection) authSection.classList.add('hidden');
+            if (activeSection) activeSection.classList.remove('hidden');
+
+            let checklistHtml = '';
+            unitData.checklists.forEach((item, index) => {
+                const isChecked = unitState.checked.includes(index);
+                checklistHtml += `
+                    <label class="flex items-start gap-3 text-xs text-gray-700 cursor-pointer p-3 rounded-xl hover:bg-white border border-transparent hover:border-gray-200 transition-all">
+                        <input type="checkbox" onchange="toggleChecklistItem(${index})" ${isChecked ? 'checked' : ''} class="custom-checkbox mt-0.5">
+                        <span class="leading-relaxed select-none">${item}</span>
+                    </label>
+                `;
+            });
+
+            // Otoritas Tindakan Darurat Tambahan jika PONEK aktif (Backup CC)
+            let backupActionsHtml = '';
+            if (simulatedUnitRole === 'PONEK') {
+                backupActionsHtml = `
+                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-2 mt-4">
+                        <p class="text-[10px] font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1">
+                            <i class="ph ph-shield-check"></i> Otoritas Tindakan Darurat PONEK (Pintu Gerbang Utama)
+                        </p>
+                        <p class="text-[10px] text-amber-900 leading-relaxed">
+                            Jika Command Center sedang tidak bertugas, PONEK memiliki wewenang penuh untuk mengambil keputusan klinis langsung:
+                        </p>
+                        <div class="flex flex-wrap gap-2 pt-1">
+                            <button onclick="performAction('ACCEPTED')" class="flex-1 bg-brand-primary text-white text-[10px] font-bold py-2 px-3 rounded-lg hover:bg-brand-soft transition-colors shadow-sm">
+                                ACCEPT
+                            </button>
+                            <button onclick="performAction('ARRIVED')" class="flex-1 bg-blue-600 text-white text-[10px] font-bold py-2 px-3 rounded-lg hover:bg-blue-500 transition-colors shadow-sm">
+                                ARRIVED
+                            </button>
+                            <button onclick="showRedirectModal()" class="flex-1 bg-red-500 text-white text-[10px] font-bold py-2 px-3 rounded-lg hover:bg-red-400 transition-colors shadow-sm">
+                                REDIRECT
+                            </button>
+                            <button onclick="triggerManualEscalation()" class="flex-1 bg-yellow-500 text-brand-dark text-[10px] font-bold py-2 px-3 rounded-lg hover:bg-yellow-400 transition-colors shadow-sm">
+                                ESCALATE
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="space-y-4 bg-gray-50 p-5 rounded-2xl border border-gray-200/60 shadow-inner">
+                    <div class="p-3.5 bg-brand-light text-brand-primary rounded-xl text-xs flex justify-between items-center shadow-sm">
+                        <div>
+                            <p class="font-extrabold text-[10px] tracking-wider uppercase">MEMPROSES PASIEN</p>
+                            <p class="font-black text-sm mt-0.5">${activeCase.name} (${activeCase.age} th) - ${activeCase.category}</p>
+                            <p class="text-[10px] text-brand-primary mt-1 font-bold">Asal: ${activeCase.puskesmas} ➔ Tujuan: UPT RSUD Sinjai</p>
+                        </div>
+                        <span class="bg-white/80 px-3 py-1 rounded-lg font-bold">ETA: ${activeCase.eta} Menit</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Status Kesiapan Unit Anda</label>
+                            <select id="sim-unit-status" onchange="updateSimulatedUnitStatus(this.value)" class="glass-input text-xs py-2 px-3 cursor-pointer font-bold border border-gray-300">
+                                <option value="PENDING" ${unitState.status === 'PENDING' ? 'selected' : ''}>⏳ PENDING (Belum Bertindak)</option>
+                                <option value="CHECKING" ${unitState.status === 'CHECKING' ? 'selected' : ''}>🔎 CHECKING (Sedang Diperiksa)</option>
+                                <option value="READY" ${unitState.status === 'READY' ? 'selected' : ''}>✅ READY (Unit Siap Guna)</option>
+                                <option value="LIMITED" ${unitState.status === 'LIMITED' ? 'selected' : ''}>⚠️ LIMITED (Terbatas / Bersyarat)</option>
+                                <option value="FULL" ${unitState.status === 'FULL' ? 'selected' : ''}>⛔ FULL (Kapasitas Penuh)</option>
+                                <option value="OFFLINE" ${unitState.status === 'OFFLINE' ? 'selected' : ''}>🔌 OFFLINE (Tidak Dapat Digunakan)</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Nama Petugas Penilai</label>
+                            <input type="text" id="sim-unit-petugas" value="${unitState.petugas}" placeholder="dr. Spesialis / Bidan / Perawat..." class="glass-input text-xs py-2 px-3 border border-gray-300">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Lembar Verifikasi Fisik Sumber Daya:</p>
+                        <div class="bg-white rounded-xl border border-gray-200/80 p-2 divide-y divide-gray-100 shadow-sm">
+                            ${checklistHtml}
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Catatan Pendukung Unit (Opsional)</label>
+                        <input type="text" id="sim-unit-notes" value="${unitState.notes}" placeholder="Contoh: Sediaan darah siap, inkubator hangat sudah menyala..." class="glass-input text-xs py-2 px-3 border border-gray-300">
+                    </div>
+
+                    ${backupActionsHtml}
+
+                    <div class="pt-4 border-t border-gray-200 flex gap-3">
+                        <button onclick="saveSimulatedUnitData()" class="flex-1 bg-brand-primary hover:bg-brand-soft text-white font-bold py-3 rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-1.5">
+                            <i class="ph ph-floppy-disk text-base"></i> SIMPAN VERIFIKASI SEKARANG
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleChecklistItem(index) {
+            const activeCase = cases.find(c => c.id === selectedCaseId);
+            if (!activeCase) return;
+            const unitState = activeCase.unitStatuses[simulatedUnitRole];
+            if (!unitState) return;
+
+            const exists = unitState.checked.indexOf(index);
+            if (exists > -1) {
+                unitState.checked.splice(exists, 1);
+            } else {
+                unitState.checked.push(index);
+            }
+        }
+
+        function updateSimulatedUnitStatus(newStatus) {
+            const activeCase = cases.find(c => c.id === selectedCaseId);
+            if (!activeCase) return;
+            const unitState = activeCase.unitStatuses[simulatedUnitRole];
+            if (!unitState) return;
+
+            unitState.status = newStatus;
+        }
+
+        function saveSimulatedUnitData() {
+            const activeCase = cases.find(c => c.id === selectedCaseId);
+            if (!activeCase) return;
+
+            const unitState = activeCase.unitStatuses[simulatedUnitRole];
+            const inputPetugas = document.getElementById('sim-unit-petugas').value.trim() || 'Petugas Jaga';
+            const inputNotes = document.getElementById('sim-unit-notes').value.trim();
+
+            unitState.petugas = inputPetugas;
+            unitState.notes = inputNotes;
+
+            const eventText = `${inputPetugas} melakukan update status Unit ${unitTemplates[simulatedUnitRole].label} menjadi ${unitState.status} dengan catatan: "${inputNotes || 'Tidak ada catatan'}"`;
+            logEvent(inputPetugas, eventText, unitTemplates[simulatedUnitRole].label, unitState.status);
+
+            playMedicalBeep();
+            recalculateHospitalReadiness(activeCase);
+            renderAll();
+        }
+
+        // RECALCULATE HOSPITAL READINESS
+        function recalculateHospitalReadiness(activeCase) {
+            let statuses = activeCase.mandatoryUnits.map(unitKey => {
+                return activeCase.unitStatuses[unitKey]?.status || 'PENDING';
+            });
+
+            let newReadiness = 'PENDING';
+
+            if (statuses.every(s => s === 'READY')) {
+                newReadiness = 'READY';
+                clearInterval(audioInterval);
+            } else if (statuses.some(s => s === 'FULL' || s === 'OFFLINE')) {
+                newReadiness = 'OFFLINE';
+            } else if (statuses.some(s => s === 'LIMITED')) {
+                newReadiness = 'LIMITED';
+            } else {
+                newReadiness = 'PENDING';
+            }
+
+            activeCase.readiness = newReadiness;
+        }
+
+        // SLA TICKER
+        function startSlaGlobalTicker() {
+            clearInterval(tickerInterval);
+            tickerInterval = setInterval(() => {
+                const warningLimit = parseInt(document.getElementById('cfg-sla-warning').value) * 60;
+                const criticalLimit = parseInt(document.getElementById('cfg-sla-critical').value) * 60;
+
+                cases.forEach(c => {
+                    if (c.status === 'PENDING_REVIEW' || c.status === 'ACCEPTED') {
+                        c.slaElapsed++;
+                        
+                        if (c.slaElapsed >= warningLimit && !c.hasWarned) {
+                            c.hasWarned = true;
+                            logEvent('SLA Monitor', `Peringatan: Kasus ${c.name} melewati batas respon optimal!`, 'Command Center', 'WARNING');
+                            triggerReferralAlarm(`Peringatan sistem! Respon kesiapan unit untuk rujukan Ny. ${c.name} terlambat.`);
+                        }
+                        if (c.slaElapsed >= criticalLimit && !c.hasEscalated) {
+                            c.hasEscalated = true;
+                            logEvent('SLA Monitor', `ESKALASI KRITIS: Kasus ${c.name} melanggar SLA respon krisis!`, 'Direksi Utama', 'CRITICAL');
+                            triggerDiscordSimulation(c);
+                        }
+                    }
+                });
+
+                updateSlaTimerUi();
+            }, 1000);
+        }
+
+        function updateSlaTimerUi() {
+            const activeCase = cases.find(c => c.id === selectedCaseId);
+            const timerDisplay = document.getElementById('sla-timer');
+            const badge = document.getElementById('sla-status-badge');
+
+            if (!activeCase || activeCase.status === 'ARRIVED' || activeCase.status === 'OUTCOME_DECLARED') {
+                if (timerDisplay) timerDisplay.innerText = "--:--";
+                if (badge) {
+                    badge.innerText = "IDLE";
+                    badge.className = "text-[9px] font-extrabold uppercase px-2 py-1 rounded bg-gray-400 text-white shadow-sm";
+                }
+                return;
+            }
+
+            const warningLimit = parseInt(document.getElementById('cfg-sla-warning').value) * 60;
+            const criticalLimit = parseInt(document.getElementById('cfg-sla-critical').value) * 60;
+
+            let mins = Math.floor(activeCase.slaElapsed / 60);
+            let secs = activeCase.slaElapsed % 60;
+            if (timerDisplay) timerDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            if (badge) {
+                if (activeCase.slaElapsed < warningLimit) {
+                    badge.innerText = "ON TARGET";
+                    badge.className = "text-[9px] font-extrabold uppercase px-2 py-1 rounded bg-brand-primary text-white shadow-sm";
+                } else if (activeCase.slaElapsed < criticalLimit) {
+                    badge.innerText = "SLA WARNING";
+                    badge.className = "text-[9px] font-extrabold uppercase px-2 py-1 rounded bg-brand-warning text-brand-dark animate-pulse shadow-sm";
+                } else {
+                    badge.innerText = "CRITICAL LIMIT";
+                    badge.className = "text-[9px] font-extrabold uppercase px-2 py-1 rounded bg-brand-danger text-white animate-bounce shadow-lg";
+                }
+            }
+        }
+
+        function triggerDiscordSimulation(c) {
+            logEvent('Webhook Discord', `Mengirim pesan eskalasi otomatis ke saluran Direktur UPT RSUD Sinjai & Kepala Pelayanan Medis untuk kasus ${c.name}`, 'Bot Integrasi', 'ESCALATED');
+        }
+
+        function logEvent(actor, event, unit, status) {
+            let log = {
+                time: new Date().toLocaleTimeString('id-ID'),
+                actor: actor,
+                event: event,
+                unit: unit,
+                status: status
+            };
+            auditLogs.unshift(log);
+            renderAuditTimeline();
+        }
+
+        // FORM SUBMISSION PROCESS
+        function submitReferral(event) {
+            event.preventDefault();
+            
+            const sender = document.getElementById('form-sender-facility').value;
+            const name = document.getElementById('form-patient-name').value.trim();
+            const age = parseInt(document.getElementById('form-patient-age').value);
+            const category = document.getElementById('form-case-category').value;
+            const td = document.getElementById('form-td').value.trim();
+            const djj = document.getElementById('form-djj').value.trim();
+            const kesadaran = document.getElementById('form-kesadaran').value;
+            const cond = document.getElementById('form-patient-cond').value.trim() || 'Tidak ada catatan tambahan';
+            const eta = parseInt(document.getElementById('form-eta').value);
+            const targetHospital = document.getElementById('form-target-hospital').value;
+
+            let mandatory = ['PONEK'];
+            if (category === 'Perdarahan Berat') {
+                mandatory = ['PONEK', 'OK', 'BloodBank', 'ICU'];
+            } else if (category === 'Preeklamsia Berat') {
+                mandatory = ['PONEK', 'ICU', 'OK'];
+            } else if (category === 'Partus Macet') {
+                mandatory = ['PONEK', 'OK'];
+            } else if (category === 'Sepsis') {
+                mandatory = ['PONEK', 'BloodBank'];
+            }
+
+            const newId = 'case_' + Date.now();
+            let unitStateObj = {};
+            mandatory.forEach(u => {
+                unitStateObj[u] = { status: 'PENDING', checked: [], petugas: '', notes: '' };
+            });
+
+            const newCase = {
+                id: newId,
+                name: name,
+                age: age,
+                diagnosis: `${category} (TD: ${td}, DJJ: ${djj}, Kesadaran: ${kesadaran}). ${cond}`,
+                category: category,
+                td: td,
+                djj: djj,
+                kesadaran: kesadaran,
+                puskesmas: sender,
+                eta: eta,
+                timestamp: Date.now(),
+                status: 'PENDING_REVIEW',
+                outcome: '',
+                mandatoryUnits: mandatory,
+                slaElapsed: 0,
+                hasWarned: false,
+                hasEscalated: false,
+                unitStatuses: unitStateObj,
+                readiness: 'PENDING'
+            };
+
+            cases.unshift(newCase);
+            selectedCaseId = newId;
+
+            Object.keys(unlockedUnits).forEach(k => unlockedUnits[k] = false);
+
+            logEvent(sender, `Rujukan Baru dikirim untuk ${name} (${age} th) ke ${targetHospital}`, sender, 'REFERRED');
+            logEvent('MERS Sistem', `Kasus terdeteksi: ${category}. Unit wajib siaga: ${mandatory.map(u => unitTemplates[u].label).join(', ')}`, 'Sistem Pusat', 'INITIATED');
+
+            simulateRoute('#/hospital');
+            currentHospitalTab = 'monitor';
+
+            triggerReferralAlarm(`Rujukan darurat baru dikirim oleh ${sender} untuk Ny. ${name}. Kategori kasus: ${category}. RSUD Sinjai harus segera merespon.`);
+
+            document.getElementById('referral-form').reset();
+            renderAll();
+        }
+
+        function suggestTargetHospital() {
+            const category = document.getElementById('form-case-category').value;
+            const warningBox = document.getElementById('hospital-capacity-warning');
+            
+            if (category === 'Perdarahan Berat') {
+                warningBox.className = "bg-red-50 text-red-900 border border-red-200 p-3 rounded-lg text-xs font-medium";
+                warningBox.innerHTML = `<i class="ph ph-warning"></i> <strong>Kesiapan UPT RSUD Sinjai:</strong> Sedia 12 Labu PRC O+. Kamar Bedah Terbuka. Direkomendasikan Utama ke UPT RSUD Sinjai.`;
+            } else if (category === 'Preeklamsia Berat') {
+                warningBox.className = "bg-amber-50 text-amber-800 border border-amber-200 p-3 rounded-lg text-xs font-medium";
+                warningBox.innerHTML = `<i class="ph ph-info"></i> <strong>Pemberitahuan ICU Sinjai:</strong> Kamar ICU terisi 3/4. Tim Anestesi Standby sedia Magnesium Sulfat.`;
+            } else {
+                warningBox.className = "bg-emerald-50 text-emerald-800 border border-emerald-200 p-3 rounded-lg text-xs font-medium";
+                warningBox.innerHTML = `<i class="ph ph-info"></i> UPT RSUD Sinjai terpantau siap menerima rujukan dengan kapasitas optimal.`;
+            }
+        }
+
+        // CC ACTIONS
+        function performAction(newStatus) {
+            const activeCase = cases.find(c => c.id === selectedCaseId);
+            if (!activeCase) return;
+
+            activeCase.status = newStatus;
+            logEvent('Command Center', `Mengubah status rujukan Ny. ${activeCase.name} menjadi ${newStatus}`, 'Pusat Koordinasi', newStatus);
+
+            if (newStatus === 'ACCEPTED') {
+                clearInterval(audioInterval);
+            }
+
+            renderAll();
+        }
+
+        function triggerManualEscalation() {
+            const activeCase = cases.find(c => c.id === selectedCaseId);
+            if (!activeCase) return;
+
+            logEvent('Command Center', `Melakukan eskalasi manual & pemantauan intensif untuk kasus Ny. ${activeCase.name}`, 'Pusat Koordinasi', 'ESCALATED');
+            triggerDiscordSimulation(activeCase);
+            
+            const alertBox = document.createElement('div');
+            alertBox.className = "fixed bottom-5 right-5 glass-panel p-4 border border-yellow-500 bg-yellow-50 text-brand-dark shadow-2xl z-50 animate-bounce";
+            alertBox.innerHTML = `<p class="text-xs font-bold"><i class="ph ph-phone-call"></i> Eskalasi manual berhasil dilakukan. Tim Direksi & Bot Discord diaktifkan.</p>`;
+            document.body.appendChild(alertBox);
+            setTimeout(() => alertBox.remove(), 4000);
+        }
+
+        function declareFinalOutcome() {
+            const activeCase = cases.find(c => c.id === selectedCaseId);
+            if (!activeCase) return;
+
+            const chosenOutcome = document.getElementById('select-outcome').value;
+            activeCase.status = 'OUTCOME_DECLARED';
+            activeCase.outcome = chosenOutcome;
+
+            logEvent('Command Center', `Selesai Penanganan Medis. Outcome Akhir Pasien: ${chosenOutcome}`, 'Klinis/Direksi', 'COMPLETED');
+            renderAll();
+        }
+
+        function showRedirectModal() {
+            document.getElementById('redirect-modal').classList.remove('hidden');
+        }
+
+        function closeRedirectModal() {
+            document.getElementById('redirect-modal').classList.add('hidden');
+        }
+
+        function executeRedirect(targetHospital, minutesAdded) {
+            const activeCase = cases.find(c => c.id === selectedCaseId);
+            if (!activeCase) return;
+
+            activeCase.status = 'REDIRECTED';
+            activeCase.diagnosis += ` [RUJUKAN LANJUT/DIALIHKAN KE ${targetHospital.toUpperCase()}]`;
+            activeCase.eta += minutesAdded;
+
+            logEvent('Command Center', `Pasien tidak dapat ditindak di UPT RSUD Sinjai. Rujukan dialihkan lanjut ke ${targetHospital}`, 'Alur Rujukan', 'REDIRECTED');
+            
+            clearInterval(audioInterval);
+            closeRedirectModal();
+            renderAll();
+        }
+
+        // RENDER FUNCTIONS
+        function renderAll() {
+            renderActiveCasesList();
+            renderUnitStatusesMonitorList();
+            renderSplitMandatoryUnitsSummary();
+            renderAuditTimeline();
+            renderPuskesmasTracking();
+            renderAdminKpis();
+        }
+
+        function renderActiveCasesList() {
+            const container = document.getElementById('hospital-cases-scroller');
+            const badge = document.getElementById('hospital-case-count');
+            if (!container) return;
+
+            container.innerHTML = '';
+            const activeCases = cases.filter(c => c.status !== 'REDIRECTED');
+            if (badge) badge.innerText = `${activeCases.length} Kasus`;
+
+            if (activeCases.length === 0) {
+                container.innerHTML = `
+                    <div id="cases-empty-state" class="h-full flex flex-col items-center justify-center text-center p-6 text-gray-400">
+                        <i class="ph ph-wave-sine text-5xl mb-3 text-brand-soft animate-pulse"></i>
+                        <h4 class="font-bold text-sm text-brand-dark">Sistem Terpantau Tenang</h4>
+                        <p class="text-xs mt-1">Standby & pantau alur masuk rujukan dari faskes pengirim wilayah.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            activeCases.forEach(c => {
+                const isSelected = c.id === selectedCaseId;
+                const borderClass = c.category.includes('Perdarahan') || c.category.includes('Preeklamsia') ? 'border-brand-danger bg-red-50/20' : 'border-brand-warning bg-amber-50/20';
+                const selectRing = isSelected ? 'ring-2 ring-brand-primary scale-[1.01]' : '';
+
+                let statusBadgeColor = 'bg-gray-100 text-gray-800';
+                if (c.status === 'ACCEPTED') statusBadgeColor = 'bg-green-100 text-green-800';
+                if (c.status === 'ARRIVED') statusBadgeColor = 'bg-blue-100 text-blue-800 animate-pulse';
+                if (c.status === 'OUTCOME_DECLARED') statusBadgeColor = 'bg-brand-dark text-white';
+
+                const card = document.createElement('div');
+                card.className = `glass-card p-4 border-l-4 ${borderClass} ${selectRing} cursor-pointer transition-all shadow-sm`;
+                card.onclick = () => {
+                    selectedCaseId = c.id;
+                    renderAll();
+                };
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start gap-2 mb-2">
+                        <div>
+                            <h4 class="font-bold text-sm text-brand-dark">${c.name} (${c.age}th)</h4>
+                            <p class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">${c.puskesmas}</p>
+                        </div>
+                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${statusBadgeColor}">${c.status}</span>
+                    </div>
+                    <p class="text-xs font-bold text-gray-700 truncate mb-3 flex items-center gap-1.5">
+                        <i class="ph ph-activity text-brand-primary"></i> ${c.diagnosis}
+                    </p>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <div class="bg-white/85 p-1.5 rounded-xl border text-center shadow-inner">
+                            <p class="text-[8px] text-gray-400 font-bold uppercase font-mono">Estimasi Tiba (ETA)</p>
+                            <p class="text-xs font-black text-brand-accent">${c.status === 'ARRIVED' || c.status === 'OUTCOME_DECLARED' ? 'TIBA' : c.eta + ' Mnt'}</p>
+                        </div>
+                        <div class="bg-white/85 p-1.5 rounded-xl border text-center shadow-inner">
+                            <p class="text-[8px] text-gray-400 font-bold uppercase font-mono">Kesiapan RS</p>
+                            <p class="text-xs font-black text-brand-primary">${c.readiness}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            const activeSelected = cases.find(c => c.id === selectedCaseId);
+            const banner = document.getElementById('emergency-banner');
+            if (activeSelected && activeSelected.status === 'PENDING_REVIEW') {
+                banner.classList.remove('hidden');
+                document.getElementById('banner-title').innerText = `Rujukan Baru: Ny. ${activeSelected.name}`;
+                document.getElementById('banner-desc').innerText = `Asal: ${activeSelected.puskesmas} • Kasus: ${activeSelected.category} • Butuh kesiapan unit.`;
+            } else {
+                banner.classList.add('hidden');
+            }
+
+            const outcomePanel = document.getElementById('outcome-action-panel');
+            if (activeSelected && activeSelected.status === 'ARRIVED') {
+                outcomePanel.classList.remove('hidden');
+            } else {
+                outcomePanel.classList.add('hidden');
+            }
+        }
+
+        function renderUnitStatusesMonitorList() {
+            const container = document.getElementById('unit-detail-monitor-body');
+            const activeCase = cases.find(c => c.id === selectedCaseId);
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            if (!activeCase) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-gray-400">
+                        <p class="text-xs">Pilih salah satu kasus aktif untuk melihat kesiapan fisik unit.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            activeCase.mandatoryUnits.forEach(unitKey => {
+                const unitTemplate = unitTemplates[unitKey];
+                const unitState = activeCase.unitStatuses[unitKey] || { status: 'PENDING', checked: [], petugas: '', notes: '' };
+
+                let badgeColorClass = 'bg-gray-100 text-gray-600';
+                if (unitState.status === 'READY') badgeColorClass = 'bg-emerald-100 text-emerald-800 border border-emerald-300';
+                if (unitState.status === 'CHECKING') badgeColorClass = 'bg-blue-100 text-blue-800 border border-blue-200 animate-pulse';
+                if (unitState.status === 'LIMITED') badgeColorClass = 'bg-amber-100 text-amber-800 border border-amber-300';
+                if (unitState.status === 'FULL') badgeColorClass = 'bg-red-100 text-red-800 border border-red-300';
+                if (unitState.status === 'OFFLINE') badgeColorClass = 'bg-gray-800 text-white';
+
+                const totalChecklist = unitTemplate.checklists.length;
+                const completedCount = unitState.checked.length;
+                const progressPercentage = Math.round((completedCount / totalChecklist) * 100);
+
+                const card = document.createElement('div');
+                card.className = "bg-white/95 p-3.5 rounded-2xl border border-gray-100 shadow-sm space-y-2.5";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full ${unitState.status === 'READY' ? 'bg-emerald-500 shadow-lg' : 'bg-amber-400'}"></span>
+                            <span class="text-xs font-extrabold text-brand-dark">${unitTemplate.label}</span>
+                        </div>
+                        <span class="text-[9px] font-bold px-2 py-0.5 rounded ${badgeColorClass}">${unitState.status}</span>
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] text-gray-500 font-bold">
+                            <span>Verifikasi Sumber Daya</span>
+                            <span>${completedCount}/${totalChecklist} Terceklist (${progressPercentage}%)</span>
+                        </div>
+                        <div class="w-full bg-gray-100 h-1.5 rounded-full">
+                            <div class="bg-brand-primary h-1.5 rounded-full transition-all" style="width: ${progressPercentage}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-[10px] bg-gray-50 p-2 rounded-lg border border-gray-100 shadow-inner">
+                        <div>
+                            <span class="text-gray-400 font-bold uppercase block">Petugas Penilai:</span>
+                            <span class="font-bold text-brand-dark">${unitState.petugas || 'Belum Ditunjuk'}</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-400 font-bold uppercase block">Catatan Medis:</span>
+                            <span class="font-bold text-gray-600 truncate block">${unitState.notes || 'Tidak ada'}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderSplitMandatoryUnitsSummary() {
+            const containerPending = document.getElementById('unit-pending-summary');
+            const containerVerified = document.getElementById('unit-verified-summary');
+            const activeCase = cases.find(c => c.id === selectedCaseId);
+
+            if (!containerPending || !containerVerified) return;
+
+            containerPending.innerHTML = '';
+            containerVerified.innerHTML = '';
+
+            if (!activeCase) {
+                containerPending.innerHTML = `<p class="text-xs text-gray-400 col-span-2 text-center py-2">Tidak ada rujukan aktif</p>`;
+                containerVerified.innerHTML = `<p class="text-xs text-gray-400 col-span-2 text-center py-2">-</p>`;
+                return;
+            }
+
+            const label = document.getElementById('hospital-readiness-label');
+            const ping = document.getElementById('readiness-ping');
+            const countLabel = document.getElementById('mandatory-count-label');
+
+            if (countLabel) countLabel.innerText = `${activeCase.mandatoryUnits.length} Unit Wajib`;
+            if (label) label.innerText = activeCase.readiness + " (OTOMATIS)";
+
+            if (label && ping) {
+                if (activeCase.readiness === 'READY') {
+                    label.className = "text-xs font-extrabold text-emerald-600";
+                    ping.className = "inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50";
+                } else if (activeCase.readiness === 'LIMITED') {
+                    label.className = "text-xs font-extrabold text-amber-600";
+                    ping.className = "inline-block w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping";
+                } else if (activeCase.readiness === 'OFFLINE') {
+                    label.className = "text-xs font-extrabold text-red-600";
+                    ping.className = "inline-block w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse";
+                } else {
+                    label.className = "text-xs font-extrabold text-gray-500";
+                    ping.className = "inline-block w-2.5 h-2.5 rounded-full bg-gray-400 animate-ping";
+                }
+            }
+
+            let hasPendingUnits = false;
+            let hasVerifiedUnits = false;
+
+            activeCase.mandatoryUnits.forEach(u => {
+                const state = activeCase.unitStatuses[u] || { status: 'PENDING' };
+                let isPending = state.status === 'PENDING';
+
+                let colorClass = 'bg-gray-100 text-gray-700';
+                if (state.status === 'READY') colorClass = 'bg-emerald-100 text-emerald-800 border border-emerald-300';
+                if (state.status === 'CHECKING') colorClass = 'bg-blue-100 text-blue-800 border border-blue-200 animate-pulse';
+                if (state.status === 'LIMITED') colorClass = 'bg-amber-100 text-amber-800 border border-amber-300';
+                if (state.status === 'FULL') colorClass = 'bg-red-100 text-red-800 border border-red-300';
+                if (state.status === 'OFFLINE') colorClass = 'bg-gray-800 text-white';
+
+                const div = document.createElement('div');
+                div.className = `p-2 rounded-lg text-[11px] font-bold text-center ${colorClass} transition-all duration-300 transform hover:scale-[1.03] shadow-sm`;
+                div.innerHTML = `
+                    <div class="text-[9px] uppercase text-gray-400 font-extrabold">${unitTemplates[u].label}</div>
+                    <div class="mt-0.5 flex items-center justify-center gap-1">
+                        ${isPending ? '⏳' : ''} ${state.status}
+                    </div>
+                `;
+
+                if (isPending) {
+                    containerPending.appendChild(div);
+                    hasPendingUnits = true;
+                } else {
+                    containerVerified.appendChild(div);
+                    hasVerifiedUnits = true;
+                }
+            });
+
+            if (!hasPendingUnits) {
+                containerPending.innerHTML = `
+                    <div class="col-span-2 text-center p-3 border border-dashed rounded-xl bg-emerald-50 text-emerald-800 text-[10px] font-bold shadow-inner animate-pulse">
+                        🎉 Semua Unit Sudah Siap!
+                    </div>
+                `;
+            }
+            if (!hasVerifiedUnits) {
+                containerVerified.innerHTML = `
+                    <div class="col-span-2 text-center p-3 border border-dashed rounded-xl bg-gray-50 text-gray-400 text-[10px] shadow-inner">
+                        Belum ada verifikasi masuk
+                    </div>
+                `;
+            }
+        }
+
+        function renderAuditTimeline() {
+            const list = document.getElementById('live-timeline');
+            if (list) {
+                list.innerHTML = '';
+                auditLogs.forEach(log => {
+                    let bulletColor = 'bg-brand-primary';
+                    if (log.status === 'WARNING') bulletColor = 'bg-amber-500';
+                    if (log.status === 'CRITICAL' || log.status === 'FULL' || log.status === 'OFFLINE') bulletColor = 'bg-red-600';
+                    if (log.status === 'REDIRECTED') bulletColor = 'bg-red-500';
+                    if (log.status === 'COMPLETED') bulletColor = 'bg-brand-dark';
+
+                    const li = document.createElement('li');
+                    li.className = "relative pl-5 animate-[fadeIn_0.2s_ease-out]";
+                    li.innerHTML = `
+                        <div class="absolute left-[-1px] top-[4px] w-2 h-2 rounded-full ${bulletColor} border border-white shadow"></div>
+                        <div class="glass-card p-2 text-[10px] leading-relaxed shadow-sm bg-white/95 border border-white/50">
+                            <span class="font-extrabold text-[8px] text-gray-400 block">${log.time} - ${log.actor} (${log.unit})</span>
+                            <p class="text-brand-dark font-medium">${log.event}</p>
+                        </div>
+                    `;
+                    list.appendChild(li);
+                });
+            }
+
+            const tableBody = document.getElementById('audit-table-body');
+            if (tableBody) {
+                tableBody.innerHTML = '';
+                auditLogs.forEach(log => {
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b hover:bg-gray-50/50";
+                    tr.innerHTML = `
+                        <td class="p-3 font-semibold text-gray-500">${log.time}</td>
+                        <td class="p-3 font-bold text-brand-dark">${log.actor}</td>
+                        <td class="p-3 text-gray-600">${log.event}</td>
+                        <td class="p-3 font-semibold text-brand-primary">${log.unit}</td>
+                        <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100">${log.status}</span></td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            }
+        }
+
+        function renderPuskesmasTracking() {
+            const container = document.getElementById('puskesmas-cases-list');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            if (cases.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-400">
+                        <i class="ph ph-chart-bar-horizontal text-4xl mb-2"></i>
+                        <p class="text-sm">Belum ada rujukan yang aktif dari faskes Anda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            cases.forEach(c => {
+                let timelineDesc = "Menunggu verifikasi awal Command Center.";
+                let trackingColor = "text-amber-500 bg-amber-50";
+
+                if (c.status === 'ACCEPTED') {
+                    timelineDesc = "Rujukan disetujui! Seluruh Unit RSUD Sinjai Sedang Mempersiapkan.";
+                    trackingColor = "text-emerald-700 bg-emerald-50";
+                } else if (c.status === 'ARRIVED') {
+                    timelineDesc = "Pasien Tiba di IGD PONEK RSUD Sinjai. Tindakan medis dimulai.";
+                    trackingColor = "text-blue-700 bg-blue-50";
+                } else if (c.status === 'OUTCOME_DECLARED') {
+                    timelineDesc = `Kasus selesai dengan outcome akhir: ${c.outcome}`;
+                    trackingColor = "text-gray-700 bg-gray-100";
+                } else if (c.status === 'REDIRECTED') {
+                    timelineDesc = "Kasus dialihkan ke fasilitas eskalasi regional (Rujukan Lanjut).";
+                    trackingColor = "text-red-700 bg-red-50";
+                }
+
+                const card = document.createElement('div');
+                card.className = "glass-card p-5 border-l-4 border-brand-soft bg-white/95 shadow-sm";
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-brand-dark">${c.name} (${c.age}th)</h3>
+                        <span class="text-xs font-bold px-3 py-1 rounded-full ${trackingColor}">${c.status}</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mb-2"><strong>Kasus Diagnosa:</strong> ${c.diagnosis}</p>
+                    <div class="flex items-center gap-3 text-xs border-t pt-3 mt-3">
+                        <div class="flex-1">
+                            <p class="text-[9px] text-gray-400 font-bold font-mono">STATUS LIVE UPT RSUD SINJAI</p>
+                            <p class="font-black ${c.readiness === 'READY' ? 'text-brand-soft' : 'text-amber-500'}">${c.readiness === 'READY' ? '✓ SIAP (READY)' : '⏰ PERSIAPAN UNIT (' + c.readiness + ')'}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[9px] text-gray-400 font-bold font-mono">ALUR PROGRESS</p>
+                            <p class="font-semibold text-gray-700">${timelineDesc}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderAdminKpis() {
+            const referralsEl = document.getElementById('stat-total-referrals');
+            if (referralsEl) referralsEl.innerText = cases.length;
+            
+            let savedCount = 0;
+            let criticalNearMiss = 0;
+            let deceasedCount = 0;
+
+            cases.forEach(c => {
+                if (c.status === 'OUTCOME_DECLARED') {
+                    if (c.outcome === 'Discharged' || c.outcome === 'Control') savedCount++;
+                    if (c.outcome === 'Near Miss') {
+                        savedCount++;
+                        criticalNearMiss++;
+                    }
+                    if (c.outcome === 'Deceased' || c.outcome === 'Dead On Arrival') deceasedCount++;
+                } else {
+                    savedCount++;
+                }
+            });
+
+            const totalOutcomes = cases.length;
+            const savePercentage = totalOutcomes > 0 ? ((savedCount / totalOutcomes) * 100).toFixed(1) : 100;
+            const saveRateEl = document.getElementById('stat-save-rate');
+            if (saveRateEl) saveRateEl.innerText = `${savePercentage}%`;
+
+            const progressContainer = document.getElementById('clinical-outcomes-progress-bars');
+            if (progressContainer) {
+                progressContainer.innerHTML = `
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                            <span>Ibu Selamat (Discharged/Control)</span>
+                            <span>${savedCount - criticalNearMiss} Kasus</span>
+                        </div>
+                        <div class="w-full bg-gray-200 h-2 rounded-full">
+                            <div class="bg-brand-primary h-2 rounded-full animate-pulse" style="width: ${totalOutcomes > 0 ? ((savedCount - criticalNearMiss)/totalOutcomes*100) : 100}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                            <span>Hampir Celaka (Near Miss - Selamat)</span>
+                            <span>${criticalNearMiss} Kasus</span>
+                        </div>
+                        <div class="w-full bg-gray-200 h-2 rounded-full">
+                            <div class="bg-yellow-500 h-2 rounded-full" style="width: ${totalOutcomes > 0 ? (criticalNearMiss/totalOutcomes*100) : 0}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                            <span>Kematian Ibu (Deceased / DOA)</span>
+                            <span>${deceasedCount} Kasus</span>
+                        </div>
+                        <div class="w-full bg-gray-200 h-2 rounded-full">
+                            <div class="bg-red-600 h-2 rounded-full" style="width: ${totalOutcomes > 0 ? (deceasedCount/totalOutcomes*100) : 0}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function saveConfiguration() {
+            const warningLimit = document.getElementById('cfg-sla-warning').value;
+            const criticalLimit = document.getElementById('cfg-sla-critical').value;
+            logEvent('Administrator', `Memperbarui batas waktu audit. Warning: ${warningLimit} m. Kritis: ${criticalLimit} m.`, 'Konfigurasi', 'CONFIG');
+            
+            const alertBox = document.createElement('div');
+            alertBox.className = "fixed bottom-5 right-5 glass-panel p-4 border border-brand-soft bg-emerald-50 text-brand-dark shadow-2xl z-50 animate-bounce";
+            alertBox.innerHTML = `<p class="text-xs font-bold"><i class="ph ph-check-circle"></i> Parameter audit operasional berhasil disimpan.</p>`;
+            document.body.appendChild(alertBox);
+            setTimeout(() => alertBox.remove(), 3000);
+        }
+
+        function generateBackupDataJson() {
+            const backupPayload = {
+                cases: cases,
+                senderFacilities: senderFacilities,
+                redirectDestinations: redirectDestinations,
+                auditLogs: auditLogs,
+                timestamp: Date.now(),
+                version: "MERS-V2.1-CloudReady"
+            };
+            const jsonString = JSON.stringify(backupPayload, null, 2);
+            const textarea = document.getElementById('backup-json-textarea');
+            if (textarea) {
+                textarea.value = jsonString;
+            }
+            return jsonString;
+        }
+
+        function copyBackupToClipboard() {
+            const jsonString = generateBackupDataJson();
+            const tempEl = document.createElement('textarea');
+            tempEl.value = jsonString;
+            document.body.appendChild(tempEl);
+            tempEl.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempEl);
+
+            showTemporaryToast("Kode backup berhasil disalin ke papan klip!", "success");
+        }
+
+        function downloadBackupFile() {
+            const jsonString = generateBackupDataJson();
+            const blob = new Blob([jsonString], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `MERS_BACKUP_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showTemporaryToast("Berkas backup berhasil diunduh!", "success");
+            logEvent('Administrator', 'Mengunduh berkas backup manual sistem', 'Backup Portal', 'EXPORT');
+        }
+
+        function handleRestoreFileInput(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsedData = JSON.parse(e.target.result);
+                    applyRestoredBackupPayload(parsedData);
+                    event.target.value = ''; 
+                } catch (err) {
+                    showTemporaryToast("Gagal memproses berkas! Format JSON tidak valid.", "danger");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function restoreBackupFromString() {
+            const inputVal = document.getElementById('restore-json-textarea').value.trim();
+            if (!inputVal) {
+                showTemporaryToast("Kode enkripsi backup kosong!", "danger");
+                return;
+            }
+
+            try {
+                const parsedData = JSON.parse(inputVal);
+                applyRestoredBackupPayload(parsedData);
+                document.getElementById('restore-json-textarea').value = '';
+            } catch (err) {
+                showTemporaryToast("Gagal memulihkan data! Kode enkripsi JSON tidak valid.", "danger");
+            }
+        }
+
+        function applyRestoredBackupPayload(payload) {
+            if (!payload || !payload.cases || !payload.senderFacilities || !payload.redirectDestinations || !payload.auditLogs) {
+                showTemporaryToast("Struktur data backup tidak kompatibel dengan sistem MERS!", "danger");
+                return;
+            }
+
+            cases = payload.cases;
+            senderFacilities = payload.senderFacilities;
+            redirectDestinations = payload.redirectDestinations;
+            auditLogs = payload.auditLogs;
+            selectedCaseId = cases.length > 0 ? cases[0].id : '';
+
+            Object.keys(unlockedUnits).forEach(k => unlockedUnits[k] = false);
+
+            showTemporaryToast("Sistem berhasil dipulihkan dari data cadangan manual!", "success");
+            logEvent('Administrator', 'Memulihkan sistem secara manual dari berkas cadangan data', 'Backup Portal', 'RESTORED');
+            
+            renderAll();
+            renderRedirectModalDestinations();
+            renderSenderFacilitiesDropdown();
+        }
+
+        function executeDangerousSystemReset() {
+            const confirmPass = document.getElementById('reset-confirm-password').value;
+            const feedback = document.getElementById('reset-feedback-msg');
+
+            if (confirmPass !== '1234Pasien') {
+                feedback.innerText = "Sandi Administrator Salah!";
+                playMedicalBeep();
+                return;
+            }
+
+            feedback.innerText = '';
+            document.getElementById('reset-confirm-password').value = '';
+
+            cases = [];
+            selectedCaseId = '';
+            senderFacilities = [
+                "Puskesmas Pulau Sembilan",
+                "Puskesmas Balangnipa",
+                "Puskesmas Sinjai Tengah",
+                "Puskesmas Sinjai Barat",
+                "Klinik Bersalin Bunda",
+                "BPM Bidan Hartati Mandiri"
+            ];
+            redirectDestinations = [
+                { name: "RSUP Dr. Wahidin Sudirohusodo Makassar", eta: 45, type: "Tersier", note: "Rujukan Tersier (Provinsi) • Kapasitas ICU/Bedah: ALWAYS READY" },
+                { name: "RSUD Tenriawaru Bone", eta: 30, type: "Regional", note: "Rujukan Regional (Kab. Bone) • Kapasitas ICU/Bedah: READY" },
+                { name: "RSUD Pratama Sinjai", eta: 15, type: "Mitra", note: "Mitra Faskes Alternatif • Kapasitas Unit: LIMITED" }
+            ];
+            auditLogs = [
+                { time: new Date().toLocaleTimeString('id-ID'), actor: 'Sistem MERS', event: 'Sistem berhasil direset ke pengaturan pabrik oleh Administrator', unit: 'Sistem Pusat', status: 'RESET' }
+            ];
+
+            Object.keys(unlockedUnits).forEach(k => unlockedUnits[k] = false);
+
+            showTemporaryToast("Sistem MERS berhasil dibersihkan dan diatur ulang!", "success");
+            
+            renderAll();
+            renderRedirectModalDestinations();
+            renderSenderFacilitiesDropdown();
+            generateBackupDataJson(); 
+        }
+
+        function showTemporaryToast(message, type = "success") {
+            const toast = document.createElement('div');
+            let borderCol = type === "success" ? "border-brand-primary bg-emerald-50 text-brand-primary" : "border-red-500 bg-red-50 text-red-700";
+            toast.className = `fixed bottom-5 right-5 glass-panel p-4 border ${borderCol} shadow-2xl z-50 animate-bounce text-xs font-bold flex items-center gap-2`;
+            toast.innerHTML = `<i class="ph ph-info-circle text-lg"></i> <p>${message}</p>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        function exportReport() {
+            logEvent('Administrator', 'Mengekspor berkas PDF/Excel Laporan Audit Traceability', 'Laporan Hub', 'EXPORT');
+            
+            const alertBox = document.createElement('div');
+            alertBox.className = "fixed bottom-5 right-5 glass-panel p-4 border border-brand-primary bg-emerald-50 text-brand-dark shadow-2xl z-50 animate-bounce";
+            alertBox.innerHTML = `<p class="text-xs font-bold"><i class="ph ph-download"></i> Menyiapkan berkas digital permanen audit... Sukses diunduh!</p>`;
+            document.body.appendChild(alertBox);
+            setTimeout(() => alertBox.remove(), 4000);
+        }
+
+        window.addEventListener('hashchange', handleRouting);
+        window.onload = function() {
+            renderSenderFacilitiesDropdown();
+            renderRedirectModalDestinations();
+            handleRouting();
+        };
+    </script>
+</body>
+</html>
