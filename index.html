@@ -31,6 +31,7 @@
         body {
             background: radial-gradient(circle at 50% 50%, #cfead9 0%, #b7dac7 100%);
             min-height: 100vh; color: #081C15; background-attachment: fixed;
+            display: flex; flex-direction: column;
         }
         .glass-panel {
             background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
@@ -67,14 +68,11 @@
 </head>
 <body class="p-3 md:p-6 font-sans antialiased relative">
 
-    <div class="max-w-screen-2xl mx-auto mb-4 bg-slate-900 text-slate-100 rounded-2xl px-4 py-3 shadow-xl border border-slate-700 flex flex-col md:flex-row justify-between items-center gap-3">
+    <div class="max-w-screen-2xl mx-auto w-full mb-4 bg-slate-900 text-slate-100 rounded-2xl px-4 py-3 shadow-xl border border-slate-700 flex flex-col md:flex-row justify-between items-center gap-3">
         <div class="flex flex-wrap items-center gap-2">
             <span class="inline-block w-2.5 h-2.5 bg-brand-soft rounded-full animate-ping"></span>
             <span class="text-xs font-extrabold uppercase tracking-widest text-slate-400 font-mono">Status Sistem:</span>
             <span id="active-route-badge" class="bg-brand-primary text-white text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Memuat...</span>
-            <button onclick="triggerSimulationDemo()" class="ml-2 bg-red-950/85 hover:bg-red-900 text-red-400 text-[10px] font-extrabold px-3 py-1.5 rounded-lg border border-red-900/50 flex items-center gap-1 transition-all shadow-md animate-pulse">
-                <i class="ph-fill ph-lightning"></i> ⚡ DEMO RUJUKAN
-            </button>
         </div>
         <div class="flex flex-wrap items-center gap-1.5">
             <span class="text-[10px] text-slate-500 font-bold mr-1">Akses Portal:</span>
@@ -85,7 +83,7 @@
         </div>
     </div>
 
-    <div class="max-w-screen-2xl mx-auto space-y-6">
+    <div class="max-w-screen-2xl mx-auto w-full flex-1 space-y-6">
 
         <!-- ================= PORTAL PENGIRIM ================= -->
         <div id="portal-sender" class="hidden space-y-6">
@@ -99,7 +97,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <div class="lg:col-span-5 glass-panel p-5 flex flex-col justify-between border border-white">
                     <h2 class="text-base font-extrabold text-brand-dark mb-4 flex items-center gap-2"><i class="ph ph-paper-plane-tilt text-amber-600"></i> Kirim Formulir Rujukan Instan</h2>
-                    <form id="referral-form" onsubmit="submitReferral(event)" class="space-y-4">
+                    <form id="referral-form" onsubmit="window.submitReferral(event)" class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Fasilitas Pengirim</label><select id="form-sender-facility" class="glass-input cursor-pointer font-bold text-xs"></select></div>
                             <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Rumah Sakit Tujuan</label><select id="form-target-hospital" class="glass-input cursor-pointer font-bold text-xs text-brand-primary bg-emerald-50"><option value="UPT RSUD Sinjai">UPT RSUD Sinjai (Utama)</option></select></div>
@@ -306,8 +304,8 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 border-gray-200/50 gap-3">
                             <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2"><i class="ph ph-chart-line-up text-brand-primary"></i> Laporan Outcome Kematian & Near Miss Maternal</h3>
                             <div class="flex gap-2">
-                                <button onclick="printReport('outcome')" class="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-gray-50 flex items-center gap-1"><i class="ph ph-printer"></i> Cetak PDF</button>
-                                <button onclick="downloadReportCSV('outcome')" class="bg-brand-primary text-white px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-brand-soft flex items-center gap-1"><i class="ph ph-download-simple"></i> Unduh CSV</button>
+                                <button onclick="window.printReport('outcome')" class="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-gray-50 flex items-center gap-1"><i class="ph ph-printer"></i> Cetak PDF</button>
+                                <button onclick="window.downloadReportCSV('outcome')" class="bg-brand-primary text-white px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-brand-soft flex items-center gap-1"><i class="ph ph-download-simple"></i> Unduh CSV</button>
                             </div>
                         </div>
                         <div id="clinical-outcomes-progress-bars" class="space-y-4"></div>
@@ -317,8 +315,8 @@
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 border-gray-200/50 gap-3">
                             <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2"><i class="ph ph-warning-octagon text-amber-600"></i> Laporan Insiden Keselamatan Pasien (IKP)</h3>
                             <div class="flex gap-2">
-                                <button onclick="printReport('ikp')" class="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-gray-50 flex items-center gap-1"><i class="ph ph-printer"></i> Cetak PDF</button>
-                                <button onclick="downloadReportCSV('ikp')" class="bg-amber-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-amber-500 flex items-center gap-1"><i class="ph ph-download-simple"></i> Unduh CSV</button>
+                                <button onclick="window.printReport('ikp')" class="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-gray-50 flex items-center gap-1"><i class="ph ph-printer"></i> Cetak PDF</button>
+                                <button onclick="window.downloadReportCSV('ikp')" class="bg-amber-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-amber-500 flex items-center gap-1"><i class="ph ph-download-simple"></i> Unduh CSV</button>
                             </div>
                         </div>
                         <div id="ikp-report-bars" class="space-y-4"></div>
@@ -338,7 +336,7 @@
                                 <h4 class="text-xs font-extrabold text-indigo-700 flex items-center gap-1"><i class="ph-fill ph-discord-logo text-lg"></i> Pengaturan Webhook Discord</h4>
                                 <p class="text-[9px] text-gray-600">Terima notifikasi real-time saat pasien masuk, kesiapan unit berubah, dan status dialihkan.</p>
                                 <input id="discord-webhook-url" type="text" placeholder="https://discord.com/api/webhooks/..." class="w-full text-[10px] bg-white border p-2 rounded-lg font-mono">
-                                <button onclick="saveDiscordWebhook()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded-xl shadow transition-colors">Simpan Webhook URL</button>
+                                <button onclick="window.saveDiscordWebhook()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded-xl shadow transition-colors">Simpan Webhook URL</button>
                             </div>
 
                             <!-- BAGIAN UBAH LOGO -->
@@ -346,7 +344,7 @@
                                 <h4 class="text-xs font-extrabold text-brand-primary flex items-center gap-1"><i class="ph ph-image text-lg"></i> Ubah Logo Rumah Sakit</h4>
                                 <p class="text-[9px] text-gray-600">Tempel link gambar atau Link Share Google Drive (Buka akses ke 'Siapa saja yang memiliki link').</p>
                                 <input id="hospital-logo-input" type="text" placeholder="https://drive.google.com/file/d/..." class="w-full text-[10px] bg-slate-50 border p-2 rounded-lg font-mono">
-                                <button onclick="saveLogoUrl()" class="w-full bg-brand-primary hover:bg-brand-soft text-white text-xs font-bold py-2 rounded-xl shadow transition-colors">Perbarui Logo</button>
+                                <button onclick="window.saveLogoUrl()" class="w-full bg-brand-primary hover:bg-brand-soft text-white text-xs font-bold py-2 rounded-xl shadow transition-colors">Perbarui Logo</button>
                             </div>
                         </div>
                     </div>
@@ -437,7 +435,7 @@
                         <p class="text-[10px] text-red-600 mb-3">Menghapus seluruh kasus dan pengaturan. Tindakan ini permanen.</p>
                         <div class="flex gap-2">
                             <input type="password" id="reset-confirm-password" placeholder="Sandi Admin" class="glass-input text-xs w-2/3 h-10">
-                            <button onclick="executeDangerousSystemReset()" class="w-1/3 bg-red-600 hover:bg-red-700 text-white text-xs font-black rounded-lg shadow transition-colors">RESET TOTAL</button>
+                            <button onclick="window.executeDangerousSystemReset()" class="w-1/3 bg-red-600 hover:bg-red-700 text-white text-xs font-black rounded-lg shadow transition-colors">RESET TOTAL</button>
                         </div>
                         <p id="reset-feedback-msg" class="text-[9px] text-red-600 font-extrabold mt-1"></p>
                     </div>
@@ -452,7 +450,7 @@
             <h2 class="text-lg font-extrabold text-brand-dark mb-4 flex items-center gap-2"><i class="ph ph-arrows-split text-red-500"></i> Alur Pengalihan Rujukan (Eskalasi)</h2>
             <p class="text-xs text-gray-600 mb-4">Pilih rumah sakit tujuan untuk mengalihkan pasien ini.</p>
             <div class="space-y-3" id="redirect-list-container"></div>
-            <div class="mt-6 flex justify-end gap-2"><button onclick="closeRedirectModal()" class="text-xs font-bold text-gray-500 px-4 py-2 hover:bg-gray-100 rounded-lg">Batal</button></div>
+            <div class="mt-6 flex justify-end gap-2"><button onclick="window.closeRedirectModal()" class="text-xs font-bold text-gray-500 px-4 py-2 hover:bg-gray-100 rounded-lg">Batal</button></div>
         </div>
     </div>
 
@@ -471,8 +469,7 @@
         };
 
         const SUPABASE_URL = "https://dcluqkzjhazvfwimnyps.supabase.co"; 
-        // Invalid key warning - we will handle the failure gracefully
-        const SUPABASE_ANON_KEY = "sb_publishable_3wVXNQ5xjh09_RDK3x_fqA_FuAa9u5Q"; 
+        const SUPABASE_ANON_KEY = "sb_publishable_YvIvL9HV893L-S7pSdSXVw_99No_g_b"; 
         let supabaseClient = null;
         try { 
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); 
@@ -484,7 +481,7 @@
         let isAdminAuth=false, selectedCaseId='case_default', tickerInterval=null;
         let currentPortal='hospital', currentHospitalTab='monitor', currentAdminTab='kpi', simulatedUnitRole='PONEK';
 
-        // Variabel Webhook Discord
+        // Variabel Webhook Discord & Logo
         let discordWebhookUrl = localStorage.getItem('mers_discord_webhook') || '';
         let hospitalLogoUrl = localStorage.getItem('mers_hospital_logo') || '';
 
@@ -514,7 +511,7 @@
                 { name: "RSUD Pratama Sinjai", eta: 15, type: "Mitra", note: "Mitra Faskes Alternatif" }
             ];
             
-            // Initial fallback to localStorage just in case Supabase fetch takes time or fails
+            // Fallback localStorage
             cases = JSON.parse(localStorage.getItem('mers_cases')) || [];
             
             if(el('discord-webhook-url')) el('discord-webhook-url').value = discordWebhookUrl;
@@ -529,36 +526,49 @@
             localStorage.setItem('mers_cases', JSON.stringify(cases));
         }
 
-        // SUPABASE: FETCH DATA AWAL (DENGAN FALLBACK AMAN)
-        async function fetchCasesFromSupabase() {
+        // SUPABASE: FETCH DATA AWAL (SMART MERGE)
+        async function fetchCasesFromSupabase(isInitial = false) {
             if (!supabaseClient) return;
             try {
                 const { data, error } = await supabaseClient.from('cases').select('*').order('timestamp', { ascending: false });
                 if (error) {
-                    console.warn("Peringatan Supabase (Key Invalid/Tabel Kosong):", error.message, "- Beralih ke penyimpanan lokal.");
+                    console.warn("Peringatan Supabase:", error.message);
                     return;
                 }
-                if (data && data.length > 0) {
-                    cases = data;
+                if (data) {
+                    data.forEach(dbCase => {
+                        const localIdx = cases.findIndex(c => c.id === dbCase.id);
+                        if (localIdx === -1) {
+                            cases.push(dbCase);
+                        } else {
+                            // Smart Merge: Pertahankan SLA lokal jika lebih besar
+                            if(cases[localIdx].slaElapsed > dbCase.slaElapsed) dbCase.slaElapsed = cases[localIdx].slaElapsed;
+                            Object.assign(cases[localIdx], dbCase);
+                        }
+                    });
+                    
+                    cases.sort((a,b) => b.timestamp - a.timestamp);
                     if(cases.length > 0 && selectedCaseId === 'case_default') selectedCaseId = cases[0].id;
+                    
                     saveToLocalStorage();
                     renderAll();
                 }
             } catch (err) {
-                console.warn("Gagal menarik data dari Supabase, mode lokal aktif.");
+                console.warn("Gagal menarik data dari Supabase.");
             }
         }
 
-        // SUPABASE: REALTIME LISTENER (DENGAN FALLBACK AMAN & BYPASS CANVAS WS)
+        // SUPABASE: REALTIME LISTENER
         function setupRealtimeSubscription() {
             if (!supabaseClient) return;
 
-            const isIframe = window !== window.parent;
-            
-            // Jika berada di Iframe/Canvas (memblokir webSocket), gunakan Polling (tarik data tiap 5 detik)
+            // Deteksi iFrame standar yang 100% akurat untuk mencegah SecurityError
+            let isIframe = false;
+            try { isIframe = window.self !== window.top; } catch (e) { isIframe = true; }
+
             if (isIframe) {
-                console.warn("Sistem berjalan di dalam Iframe (Canvas). WebSocket diblokir, beralih ke Mode Polling.");
-                setInterval(fetchCasesFromSupabase, 5000);
+                console.warn("Sistem berjalan di iFrame/Canvas. WebSocket dinonaktifkan demi keamanan. Mode Polling aktif.");
+                setInterval(() => fetchCasesFromSupabase(false), 5000);
                 return;
             }
 
@@ -570,10 +580,7 @@
                             if (!exists) {
                                 cases.unshift(payload.new);
                                 saveToLocalStorage();
-                                if (currentPortal === 'hospital' || currentPortal === 'admin') {
-                                    triggerReferralAlarm(payload.new.puskesmas);
-                                }
-                                renderAll();
+                                renderAll(); 
                             }
                         } else if (payload.eventType === 'UPDATE') {
                             const idx = cases.findIndex(c => c.id === payload.new.id);
@@ -589,12 +596,12 @@
                     .subscribe((status) => {
                         if (status === 'CHANNEL_ERROR') {
                             console.warn("Supabase WebSocket channel error. Beralih ke Mode Polling.");
-                            setInterval(fetchCasesFromSupabase, 5000);
+                            setInterval(() => fetchCasesFromSupabase(false), 5000);
                         }
                     });
             } catch (err) {
-                console.warn("Exception saat setup WebSocket. Beralih ke Mode Polling.", err);
-                setInterval(fetchCasesFromSupabase, 5000);
+                console.warn("Lingkungan terdeteksi memblokir WebSocket (Canvas). Beralih ke Polling otomatis.", err);
+                setInterval(() => fetchCasesFromSupabase(false), 5000);
             }
         }
 
@@ -603,40 +610,39 @@
             if (!supabaseClient) return;
             try {
                 await supabaseClient.from('cases').update(caseObj).eq('id', caseObj.id);
-            } catch (err) {
-                // Biarkan hening jika lokal
-            }
+            } catch (err) { /* silent */ }
         }
 
         async function insertToSupabase(table, rowData) { 
             if (supabaseClient) {
                 try { await supabaseClient.from(table).insert([rowData]); } 
-                catch (err) { /* Biarkan hening jika lokal */ } 
+                catch (err) { /* silent */ } 
             }
         }
 
         // ==========================================
-        // FITUR WEBHOOK DISCORD
+        // FITUR WEBHOOK DISCORD & LOGO RS
         // ==========================================
-        function saveDiscordWebhook() {
+        window.saveDiscordWebhook = function() {
             const url = el('discord-webhook-url').value.trim();
             localStorage.setItem('mers_discord_webhook', url);
             discordWebhookUrl = url;
             showTemporaryToast('URL Webhook Discord Berhasil Disimpan', 'success');
-        }
+        };
 
-        function saveLogoUrl() {
+        window.saveLogoUrl = function() {
             let url = el('hospital-logo-input').value.trim();
-            // Konversi GDrive share link ke direct link gambar
+            // Konversi Google Drive Link
             const gdriveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
             if (gdriveMatch && gdriveMatch[1]) {
-                url = `https://drive.google.com/uc?id=${gdriveMatch[1]}`;
+                // Gunakan format uc?export=view yang lebih andal untuk gambar publik
+                url = `https://drive.google.com/uc?export=view&id=${gdriveMatch[1]}`;
             }
             localStorage.setItem('mers_hospital_logo', url);
             hospitalLogoUrl = url;
             updateLogoDisplay(url);
             showTemporaryToast('Logo berhasil diperbarui!', 'success');
-        }
+        };
 
         function updateLogoDisplay(url) {
             const logoEl = el('main-hospital-logo');
@@ -720,17 +726,17 @@
             renderAll();
         }
 
-        function handleAdminLogin() {
+        window.handleAdminLogin = function() {
             if (el('admin-password').value === ADMIN_PASS) {
                 isAdminAuth = true; handleRouting();
             } else {
                 if(el('admin-login-feedback')) el('admin-login-feedback').innerText = 'Password Admin Salah!';
                 playMedicalBeep();
             }
-        }
-        function handleAdminLogout() { isAdminAuth = false; handleRouting(); }
+        };
+        window.handleAdminLogout = function() { isAdminAuth = false; handleRouting(); };
 
-        function switchHospitalTab(tabId) {
+        window.switchHospitalTab = function(tabId) {
             currentHospitalTab = tabId;
             ['sub-view-hospital-monitor', 'sub-view-hospital-unit', 'sub-view-hospital-outcome'].forEach(id => el(id)?.classList.add('hidden'));
             ['tab-hospital-monitor', 'tab-hospital-unit', 'tab-hospital-outcome'].forEach(id => el(id)?.classList.remove('active', 'ring-2', 'ring-brand-primary'));
@@ -747,9 +753,9 @@
                 el('tab-hospital-outcome')?.classList.add('ring-2', 'ring-amber-500');
                 renderOutcomeTab();
             }
-        }
+        };
 
-        function switchAdminTab(tabId) {
+        window.switchAdminTab = function(tabId) {
             currentAdminTab = tabId;
             ['kpi', 'links', 'master', 'backup'].forEach(t => {
                 const elSub = el(`sub-view-admin-${t}`);
@@ -762,7 +768,7 @@
 
             if (tabId === 'links') generateDistributionLinks();
             if (tabId === 'master') { renderMasterFacilitiesList(); renderMasterRedirectsList(); renderMasterUnitDropdown(); renderMasterUnitsList(); }
-        }
+        };
 
         // ==========================================
         // RENDER CORE
@@ -777,6 +783,18 @@
             const container = el('hospital-cases-scroller'); if (!container) return;
             const activeCases = cases.filter(c => c.status !== 'REDIRECTED' && c.status !== 'OUTCOME_DECLARED');
             if(el('hospital-case-count')) el('hospital-case-count').innerText = `${activeCases.length} Kasus`;
+
+            // TRIGGER ALARM LOKASI BARU (Dijamin bunyi saat PENDING_REVIEW muncul)
+            if (currentPortal === 'hospital' || currentPortal === 'admin') {
+                let alarmSource = null;
+                cases.forEach(c => {
+                    if (c.status === 'PENDING_REVIEW' && !c.hasWarned) {
+                        c.hasWarned = true;
+                        alarmSource = c.puskesmas;
+                    }
+                });
+                if (alarmSource) { saveToLocalStorage(); triggerReferralAlarm(alarmSource); }
+            }
 
             if (!activeCases.length) {
                 container.innerHTML = `<div class="text-center p-6 text-gray-400">Tenang, Tidak Ada Rujukan.</div>`;
@@ -820,7 +838,7 @@
             }
 
             listContainer.innerHTML = handledCases.map(c => `
-                <div onclick="selectedCaseId='${c.id}'; renderOutcomeTab();" class="p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors ${c.id===selectedCaseId ? 'ring-2 ring-amber-500':''}">
+                <div onclick="selectedCaseId='${c.id}'; window.renderOutcomeTab();" class="p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors ${c.id===selectedCaseId ? 'ring-2 ring-amber-500':''}">
                     <h4 class="text-xs font-bold text-brand-dark">${c.name}</h4>
                     <p class="text-[10px] text-gray-500">${c.puskesmas}</p>
                 </div>
@@ -837,24 +855,24 @@
                     <p class="text-xs font-semibold text-gray-500 mb-6 w-full max-w-md">Silakan pilih status akhir pelayanan pasien ini:</p>
                     
                     <div class="w-full max-w-md space-y-3">
-                        <button onclick="declareOutcome('Discharged')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-start gap-3">
+                        <button onclick="window.declareOutcome('Discharged')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-start gap-3">
                             <i class="ph-bold ph-check-circle text-xl"></i>
                             <span class="font-bold text-sm">Selesai (Selamat / Rawat Inap)</span>
                         </button>
                         
-                        <button onclick="declareOutcome('Near Miss')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-start gap-3">
+                        <button onclick="window.declareOutcome('Near Miss')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-start gap-3">
                             <i class="ph-bold ph-warning text-xl"></i>
                             <span class="font-bold text-sm">Near Miss Maternal (Selamat berisiko)</span>
                         </button>
                         
-                        <button onclick="declareOutcome('Deceased')" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-start gap-3">
+                        <button onclick="window.declareOutcome('Deceased')" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-start gap-3">
                             <i class="ph-bold ph-skull text-xl"></i>
                             <span class="font-bold text-sm">Pasien Meninggal Dunia</span>
                         </button>
                         
                         <div class="relative py-2"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-300"></div></div><div class="relative flex justify-center"><span class="bg-white/80 px-4 text-[10px] font-bold text-gray-400 uppercase">ATAU</span></div></div>
                         
-                        <button onclick="showRedirectModal()" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-3 border border-red-800 animate-pulse">
+                        <button onclick="window.showRedirectModal()" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-3 border border-red-800 animate-pulse">
                             <i class="ph-bold ph-ambulance text-xl"></i>
                             <span class="font-bold text-sm uppercase tracking-wide">Alihkan (Redirect) Ke RS Lain</span>
                         </button>
@@ -865,10 +883,11 @@
             }
         }
 
-        function declareOutcome(outcomeStr) {
+        window.renderOutcomeTab = renderOutcomeTab;
+
+        window.declareOutcome = function(outcomeStr) {
             const c = cases.find(x => x.id === selectedCaseId);
             if(c) {
-                // Kita jalankan fungsi langsung tanpa konfirmasi native, agar Sandbox/Canvas tidak menahan kodenya.
                 let idnStatus = outcomeStr;
                 if(outcomeStr === 'Discharged') idnStatus = 'Selesai (Selamat / Rawat Inap)';
                 if(outcomeStr === 'Near Miss') idnStatus = 'Near Miss Maternal (Selamat berisiko)';
@@ -878,15 +897,15 @@
                 c.outcome = outcomeStr;
                 
                 saveToLocalStorage();
-                updateSupabaseCase(c); // Sinkronisasi ke DB
+                updateSupabaseCase(c); 
                 
                 sendDiscordWebhook(c, `[STATUS AKHIR] ${idnStatus}`);
-                showTemporaryToast(`Status akhir (${idnStatus}) berhasil direkam ke sistem KPI & IKP.`, 'success');
+                showTemporaryToast(`Status akhir (${idnStatus}) berhasil direkam ke sistem.`, 'success');
                 
                 selectedCaseId = 'case_default';
                 renderAll();
             }
-        }
+        };
 
         // Dashboard Monitor List
         function renderUnitStatusesMonitorList() {
@@ -946,18 +965,16 @@
         function renderAdminKpis() {
             if(el('stat-total-referrals')) el('stat-total-referrals').innerText = cases.length;
             let saved = 0, nearMiss = 0, deceased = 0;
-            let ktd = 0, knc = 0, ktc = 0; // IKP variables
+            let ktd = 0, knc = 0, ktc = 0; 
 
             cases.forEach(c => {
-                const cl = 5 * 60, wl = 3 * 60; // critical and warning SLA limits
+                const cl = 5 * 60, wl = 3 * 60; 
                 
                 if (c.status === 'OUTCOME_DECLARED') {
-                    // Outcome count
                     if (['Discharged','Control'].includes(c.outcome)) saved++;
                     if (c.outcome === 'Near Miss') { saved++; nearMiss++; }
                     if (['Deceased','Dead On Arrival'].includes(c.outcome)) deceased++;
                     
-                    // IKP count
                     if (c.outcome === 'Deceased') ktd++;
                     else if (c.outcome === 'Near Miss') { if (c.slaElapsed >= cl) ktd++; else knc++; }
                     else if (['Discharged','Control'].includes(c.outcome) && c.slaElapsed >= wl) ktc++;
@@ -1009,44 +1026,44 @@
         // ==========================================
         // 5. MASTER DATA (FASKES & REDIRECT)
         // ==========================================
-        function saveSenderFacility() {
+        window.saveSenderFacility = function() {
             const name = el('master-facility-name')?.value.trim(); if (!name) return;
             const idx = el('master-facility-index')?.value;
             if (idx !== "") { senderFacilities[idx] = name; } else { senderFacilities.push(name); }
             saveToLocalStorage(); clearFacilityForm(); renderMasterFacilitiesList(); renderSenderFacilitiesDropdown();
-        }
-        function clearFacilityForm() { if(el('master-facility-index')) el('master-facility-index').value=''; if(el('master-facility-name')) el('master-facility-name').value=''; }
-        function editSenderFacility(idx) { if(el('master-facility-index')) el('master-facility-index').value=idx; if(el('master-facility-name')) el('master-facility-name').value=senderFacilities[idx]; }
-        function deleteSenderFacility(idx) { senderFacilities.splice(idx,1); saveToLocalStorage(); renderMasterFacilitiesList(); renderSenderFacilitiesDropdown(); }
+        };
+        window.clearFacilityForm = function() { if(el('master-facility-index')) el('master-facility-index').value=''; if(el('master-facility-name')) el('master-facility-name').value=''; };
+        window.editSenderFacility = function(idx) { if(el('master-facility-index')) el('master-facility-index').value=idx; if(el('master-facility-name')) el('master-facility-name').value=senderFacilities[idx]; };
+        window.deleteSenderFacility = function(idx) { senderFacilities.splice(idx,1); saveToLocalStorage(); renderMasterFacilitiesList(); renderSenderFacilitiesDropdown(); };
 
-        function saveRedirectDestination() {
+        window.saveRedirectDestination = function() {
             const name = el('master-redirect-name')?.value.trim(); if (!name) return;
             const eta = parseInt(el('master-redirect-eta')?.value) || 0, type = el('master-redirect-type')?.value, note = el('master-redirect-note')?.value.trim();
             const idx = el('master-redirect-index')?.value;
             if (idx !== "") { redirectDestinations[idx] = { name, eta, type, note }; } else { redirectDestinations.push({ name, eta, type, note }); }
             saveToLocalStorage(); clearRedirectForm(); renderMasterRedirectsList(); renderRedirectModalDestinations();
-        }
-        function clearRedirectForm() { if(el('master-redirect-index')) el('master-redirect-index').value=''; if(el('master-redirect-name')) el('master-redirect-name').value=''; }
-        function editRedirectDestination(idx) { const d=redirectDestinations[idx]; if(el('master-redirect-index')) el('master-redirect-index').value=idx; if(el('master-redirect-name')) el('master-redirect-name').value=d.name; if(el('master-redirect-eta')) el('master-redirect-eta').value=d.eta; if(el('master-redirect-type')) el('master-redirect-type').value=d.type; if(el('master-redirect-note')) el('master-redirect-note').value=d.note; }
-        function deleteRedirectDestination(idx) { redirectDestinations.splice(idx,1); saveToLocalStorage(); renderMasterRedirectsList(); renderRedirectModalDestinations(); }
+        };
+        window.clearRedirectForm = function() { if(el('master-redirect-index')) el('master-redirect-index').value=''; if(el('master-redirect-name')) el('master-redirect-name').value=''; };
+        window.editRedirectDestination = function(idx) { const d=redirectDestinations[idx]; if(el('master-redirect-index')) el('master-redirect-index').value=idx; if(el('master-redirect-name')) el('master-redirect-name').value=d.name; if(el('master-redirect-eta')) el('master-redirect-eta').value=d.eta; if(el('master-redirect-type')) el('master-redirect-type').value=d.type; if(el('master-redirect-note')) el('master-redirect-note').value=d.note; };
+        window.deleteRedirectDestination = function(idx) { redirectDestinations.splice(idx,1); saveToLocalStorage(); renderMasterRedirectsList(); renderRedirectModalDestinations(); };
 
         function renderSenderFacilitiesDropdown() { const d=el('form-sender-facility'); if(d) d.innerHTML=senderFacilities.map(f=>`<option value="${f}">${f}</option>`).join(''); }
-        function renderMasterFacilitiesList() { const l=el('master-facilities-list'); if(l) l.innerHTML=senderFacilities.map((f,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><span class="text-xs">${f}</span><div><button onclick="editSenderFacility(${idx})" class="p-1 text-blue-600"><i class="ph ph-pencil"></i></button><button onclick="deleteSenderFacility(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
-        function renderMasterRedirectsList() { const l=el('master-redirects-list'); if(l) l.innerHTML=redirectDestinations.map((d,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><div><p class="text-xs font-bold">${d.name}</p></div><div><button onclick="editRedirectDestination(${idx})" class="p-1 text-blue-600"><i class="ph ph-pencil"></i></button><button onclick="deleteRedirectDestination(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
-        function renderRedirectModalDestinations() { const c=el('redirect-list-container'); if(c) c.innerHTML=redirectDestinations.map(d=>`<div onclick="executeRedirect('${d.name}', ${d.eta})" class="p-3 border rounded-xl hover:bg-emerald-50 shadow-sm cursor-pointer mb-2"><h4 class="text-xs font-bold">${d.name}</h4><p class="text-[9px] text-gray-500">${d.note} (+${d.eta} mnt)</p></div>`).join(''); }
+        function renderMasterFacilitiesList() { const l=el('master-facilities-list'); if(l) l.innerHTML=senderFacilities.map((f,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><span class="text-xs">${f}</span><div><button onclick="window.editSenderFacility(${idx})" class="p-1 text-blue-600"><i class="ph ph-pencil"></i></button><button onclick="window.deleteSenderFacility(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
+        function renderMasterRedirectsList() { const l=el('master-redirects-list'); if(l) l.innerHTML=redirectDestinations.map((d,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><div><p class="text-xs font-bold">${d.name}</p></div><div><button onclick="window.editRedirectDestination(${idx})" class="p-1 text-blue-600"><i class="ph ph-pencil"></i></button><button onclick="window.deleteRedirectDestination(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
+        function renderRedirectModalDestinations() { const c=el('redirect-list-container'); if(c) c.innerHTML=redirectDestinations.map(d=>`<div onclick="window.executeRedirect('${d.name}', ${d.eta})" class="p-3 border rounded-xl hover:bg-emerald-50 shadow-sm cursor-pointer mb-2"><h4 class="text-xs font-bold">${d.name}</h4><p class="text-[9px] text-gray-500">${d.note} (+${d.eta} mnt)</p></div>`).join(''); }
 
         function renderMasterUnitDropdown() {
             const s = el('master-unit-select'); if(!s) return;
             s.innerHTML = '<option value="">-- Pilih Unit --</option>' + Object.keys(unitTemplates).map(k => `<option value="${k}">${unitTemplates[k].label} (${k})</option>`).join('');
         }
 
-        function loadMasterUnitDetails() {
+        window.loadMasterUnitDetails = function() {
             const k = el('master-unit-select').value;
             if (!k) { el('master-checklist-editor')?.classList.add('hidden'); el('master-checklist-placeholder')?.classList.remove('hidden'); return; }
             el('master-checklist-editor')?.classList.remove('hidden'); el('master-checklist-placeholder')?.classList.add('hidden');
             if(el('master-edit-unit-title')) el('master-edit-unit-title').innerText = `Edit Checklist: ${unitTemplates[k].label}`;
             renderMasterChecklistItems(k);
-        }
+        };
 
         function renderMasterChecklistItems(k) {
             const c = el('master-checklist-items'); if(!c) return;
@@ -1056,14 +1073,14 @@
                 <div class="flex items-start justify-between bg-white p-2 rounded border border-gray-150 gap-2 mb-1.5 shadow-sm">
                     <span class="text-[10px] text-gray-700 flex-1 leading-relaxed font-semibold">${txt}</span>
                     <div class="flex gap-1">
-                        <button onclick="editMasterChecklistItem(${idx})" class="p-1 text-blue-600 hover:bg-slate-100 rounded" title="Edit Item"><i class="ph ph-pencil-simple text-xs"></i></button>
-                        <button onclick="deleteMasterChecklistItem(${idx})" class="p-1 text-red-600 hover:bg-red-50 rounded" title="Hapus Item"><i class="ph ph-trash text-xs"></i></button>
+                        <button onclick="window.editMasterChecklistItem(${idx})" class="p-1 text-blue-600 hover:bg-slate-100 rounded" title="Edit Item"><i class="ph ph-pencil-simple text-xs"></i></button>
+                        <button onclick="window.deleteMasterChecklistItem(${idx})" class="p-1 text-red-600 hover:bg-red-50 rounded" title="Hapus Item"><i class="ph ph-trash text-xs"></i></button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function saveNewMasterUnit() {
+        window.saveNewMasterUnit = function() {
             const idInput = el('master-new-unit-id');
             const lblInput = el('master-new-unit-label');
             const pinInput = el('master-new-unit-pin');
@@ -1087,21 +1104,21 @@
             renderMasterUnitsList();
             renderUnitButtons();
             showTemporaryToast("Unit baru berhasil ditambah", "success"); 
-        }
+        };
 
-        function deleteMasterUnit() {
+        window.deleteMasterUnit = function() {
             const k = el('master-unit-select').value; if (!k) return;
             delete unitTemplates[k];
             delete unitPasswords[k];
             delete unlockedUnits[k];
             saveToLocalStorage(); 
             renderMasterUnitDropdown(); 
-            loadMasterUnitDetails(); 
+            window.loadMasterUnitDetails(); 
             renderMasterUnitsList();
             renderUnitButtons(); 
             renderUnitSimulator();
             showTemporaryToast("Unit dihapus!", "success"); 
-        }
+        };
 
         function renderMasterUnitsList() {
             const list = el('master-units-list-container');
@@ -1116,15 +1133,15 @@
                             <p class="text-[9px] text-gray-400 font-bold">PIN Jaga: ${pin}</p>
                         </div>
                         <div class="flex gap-1">
-                            <button onclick="editMasterUnit('${u}')" class="p-1 text-blue-600 hover:bg-slate-100 rounded" title="Edit Unit"><i class="ph ph-pencil-simple text-xs"></i></button>
-                            <button onclick="deleteMasterUnitDirect('${u}')" class="p-1 text-red-600 hover:bg-red-50 rounded" title="Hapus Unit"><i class="ph ph-trash text-xs"></i></button>
+                            <button onclick="window.editMasterUnit('${u}')" class="p-1 text-blue-600 hover:bg-slate-100 rounded" title="Edit Unit"><i class="ph ph-pencil-simple text-xs"></i></button>
+                            <button onclick="window.deleteMasterUnitDirect('${u}')" class="p-1 text-red-600 hover:bg-red-50 rounded" title="Hapus Unit"><i class="ph ph-trash text-xs"></i></button>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function editMasterUnit(u) {
+        window.editMasterUnit = function(u) {
             const idInput = el('master-new-unit-id');
             const lblInput = el('master-new-unit-label');
             const pinInput = el('master-new-unit-pin');
@@ -1134,9 +1151,9 @@
                 lblInput.value = unitTemplates[u].label;
                 pinInput.value = unitPasswords[u] || '1234';
             }
-        }
+        };
 
-        function deleteMasterUnitDirect(u) {
+        window.deleteMasterUnitDirect = function(u) {
             delete unitTemplates[u];
             delete unitPasswords[u];
             delete unlockedUnits[u];
@@ -1146,9 +1163,9 @@
             renderUnitButtons();
             renderUnitSimulator();
             showTemporaryToast("Unit berhasil dihapus!", "success");
-        }
+        };
 
-        function addMasterChecklist() {
+        window.addMasterChecklist = function() {
             const k = el('master-unit-select').value;
             const input = el('master-new-checklist-text');
             const editIndexInput = el('edit-checklist-item-index');
@@ -1168,11 +1185,11 @@
             }
 
             saveToLocalStorage(); 
-            cancelChecklistItemEdit();
+            window.cancelChecklistItemEdit();
             renderMasterChecklistItems(k);
-        }
+        };
 
-        function editMasterChecklistItem(idx) {
+        window.editMasterChecklistItem = function(idx) {
             const k = el('master-unit-select').value;
             const input = el('master-new-checklist-text');
             const editIndexInput = el('edit-checklist-item-index');
@@ -1185,9 +1202,9 @@
             editIndexInput.value = idx;
             btnSave.innerText = "Simpan";
             btnCancel.classList.remove('hidden');
-        }
+        };
 
-        function cancelChecklistItemEdit() {
+        window.cancelChecklistItemEdit = function() {
             const input = el('master-new-checklist-text');
             const editIndexInput = el('edit-checklist-item-index');
             const btnSave = el('btn-save-checklist-item');
@@ -1196,20 +1213,16 @@
             if (editIndexInput) editIndexInput.value = '';
             if (btnSave) btnSave.innerText = "Tambah";
             if (btnCancel) btnCancel.classList.add('hidden');
-        }
+        };
 
-        function deleteMasterChecklistItem(k, idx) {
-            if (typeof idx === 'undefined') {
-                const selectUnit = el('master-unit-select').value;
-                idx = k;
-                k = selectUnit;
-            }
+        window.deleteMasterChecklistItem = function(idx) {
+            const k = el('master-unit-select').value;
             unitTemplates[k].checklists.splice(idx, 1);
             saveToLocalStorage();
-            cancelChecklistItemEdit();
+            window.cancelChecklistItemEdit();
             renderMasterChecklistItems(k);
             showTemporaryToast("Ceklist dihapus!", "success");
-        }
+        };
 
         // ==========================================
         // 7. PORTAL UNIT OPERATION & SIMULATIONS
@@ -1227,15 +1240,15 @@
 
         function renderUnitButtons() {
             const ct = el('simulator-unit-buttons-container'); if(!ct) return;
-            ct.innerHTML = Object.keys(unitTemplates).map(u => `<button onclick="switchSimulatedUnit('${u}')" class="p-3.5 rounded-xl border font-bold text-xs flex flex-col items-center gap-2 transition-all shadow-md ${simulatedUnitRole === u ? 'bg-brand-primary border-brand-primary text-white' : 'border-gray-200 bg-white hover:bg-gray-100 text-gray-600'}"><i class="ph ph-stethoscope text-xl"></i><span class="text-center leading-tight">${unitTemplates[u].label}</span></button>`).join('');
+            ct.innerHTML = Object.keys(unitTemplates).map(u => `<button onclick="window.switchSimulatedUnit('${u}')" class="p-3.5 rounded-xl border font-bold text-xs flex flex-col items-center gap-2 transition-all shadow-md ${simulatedUnitRole === u ? 'bg-brand-primary border-brand-primary text-white' : 'border-gray-200 bg-white hover:bg-gray-100 text-gray-600'}"><i class="ph ph-stethoscope text-xl"></i><span class="text-center leading-tight">${unitTemplates[u].label}</span></button>`).join('');
         }
 
-        function verifyUnitPIN() {
+        window.verifyUnitPIN = function() {
             const pin = unitPasswords[simulatedUnitRole] || '1234';
             if (el('sim-unit-pin-input').value === pin) { unlockedUnits[simulatedUnitRole] = true; renderUnitSimulator(); renderAll(); } 
             else { if(el('pin-feedback-msg')) { el('pin-feedback-msg').className = "text-[10px] text-red-600 font-extrabold text-center"; el('pin-feedback-msg').innerText = "PIN Salah!"; } playMedicalBeep(); }
-        }
-        function lockUnitSim() { unlockedUnits[simulatedUnitRole] = false; renderUnitSimulator(); renderAll(); }
+        };
+        window.lockUnitSim = function() { unlockedUnits[simulatedUnitRole] = false; renderUnitSimulator(); renderAll(); };
 
         function renderUnitSimulator() {
             renderUnitButtons();
@@ -1253,23 +1266,23 @@
 
             const s = ac.unitStatuses[simulatedUnitRole] || { status: 'PENDING', checked: [], petugas: '', notes: '' };
             const tmpl = unitTemplates[simulatedUnitRole];
-            let chkHtml = tmpl.checklists.map((txt, idx) => `<label class="flex gap-2 p-2 border rounded hover:bg-gray-50 cursor-pointer"><input type="checkbox" onchange="toggleChecklistItemSimulator(${idx})" ${s.checked.includes(idx)?'checked':''} class="custom-checkbox mt-0.5"><span class="text-xs text-gray-700">${txt}</span></label>`).join('');
+            let chkHtml = tmpl.checklists.map((txt, idx) => `<label class="flex gap-2 p-2 border rounded hover:bg-gray-50 cursor-pointer"><input type="checkbox" onchange="window.toggleChecklistItemSimulator(${idx})" ${s.checked.includes(idx)?'checked':''} class="custom-checkbox mt-0.5"><span class="text-xs text-gray-700">${txt}</span></label>`).join('');
 
             container.innerHTML = `<div class="space-y-4 bg-gray-50 p-4 border rounded-xl shadow-inner">
                 <div class="p-3 bg-brand-light text-brand-primary rounded-xl text-xs"><p class="font-extrabold block">PASIEN AKTIF: ${ac.name} (${ac.age}th)</p><p class="mt-1">${ac.diagnosis}</p></div>
                 <div class="grid grid-cols-2 gap-4"><div class="flex flex-col gap-1"><label class="text-[9px] font-bold text-gray-500 uppercase">Kondisi Kesiapan</label><select id="sim-unit-status-sim" class="glass-input text-xs h-9 py-1"><option value="PENDING" ${s.status==='PENDING'?'selected':''}>PENDING</option><option value="CHECKING" ${s.status==='CHECKING'?'selected':''}>CHECKING</option><option value="READY" ${s.status==='READY'?'selected':''}>READY</option><option value="LIMITED" ${s.status==='LIMITED'?'selected':''}>LIMITED</option><option value="FULL" ${s.status==='FULL'?'selected':''}>FULL</option><option value="OFFLINE" ${s.status==='OFFLINE'?'selected':''}>OFFLINE</option></select></div><div class="flex flex-col gap-1"><label class="text-[9px] font-bold text-gray-500 uppercase">Nama Petugas Penilai</label><input id="sim-unit-petugas-sim" value="${s.petugas}" placeholder="Nama Anda" class="glass-input text-xs h-9 py-1"></div></div>
                 <div class="bg-white p-3 rounded-xl border space-y-2"><p class="text-[10px] font-extrabold text-brand-primary uppercase"><i class="ph ph-list-checks"></i> Butir Ceklist Verifikasi Fisik:</p><div class="space-y-1.5">${chkHtml}</div></div>
                 <input id="sim-unit-notes-sim" value="${s.notes}" placeholder="Catatan Tambahan..." class="glass-input text-xs w-full">
-                <button onclick="saveSimulatedUnitDataSim()" class="bg-brand-primary hover:bg-brand-soft text-white font-bold p-3 rounded-xl w-full text-xs shadow-md transition-transform transform active:scale-95 flex justify-center items-center gap-2"><i class="ph-bold ph-floppy-disk"></i> Simpan Konfirmasi Fisik Unit</button>
+                <button onclick="window.saveSimulatedUnitDataSim()" class="bg-brand-primary hover:bg-brand-soft text-white font-bold p-3 rounded-xl w-full text-xs shadow-md transition-transform transform active:scale-95 flex justify-center items-center gap-2"><i class="ph-bold ph-floppy-disk"></i> Simpan Konfirmasi Fisik Unit</button>
             </div>`;
         }
 
-        function toggleChecklistItemSimulator(idx) {
+        window.toggleChecklistItemSimulator = function(idx) {
             const s = cases.find(c => c.id === selectedCaseId).unitStatuses[simulatedUnitRole];
             const i = s.checked.indexOf(idx); if (i > -1) s.checked.splice(i, 1); else s.checked.push(idx); renderUnitSimulator();
-        }
+        };
 
-        function saveSimulatedUnitDataSim() {
+        window.saveSimulatedUnitDataSim = function() {
             const ac = cases.find(c => c.id === selectedCaseId); 
             const s = ac.unitStatuses[simulatedUnitRole];
             
@@ -1279,12 +1292,12 @@
             
             recalculateHospitalReadiness(ac); 
             saveToLocalStorage();
-            updateSupabaseCase(ac); // SINKRONISASI KE SUPABASE
+            updateSupabaseCase(ac);
             
             sendDiscordWebhook(ac, `Pembaruan Kesiapan Unit: ${unitTemplates[simulatedUnitRole]?.label}`);
             showTemporaryToast(`Berhasil disimpan! Sesi ${unitTemplates[simulatedUnitRole]?.label} dikunci kembali demi keamanan.`, "success");
-            lockUnitSim(); 
-        }
+            window.lockUnitSim(); 
+        };
 
         function recalculateHospitalReadiness(c) {
             let statuses = c.mandatoryUnits.map(u => c.unitStatuses[u] ? c.unitStatuses[u].status : 'PENDING');
@@ -1318,7 +1331,7 @@
                 if(badge) { badge.innerText = "IDLE"; badge.className = "text-[9px] font-extrabold uppercase px-2 py-1 rounded bg-gray-400 text-white shadow-sm"; }
                 return;
             }
-            const wl = 3 * 60, cl = 5 * 60; // Hardcoded warning & critical limits
+            const wl = 3 * 60, cl = 5 * 60;
             if(timerDisplay) timerDisplay.innerText = `${Math.floor(ac.slaElapsed / 60).toString().padStart(2, '0')}:${(ac.slaElapsed % 60).toString().padStart(2, '0')}`;
             if(badge) {
                 if (ac.slaElapsed < wl) { badge.innerText = "ON TARGET"; badge.className = "text-[9px] font-extrabold uppercase px-2 py-1 rounded bg-brand-primary text-white shadow-sm"; }
@@ -1330,7 +1343,7 @@
         // ==========================================
         // 9. FLOW CONTROL & EXPORTS
         // ==========================================
-        function performAction(s) { 
+        window.performAction = function(s) { 
             const c = cases.find(x => x.id === selectedCaseId); 
             if(c){ 
                 c.status = s; 
@@ -1339,34 +1352,34 @@
                     sendDiscordWebhook(c, "Pasien Diterima (Diproses)");
                 }
                 saveToLocalStorage(); 
-                updateSupabaseCase(c); // SINKRONISASI DB
+                updateSupabaseCase(c);
                 renderAll(); 
             } 
-        }
+        };
         
-        function showRedirectModal() { 
-            if(el('redirect-list-container')) el('redirect-list-container').innerHTML = redirectDestinations.map(d => `<div onclick="executeRedirect('${d.name}', ${d.eta})" class="p-3 border rounded-xl cursor-pointer hover:bg-gray-100 flex justify-between items-center transition-all bg-white"><div><p class="text-xs font-bold text-brand-dark">${d.name}</p></div><span class="text-[10px] font-bold bg-brand-light text-brand-primary px-2.5 py-0.5 rounded-full">+${d.eta} mnt</span></div>`).join(''); 
+        window.showRedirectModal = function() { 
+            if(el('redirect-list-container')) el('redirect-list-container').innerHTML = redirectDestinations.map(d => `<div onclick="window.executeRedirect('${d.name}', ${d.eta})" class="p-3 border rounded-xl cursor-pointer hover:bg-gray-100 flex justify-between items-center transition-all bg-white"><div><p class="text-xs font-bold text-brand-dark">${d.name}</p></div><span class="text-[10px] font-bold bg-brand-light text-brand-primary px-2.5 py-0.5 rounded-full">+${d.eta} mnt</span></div>`).join(''); 
             el('redirect-modal')?.classList.remove('hidden'); 
-        }
-        function closeRedirectModal() { el('redirect-modal')?.classList.add('hidden'); }
+        };
+        window.closeRedirectModal = function() { el('redirect-modal')?.classList.add('hidden'); };
         
-        function executeRedirect(nama, eta) { 
+        window.executeRedirect = function(nama, eta) { 
             const c = cases.find(x => x.id === selectedCaseId); 
             if(c) { 
                 c.status = 'REDIRECTED'; 
                 c.eta += eta; 
                 clearInterval(audioInterval); 
-                closeRedirectModal(); 
+                window.closeRedirectModal(); 
                 saveToLocalStorage();
-                updateSupabaseCase(c); // SINKRONISASI DB
+                updateSupabaseCase(c); 
                 sendDiscordWebhook(c, `Pasien Dialihkan ke ${nama}`); 
                 showTemporaryToast('Pasien berhasil dialihkan', 'success');
                 selectedCaseId = 'case_default'; 
                 renderAll(); 
             } 
-        }
+        };
 
-        function submitReferral(e) {
+        window.submitReferral = function(e) {
             e.preventDefault();
             const sender = el('form-sender-facility').value, name = el('form-patient-name').value, cat = el('form-case-category').value;
             let mandatory = []; const allUnits = Object.keys(unitTemplates);
@@ -1380,34 +1393,16 @@
             const newCase = { id: 'case_'+Date.now(), name, age:parseInt(el('form-patient-age').value)||26, diagnosis: cat, category: cat, td:el('form-td').value, djj:el('form-djj').value, kesadaran:el('form-kesadaran').value, puskesmas:sender, eta:parseInt(el('form-eta').value), timestamp:Date.now(), status:'PENDING_REVIEW', outcome:'', mandatoryUnits:mandatory, slaElapsed:0, hasWarned:false, hasEscalated:false, unitStatuses:us, readiness:'PENDING' };
             
             cases.unshift(newCase);
-            selectedCaseId = cases[0].id; 
+            selectedCaseId = newCase.id; 
             saveToLocalStorage(); 
-            insertToSupabase('cases', newCase); // INSERT KE DB SUPABASE
+            insertToSupabase('cases', newCase); 
             
-            sendDiscordWebhook(cases[0], "Rujukan Masuk Baru!");
+            sendDiscordWebhook(newCase, "Rujukan Masuk Baru!");
             
-            simulateRoute('#/hospital'); 
-            triggerReferralAlarm(sender); 
+            showTemporaryToast("Berhasil! Rujukan telah terkirim ke Command Center.", "success"); 
             el('referral-form')?.reset(); 
             renderAll();
-        }
-
-        function triggerSimulationDemo() {
-            const req = Object.keys(unitTemplates).filter(u=>['PONEK','ICU','OK'].includes(u));
-            let us = {}; req.forEach(u => us[u] = {status:'PENDING', checked:[], petugas:'', notes:''});
-            const demoCase = { id: 'demo_'+Date.now(), name: 'Ny. Fatimah (Demo)', age: 24, diagnosis: 'PEB', puskesmas: 'Puskesmas Barat', category: 'Preeklamsia Berat', eta: 20, status: 'PENDING_REVIEW', outcome:'', slaElapsed: 0, readiness: 'PENDING', mandatoryUnits: req, unitStatuses: us, timestamp: Date.now() };
-            
-            cases.unshift(demoCase);
-            selectedCaseId = cases[0].id; 
-            saveToLocalStorage();
-            insertToSupabase('cases', demoCase); // INSERT DEMO KE DB
-            
-            sendDiscordWebhook(cases[0], "Demo Rujukan Masuk!"); 
-            
-            simulateRoute('#/hospital'); 
-            triggerReferralAlarm("Fasilitas Simulasi Demo"); 
-            renderAll();
-        }
+        };
 
         function playVoiceAssistant(message) {
             if (isMuted || !isSystemStarted || !('speechSynthesis' in window)) return;
@@ -1439,17 +1434,17 @@
             o1.start(); o2.start(); o1.stop(audioCtx.currentTime+0.4); o2.stop(audioCtx.currentTime+0.4); 
         }
 
-        function toggleAudioMute() { isMuted = !isMuted; document.querySelectorAll('.hospital-mute-icon').forEach(i => i.className = isMuted ? "ph-fill ph-speaker-slash text-lg hospital-mute-icon" : "ph-fill ph-speaker-high text-lg hospital-mute-icon"); if(!isMuted && audioCtx?.state==='suspended') audioCtx.resume(); }
+        window.toggleAudioMute = function() { isMuted = !isMuted; document.querySelectorAll('.hospital-mute-icon').forEach(i => i.className = isMuted ? "ph-fill ph-speaker-slash text-lg hospital-mute-icon" : "ph-fill ph-speaker-high text-lg hospital-mute-icon"); if(!isMuted && audioCtx?.state==='suspended') audioCtx.resume(); };
         function initAudioOnInteraction() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if(audioCtx?.state==='suspended') audioCtx.resume(); document.removeEventListener('click', initAudioOnInteraction); document.removeEventListener('touchstart', initAudioOnInteraction); }
 
         function generateDistributionLinks() { const b = window.location.origin + window.location.pathname; if(el('url-sender')) el('url-sender').value = b+'#/sender'; if(el('url-hospital')) el('url-hospital').value = b+'#/hospital'; }
-        function copyPortalLink(id, btnId) { el(id).select(); document.execCommand('copy'); el(btnId).innerText = 'Tersalin!'; setTimeout(()=>el(btnId).innerText='Salin Tautan', 2000); }
+        window.copyPortalLink = function(id, btnId) { el(id).select(); document.execCommand('copy'); el(btnId).innerText = 'Tersalin!'; setTimeout(()=>el(btnId).innerText='Salin Tautan', 2000); };
         
         function generateBackupDataJson() { return JSON.stringify({cases, senderFacilities, redirectDestinations, unitTemplates, unitPasswords}, null, 2); }
-        function downloadBackupFile() { const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([generateBackupDataJson()], {type:"application/json"})); a.download="MERS_Backup.json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); showTemporaryToast("Berkas backup diunduh", "success"); }
-        function handleRestoreFileInput(e) { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ try{ applyRestoredBackupPayload(JSON.parse(ev.target.result)); e.target.value=''; }catch(err){ showTemporaryToast("File JSON Tidak Valid", "danger"); } }; r.readAsText(f); }
+        window.downloadBackupFile = function() { const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([generateBackupDataJson()], {type:"application/json"})); a.download="MERS_Backup.json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); showTemporaryToast("Berkas backup diunduh", "success"); };
+        window.handleRestoreFileInput = function(e) { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ try{ applyRestoredBackupPayload(JSON.parse(ev.target.result)); e.target.value=''; }catch(err){ showTemporaryToast("File JSON Tidak Valid", "danger"); } }; r.readAsText(f); };
         function applyRestoredBackupPayload(p) { if(!p||!p.cases) return; cases=p.cases; senderFacilities=p.senderFacilities||senderFacilities; redirectDestinations=p.redirectDestinations||redirectDestinations; unitTemplates=p.unitTemplates||unitTemplates; unitPasswords=p.unitPasswords||unitPasswords; selectedCaseId=cases[0]?.id; saveToLocalStorage(); renderAll(); renderUnitButtons(); renderMasterUnitsList(); renderMasterUnitDropdown(); showTemporaryToast("Sistem Berhasil Dipulihkan", "success"); }
-        function executeDangerousSystemReset() { if(el('reset-confirm-password').value===ADMIN_PASS) { localStorage.clear(); cases=[]; initializeDatabase(); renderAll(); renderMasterUnitsList(); renderMasterUnitDropdown(); showTemporaryToast("Sistem Direset Total", "success"); el('reset-confirm-password').value=''; } else { if(el('reset-feedback-msg')) el('reset-feedback-msg').innerText="Sandi Salah!"; } }
+        window.executeDangerousSystemReset = function() { if(el('reset-confirm-password').value===ADMIN_PASS) { localStorage.clear(); cases=[]; initializeDatabase(); renderAll(); renderMasterUnitsList(); renderMasterUnitDropdown(); showTemporaryToast("Sistem Direset Total", "success"); el('reset-confirm-password').value=''; } else { if(el('reset-feedback-msg')) el('reset-feedback-msg').innerText="Sandi Salah!"; } };
 
         // ==========================================
         // INITIALIZATION
@@ -1458,8 +1453,7 @@
         window.onload = function() {
             initializeDatabase();
             
-            // TARIK DATA DARI SUPABASE DAN DENGARKAN REALTIME SAAT HALAMAN DIMUAT
-            fetchCasesFromSupabase();
+            fetchCasesFromSupabase(true);
             setupRealtimeSubscription();
 
             renderUnitButtons();
