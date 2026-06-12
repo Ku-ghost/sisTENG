@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -229,7 +230,7 @@
 
             <div id="admin-workspace" class="hidden space-y-6">
                 <header class="glass-panel px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4 border border-white">
-                    <div class="flex items-center gap-4"><img id="main-hospital-logo-admin" src="https://placehold.co/100x100?text=sisTENG" alt="Logo sisTENG" class="w-12 h-12 rounded-full border-2 border-brand-soft shadow-md object-cover bg-white"><div class="ml-1"><h1 class="text-lg font-extrabold text-slate-900 leading-none" id="admin-app-title">Portal Administrator</h1><p class="text-slate-500 text-xs font-semibold mt-1">SISTEM MASTER CONTROL PANEL</p></div></div>
+                    <div class="flex items-center gap-4"><div class="bg-slate-800 p-3 rounded-xl text-white shadow-lg"><i class="ph ph-user-gear text-3xl"></i></div><div><h1 class="text-lg font-extrabold text-slate-900 leading-none">Portal Administrator</h1><p class="text-slate-500 text-xs font-semibold mt-1">SISTEM MASTER CONTROL PANEL</p></div></div>
                     <div class="flex flex-wrap gap-1 items-center bg-gray-100 p-1 rounded-xl shadow-inner">
                         <button onclick="switchAdminTab('kpi')" id="tab-admin-kpi" class="tab-btn active px-3 py-1.5 text-xs font-bold rounded-lg"><i class="ph ph-chart-line-up"></i> Laporan KPI</button>
                         <button onclick="switchAdminTab('links')" id="tab-admin-links" class="tab-btn px-3 py-1.5 text-xs font-bold rounded-lg"><i class="ph ph-link-simple"></i> Access & Webhook</button>
@@ -288,7 +289,7 @@
                         </div>
                         
                         <div class="lg:col-span-4 space-y-6">
-                            <!-- SEKSI KOMPETISI RESPON UNIT MEDIS (SLA BULANAN) -->
+                            <!-- SEKSI BARU: KOMPETISI RESPON UNIT MEDIS (SLA BULANAN) -->
                             <div class="glass-panel p-6 space-y-4 border border-white">
                                 <div class="flex justify-between items-center border-b pb-3 border-gray-200/50">
                                     <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2">
@@ -447,7 +448,7 @@
                     </div>
                     <div class="p-5 bg-red-50 border border-red-200 rounded-xl mt-8">
                         <h4 class="text-xs font-black text-red-800 mb-2 flex items-center gap-1"><i class="ph ph-warning-circle text-lg"></i> Factory Reset (Zona Berbahaya)</h4>
-                        <p class="text-[10px] text-red-600 mb-3">Menghapus seluruh kasus and pengaturan. Tindakan ini permanen.</p>
+                        <p class="text-[10px] text-red-600 mb-3">Menghapus seluruh kasus dan pengaturan. Tindakan ini permanen.</p>
                         <div class="flex gap-2">
                             <input type="password" id="reset-confirm-password" placeholder="Sandi Admin" class="glass-input text-xs w-2/3 h-10">
                             <button onclick="window.executeDangerousSystemReset()" class="w-1/3 bg-red-600 hover:bg-red-700 text-white text-xs font-black rounded-lg shadow transition-colors">RESET TOTAL</button>
@@ -544,9 +545,58 @@
         // FUNGSI UTUHKAN PERENDERAN LOGO YANG SEBELUMNYA TIDAK TERDEFINISI
         function updateLogoDisplay(url) {
             const logoEl = el('main-hospital-logo');
-            const logoAdminEl = el('main-hospital-logo-admin');
             if (logoEl) logoEl.src = url || "https://placehold.co/100x100?text=sisTENG";
-            if (logoAdminEl) logoAdminEl.src = url || "https://placehold.co/100x100?text=sisTENG";
+        }
+
+        // FUNGSI UNTUK MENGIRIM NOTIFIKASI DISCORD WEBHOOK SECARA GLOBAL
+        async function sendDiscordWebhook(c, eventType) {
+            if(!discordWebhookUrl) return;
+
+            const pendingUnits = c.mandatoryUnits.filter(u => !c.unitStatuses[u] || c.unitStatuses[u].status === 'PENDING').map(u => unitTemplates[u]?.label || u);
+            const processedUnits = c.mandatoryUnits.filter(u => c.unitStatuses[u] && c.unitStatuses[u].status !== 'PENDING').map(u => `${unitTemplates[u]?.label} (${c.unitStatuses[u].status})`);
+
+            let color = 16776960; // Yellow (Default)
+            let statusLabel = c.status;
+
+            if(c.status === 'PENDING_REVIEW') color = 16711680; // Red
+            if(c.status === 'ACCEPTED') color = 65280; // Green
+            if(c.status === 'REDIRECTED') color = 3447003; // Blue
+            
+            if(c.status === 'OUTCOME_DECLARED') {
+                if(c.outcome === 'Discharged') { color = 65280; statusLabel = 'SELESAI (SELAMAT/RAWAT INAP)'; }
+                else if(c.outcome === 'Near Miss') { color = 16776960; statusLabel = 'NEAR MISS (SELAMAT BERISIKO)'; }
+                else if(c.outcome === 'PAPS') { color = 16738740; statusLabel = 'PULANG ATAS PERMINTAAN SENDIRI (PAPS)'; }
+                else if(c.outcome === 'Deceased') { color = 0; statusLabel = 'PASIEN MENINGGAL DUNIA'; }
+                else { color = 8421504; statusLabel = 'STATUS AKHIR DITETAPKAN'; }
+            }
+
+            const payload = {
+                content: `🚨 **Notifikasi sisTENG: ${eventType}** 🚨`,
+                embeds: [{
+                    title: `Pasien: ${c.name} (${c.age}th)`,
+                    description: `**Kategori Kasus:** ${c.category}\n**Diagnosis Awal:** ${c.diagnosis}\n**Waktu Respon (SLA):** ${Math.floor(c.slaElapsed / 60)} Menit ${c.slaElapsed % 60} Detik`,
+                    fields: [
+                        {name: "Asal Rujukan", value: c.puskesmas, inline: true},
+                        {name: "Estimasi Tiba (ETA)", value: `${c.eta} Menit`, inline: true},
+                        {name: "Status Pasien", value: statusLabel, inline: true},
+                        {name: "Kesiapan RS", value: c.readiness, inline: true},
+                        {name: "Tanda Vital", value: `TD: ${c.td || '-'} | DJJ: ${c.djj || '-'} | Kesadaran: ${c.kesadaran || '-'}`, inline: false},
+                        {name: "Unit Belum Bertindak", value: pendingUnits.length > 0 ? pendingUnits.join(', ') : 'Tidak ada (Semua sudah merespon)', inline: false},
+                        {name: "Unit Sudah Proses", value: processedUnits.length > 0 ? processedUnits.join('\n') : 'Belum ada unit bertindak', inline: false}
+                    ],
+                    color: color,
+                    footer: { text: "The sisTENG Command Center" },
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            try {
+                await fetch(discordWebhookUrl, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+            } catch(e) { console.log("Gagal kirim webhook Discord"); }
         }
 
         // ==========================================
@@ -617,6 +667,23 @@
                 saveToLocalStorage();
             }
         }
+
+        // SINKRONISASI IDENTITAS WEB (Title & Subtitle)
+        function updateAppIdentityDisplay() {
+            if (el('app-title-display')) el('app-title-display').innerText = appTitle || "The sisTENG";
+            if (el('app-subtitle-display')) el('app-subtitle-display').innerText = appSubtitle || "One System, Always Ready";
+            document.title = (appTitle || "The sisTENG") + " - " + (appSubtitle || "One System, Always Ready");
+        }
+
+        window.saveAppIdentity = async function() {
+            appTitle = el('app-title-input').value.trim();
+            appSubtitle = el('app-subtitle-input').value.trim();
+            safeStorage.setItem('mers_app_title', appTitle);
+            safeStorage.setItem('mers_app_subtitle', appSubtitle);
+            updateAppIdentityDisplay();
+            await saveConfigToSupabase();
+            showTemporaryToast('Identitas Web App Berhasil Diperbarui', 'success');
+        };
 
         // SIMPAN CONFIG KE SUPABASE (Menjadikan Supabase sebagai Single Source of Truth bagi seluruh Device & Browser)
         async function saveConfigToSupabase() {
@@ -1035,6 +1102,36 @@
             `;
         }
 
+        window.printReport = function(type) {
+            let content = ''; let title = '';
+            if(type === 'outcome') { content = el('clinical-outcomes-progress-bars').innerHTML; title = 'Laporan Outcome Kematian & Near Miss Maternal'; } 
+            else { content = el('ikp-report-bars').innerHTML; title = 'Laporan Insiden Keselamatan Pasien (IKP)'; }
+            const pw = window.open('', '', 'height=600,width=800');
+            pw.document.write(`<html><head><title>${title}</title><style>body{font-family:sans-serif; padding:40px;} .w-full{width:100%; background:#eee; height:20px; border-radius:10px; margin-bottom:20px; overflow:hidden;} .h-2{height:20px;} .bg-brand-primary{background:#2D6A4F;} .bg-yellow-500{background:#EAB308;} .bg-pink-600{background:#DB2777;} .bg-red-600{background:#DC2626;} .bg-amber-500{background:#F59E0B;} .bg-blue-500{background:#3B82F6;} .flex{display:flex; justify-content:space-between; margin-bottom:8px; font-size:14px; font-weight:bold; color:#333;}</style></head><body><h2 style="border-bottom:2px solid #ccc; padding-bottom:10px; margin-bottom:30px;">${title}</h2><div>${content}</div></body></html>`);
+            pw.document.close(); pw.focus(); setTimeout(() => { pw.print(); pw.close(); }, 500);
+        };
+
+        window.downloadReportCSV = function(type) {
+            let csv = "data:text/csv;charset=utf-8,Kategori,Jumlah\n";
+            if(type === 'outcome') {
+                let saved = 0, nearMiss = 0, deceased = 0, paps = 0;
+                cases.forEach(c => { 
+                    if (c.status === 'OUTCOME_DECLARED') { 
+                        if (['Discharged','Control'].includes(c.outcome)) saved++; 
+                        if (c.outcome === 'Near Miss') { saved++; nearMiss++; } 
+                        if (c.outcome === 'PAPS') { saved++; paps++; } 
+                        if (['Deceased','Dead On Arrival'].includes(c.outcome)) deceased++; 
+                    } else saved++; 
+                });
+                csv += `Ibu Selamat,${saved - nearMiss - paps}\nNear Miss Maternal,${nearMiss}\nPAPS,${paps}\nKematian Ibu,${deceased}\n`;
+            } else {
+                let ktd = 0, knc = 0, ktc = 0;
+                cases.forEach(c => { const cl = 5 * 60, wl = 3 * 60; if (c.status === 'OUTCOME_DECLARED') { if (c.outcome === 'Deceased') ktd++; else if (c.outcome === 'Near Miss') { if (c.slaElapsed >= cl) ktd++; else knc++; } else if (['Discharged','Control'].includes(c.outcome) && c.slaElapsed >= wl) ktc++; } });
+                csv += `Kejadian Tidak Diharapkan (KTD),${ktd}\nKejaris Cedera (KNC),${knc}\nKejadian Tidak Cedera (KTC),${ktc}\n`;
+            }
+            const encodedUri = encodeURI(csv); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `laporan_${type}_sisteng.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        };
+
         // ==========================================
         // MASTER DATA HANDLERS DENGAN SINKRONISASI SUPABASE
         // ==========================================
@@ -1128,7 +1225,7 @@
             const idInput = el('master-new-unit-id');
             const lblInput = el('master-new-unit-label');
             const pinInput = el('master-new-unit-pin');
-            if(!idInput || !lblInput || !pinInput) return;
+            if(!idInput || lblInput || !pinInput) return;
 
             const id = idInput.value.trim().toUpperCase().replace(/\s+/g, '_');
             const lbl = lblInput.value.trim();
@@ -1413,7 +1510,6 @@
             } 
         };
 
-        // PERBAIKAN UTAMA: VOICE ASSISTANT ANTI-TERPOTONG & SINKRONISASI GC BROWSER
         function playVoiceAssistant(message, onEndCallback) {
             if (isMuted || !isSystemStarted || !('speechSynthesis' in window)) {
                 if (onEndCallback) onEndCallback();
@@ -1421,51 +1517,46 @@
             }
             window.speechSynthesis.cancel();
             
-            // Timeout kecil (100ms) membantu mesin speechSynthesis browser mereset state cancel secara bersih sebelum memutar suara baru
-            setTimeout(() => {
-                activeUtterance = new SpeechSynthesisUtterance(message);
-                activeUtterance.lang = 'id-ID';
-                activeUtterance.rate = 0.95;
-                activeUtterance.pitch = 1.0; 
-                activeUtterance.volume = 1.0; 
+            // Simpan referensi ke memori global window guna mem-bypass bug Garbage Collection Chrome
+            activeUtterance = new SpeechSynthesisUtterance(message);
+            activeUtterance.lang = 'id-ID';
+            activeUtterance.rate = 0.95;
+            activeUtterance.pitch = 1.0; 
+            activeUtterance.volume = 1.0; 
 
-                // Simpan referensi ke memori global window guna mem-bypass bug Garbage Collection Chrome
-                if (!window.utterances) window.utterances = [];
-                window.utterances.push(activeUtterance);
+            if (!window.utterances) window.utterances = [];
+            window.utterances.push(activeUtterance);
 
-                const selectIndoVoice = () => {
-                    const voices = window.speechSynthesis.getVoices();
-                    // Urutan prioritas suara Indonesia asli yang bagus: Gadis, Andika, Damayanti, id-ID lainnya
-                    let selected = voices.find(v => v.lang.toLowerCase().replace('_', '-') === 'id-id' && 
-                        (v.name.toLowerCase().includes('gadis') || v.name.toLowerCase().includes('andika') || v.name.toLowerCase().includes('damayanti')));
-                    if (!selected) selected = voices.find(v => v.lang.toLowerCase().replace('_', '-') === 'id-id' && v.name.toLowerCase().includes('indonesia'));
-                    if (!selected) selected = voices.find(v => v.lang.toLowerCase().startsWith('id'));
-                    if (selected) {
-                        activeUtterance.voice = selected;
-                    }
-                };
-
-                selectIndoVoice();
-                if (window.speechSynthesis.onvoiceschanged !== undefined) {
-                    window.speechSynthesis.onvoiceschanged = selectIndoVoice;
+            const selectIndoVoice = () => {
+                const voices = window.speechSynthesis.getVoices();
+                // Filter ketat dan presisi logat native Indonesia asli asli tanpa logat aneh orang asing
+                let selected = voices.find(v => v.lang.startsWith('id') && v.name.toLowerCase().includes('indonesia'));
+                if (!selected) selected = voices.find(v => v.lang.startsWith('id') && (v.name.toLowerCase().includes('gadis') || v.name.toLowerCase().includes('andika') || v.name.toLowerCase().includes('damayanti')));
+                if (!selected) selected = voices.find(v => v.lang.startsWith('id'));
+                if (selected) {
+                    activeUtterance.voice = selected;
                 }
+            };
 
-                // Callback onend & onerror diikat kuat agar sekuensial alarm bip medis selalu menyala
-                activeUtterance.onend = function() {
-                    window.utterances = window.utterances.filter(u => u !== activeUtterance);
-                    if (onEndCallback) onEndCallback();
-                };
+            selectIndoVoice();
+            if (window.speechSynthesis.onvoiceschanged !== undefined) {
+                window.speechSynthesis.onvoiceschanged = selectIndoVoice;
+            }
 
-                activeUtterance.onerror = function() {
-                    window.utterances = window.utterances.filter(u => u !== activeUtterance);
-                    if (onEndCallback) onEndCallback();
-                };
+            // Callback onend & onerror diikat kuat agar sekuensial alarm bip medis selalu menyala
+            activeUtterance.onend = function() {
+                window.utterances = window.utterances.filter(u => u !== activeUtterance);
+                if (onEndCallback) onEndCallback();
+            };
 
-                window.speechSynthesis.speak(activeUtterance);
-            }, 100);
+            activeUtterance.onerror = function() {
+                window.utterances = window.utterances.filter(u => u !== activeUtterance);
+                if (onEndCallback) onEndCallback();
+            };
+
+            window.speechSynthesis.speak(activeUtterance);
         }
 
-        // PERBAIKAN SEKUENSAL AUDIO: AI ROBOT SELESAI BICARA BARU ALARM BIP BERBUNYI
         function triggerReferralAlarm(sourceMsg) { 
             if (audioInterval) {
                 clearInterval(audioInterval);
