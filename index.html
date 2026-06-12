@@ -89,7 +89,10 @@
             <header class="glass-panel px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-white">
                 <div class="flex items-center gap-4">
                     <img id="main-hospital-logo" src="https://placehold.co/100x100?text=sisTENG" alt="Logo sisTENG" class="w-12 h-12 rounded-full border-2 border-brand-soft shadow-md object-cover bg-white animate-pulse">
-                    <div><h1 class="text-xl font-black text-brand-dark leading-none">The sisTENG</h1><p class="text-brand-primary text-[10px] font-bold mt-1 uppercase tracking-widest">One System, Always Ready</p></div>
+                    <div>
+                        <h1 id="app-title-display" class="text-xl font-black text-brand-dark leading-none">The sisTENG</h1>
+                        <p id="app-subtitle-display" class="text-brand-primary text-[10px] font-bold mt-1 uppercase tracking-widest">One System, Always Ready</p>
+                    </div>
                 </div>
                 <div class="flex items-center bg-gray-100 p-1.5 rounded-xl border border-gray-200 shadow-inner flex-wrap gap-1">
                     <button onclick="switchHospitalTab('monitor')" id="tab-hospital-monitor" class="tab-btn active px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5"><i class="ph ph-desktop"></i> Command Center Monitor</button>
@@ -98,7 +101,7 @@
                 </div>
                 <div class="flex items-center gap-4 ml-auto md:ml-0">
                     <div class="text-right"><div id="hospital-clock" class="text-2xl font-black text-brand-dark font-mono">00:00:00</div><div id="hospital-date" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Memuat...</div></div>
-                    <button onclick="toggleAudioMute()" class="p-2.5 rounded-full bg-brand-light text-brand-primary shadow-sm"><i class="ph-fill ph-speaker-slash text-lg hospital-mute-icon" id="mute-icon"></i></button>
+                    <button onclick="toggleAudioMute()" class="p-2.5 rounded-full bg-brand-light text-brand-primary shadow-sm"><i class="ph-fill ph-speaker-high text-lg hospital-mute-icon" id="mute-icon"></i></button>
                 </div>
             </header>
 
@@ -257,26 +260,49 @@
                         </div>
                     </div>
                     
-                    <div class="glass-panel p-6 space-y-6 border border-white">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 border-gray-200/50 gap-3">
-                            <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2"><i class="ph ph-chart-line-up text-brand-primary"></i> Laporan Outcome Kematian & Near Miss Maternal</h3>
-                            <div class="flex gap-2">
-                                <button onclick="window.printReport('outcome')" class="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-gray-50 flex items-center gap-1"><i class="ph ph-printer"></i> Cetak PDF</button>
-                                <button onclick="window.downloadReportCSV('outcome')" class="bg-brand-primary text-white px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-brand-soft flex items-center gap-1"><i class="ph ph-download-simple"></i> Unduh CSV</button>
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div class="lg:col-span-8 space-y-6">
+                            <!-- Laporan Outcome Kematian -->
+                            <div class="glass-panel p-6 space-y-6 border border-white">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 border-gray-200/50 gap-3">
+                                    <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2"><i class="ph ph-chart-line-up text-brand-primary"></i> Laporan Outcome Kematian & Near Miss Maternal</h3>
+                                    <div class="flex gap-2">
+                                        <button onclick="window.printReport('outcome')" class="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-gray-50 flex items-center gap-1"><i class="ph ph-printer"></i> Cetak PDF</button>
+                                        <button onclick="window.downloadReportCSV('outcome')" class="bg-brand-primary text-white px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-brand-soft flex items-center gap-1"><i class="ph ph-download-simple"></i> Unduh CSV</button>
+                                    </div>
+                                </div>
+                                <div id="clinical-outcomes-progress-bars" class="space-y-4"></div>
                             </div>
-                        </div>
-                        <div id="clinical-outcomes-progress-bars" class="space-y-4"></div>
-                    </div>
 
-                    <div class="glass-panel p-6 space-y-6 border border-white mt-4">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 border-gray-200/50 gap-3">
-                            <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2"><i class="ph ph-warning-octagon text-amber-600"></i> Laporan Insiden Keselamatan Pasien (IKP)</h3>
-                            <div class="flex gap-2">
-                                <button onclick="window.printReport('ikp')" class="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-gray-50 flex items-center gap-1"><i class="ph ph-printer"></i> Cetak PDF</button>
-                                <button onclick="window.downloadReportCSV('ikp')" class="bg-amber-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-amber-500 flex items-center gap-1"><i class="ph ph-download-simple"></i> Unduh CSV</button>
+                            <!-- Laporan Insiden Keselamatan Pasien -->
+                            <div class="glass-panel p-6 space-y-6 border border-white">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 border-gray-200/50 gap-3">
+                                    <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2"><i class="ph ph-warning-octagon text-amber-600"></i> Laporan Insiden Keselamatan Pasien (IKP)</h3>
+                                    <div class="flex gap-2">
+                                        <button onclick="window.printReport('ikp')" class="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-gray-50 flex items-center gap-1"><i class="ph ph-printer"></i> Cetak PDF</button>
+                                        <button onclick="window.downloadReportCSV('ikp')" class="bg-amber-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-sm hover:bg-amber-500 flex items-center gap-1"><i class="ph ph-download-simple"></i> Unduh CSV</button>
+                                    </div>
+                                </div>
+                                <div id="ikp-report-bars" class="space-y-4"></div>
                             </div>
                         </div>
-                        <div id="ikp-report-bars" class="space-y-4"></div>
+                        
+                        <div class="lg:col-span-4 space-y-6">
+                            <!-- SEKSI KOMPETISI RESPON UNIT MEDIS (SLA BULANAN) -->
+                            <div class="glass-panel p-6 space-y-4 border border-white">
+                                <div class="flex justify-between items-center border-b pb-3 border-gray-200/50">
+                                    <h3 class="text-sm font-bold text-brand-dark flex items-center gap-2">
+                                        <i class="ph ph-trophy text-amber-500"></i> Kompetisi Respon SLA Unit
+                                    </h3>
+                                    <button onclick="window.triggerManualMonthlySlaReport()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg text-[9px] font-extrabold flex items-center gap-1 shadow-sm transition-colors">
+                                        <i class="ph ph-paper-plane-tilt"></i> Kirim Webhook
+                                    </button>
+                                </div>
+                                <div id="sla-leaderboard-container" class="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
+                                    <!-- Terisi otomatis oleh renderSlaLeaderboard() -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -284,9 +310,8 @@
                 <div id="sub-view-admin-links" class="hidden space-y-6">
                     <div class="glass-panel p-6 border border-white">
                         <h3 class="text-base font-bold text-slate-800 mb-4">Pusat Distribusi Akses Sistem & Webhook Notifikasi</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div class="bg-white border rounded-2xl p-5 space-y-4 shadow-sm"><h4 class="text-xs font-extrabold text-slate-800">Portal Rujukan Maternal</h4><input readonly id="url-sender" type="text" class="w-full text-[10px] bg-slate-50 border p-2 rounded-lg font-mono"><button onclick="copyPortalLink('url-sender', 'btn-copy-sender')" id="btn-copy-sender" class="w-full bg-brand-primary text-white text-xs font-bold py-2 rounded-xl shadow">Salin Tautan Rujukan</button></div>
-                            <div class="bg-emerald-50/50 border rounded-2xl p-5 space-y-4 shadow-sm"><h4 class="text-xs font-extrabold text-slate-800">WEB UTAMA (The sisTENG)</h4><input readonly id="url-hospital" type="text" class="w-full text-[10px] bg-slate-50 border p-2 rounded-lg font-mono"><button onclick="copyPortalLink('url-hospital', 'btn-copy-hospital')" id="btn-copy-hospital" class="w-full bg-brand-primary text-white text-xs font-bold py-2 rounded-xl shadow">Salin Web Utama</button></div>
                             
                             <!-- BAGIAN DISCORD WEBHOOK -->
                             <div class="bg-slate-100 border border-slate-300 rounded-2xl p-5 space-y-4 shadow-sm">
@@ -302,6 +327,17 @@
                                 <p class="text-[9px] text-gray-600">Tempel link gambar atau Link Share Google Drive (Buka akses ke 'Siapa saja yang memiliki link').</p>
                                 <input id="hospital-logo-input" type="text" placeholder="https://drive.google.com/file/d/..." class="w-full text-[10px] bg-slate-50 border p-2 rounded-lg font-mono">
                                 <button onclick="window.saveLogoUrl()" class="w-full bg-brand-primary hover:bg-brand-soft text-white text-xs font-bold py-2 rounded-xl shadow transition-colors">Perbarui Logo</button>
+                            </div>
+
+                            <!-- KUSTOMISASI TITLE & SUBTITLE -->
+                            <div class="bg-white border rounded-2xl p-5 space-y-4 shadow-sm">
+                                <h4 class="text-xs font-extrabold text-brand-primary flex items-center gap-1"><i class="ph ph-text-t text-lg"></i> Identitas Web App</h4>
+                                <p class="text-[9px] text-gray-600">Atur Judul Utama dan Slogan yang akan tampil di header utama sistem.</p>
+                                <div class="space-y-2">
+                                    <input id="app-title-input" type="text" placeholder="Nama Web App (ex: The sisTENG)" class="w-full text-[10px] bg-slate-50 border p-2 rounded-lg font-bold text-slate-800">
+                                    <input id="app-subtitle-input" type="text" placeholder="Slogan (ex: One System, Always Ready)" class="w-full text-[10px] bg-slate-50 border p-2 rounded-lg text-slate-800">
+                                </div>
+                                <button onclick="window.saveAppIdentity()" class="w-full bg-brand-primary hover:bg-brand-soft text-white text-xs font-bold py-2 rounded-xl shadow transition-colors">Simpan Identitas</button>
                             </div>
                         </div>
                     </div>
@@ -411,7 +447,7 @@
                     </div>
                     <div class="p-5 bg-red-50 border border-red-200 rounded-xl mt-8">
                         <h4 class="text-xs font-black text-red-800 mb-2 flex items-center gap-1"><i class="ph ph-warning-circle text-lg"></i> Factory Reset (Zona Berbahaya)</h4>
-                        <p class="text-[10px] text-red-600 mb-3">Menghapus seluruh kasus dan pengaturan. Tindakan ini permanen.</p>
+                        <p class="text-[10px] text-red-600 mb-3">Menghapus seluruh kasus and pengaturan. Tindakan ini permanen.</p>
                         <div class="flex gap-2">
                             <input type="password" id="reset-confirm-password" placeholder="Sandi Admin" class="glass-input text-xs w-2/3 h-10">
                             <button onclick="window.executeDangerousSystemReset()" class="w-1/3 bg-red-600 hover:bg-red-700 text-white text-xs font-black rounded-lg shadow transition-colors">RESET TOTAL</button>
@@ -438,6 +474,19 @@
         window.simulateRoute = function(h) { window.location.hash = h; };
         window.logEvent = function(act, ev, u, st) { /* Muted */ };
 
+        // Wrapper aman localStorage guna menghindari SecurityError yang mematikan thread JS
+        const safeStorage = {
+            getItem: function(key) {
+                try { return localStorage.getItem(key); } catch (e) { return null; }
+            },
+            setItem: function(key, value) {
+                try { localStorage.setItem(key, value); } catch (e) {}
+            },
+            clear: function() {
+                try { localStorage.clear(); } catch (e) {}
+            }
+        };
+
         window.showTemporaryToast = function(m, t) {
             const d = document.createElement('div');
             d.className = `fixed bottom-5 right-5 p-4 bg-white border-l-4 ${t === 'success' ? 'border-brand-primary' : 'border-red-500'} shadow-2xl z-[90] font-bold text-xs rounded-lg transition-all duration-300 transform translate-y-10 opacity-0`;
@@ -456,16 +505,58 @@
             console.warn("Supabase Init Error. Pastikan URL dan API Key (JWT) sudah benar."); 
         }
 
-        let isSystemStarted=true, isMuted=true, audioCtx=null, audioInterval=null;
+        let isSystemStarted=true, isMuted=false, audioCtx=null, audioInterval=null;
         let isAdminAuth=false, selectedCaseId='case_default', tickerInterval=null;
         let currentPortal='hospital', currentHospitalTab='monitor', currentAdminTab='kpi', simulatedUnitRole='PONEK';
 
         // Variabel Penyimpan Voice Speech Global agar tidak terhapus Garbage Collector (mencegah suara robot terpotong)
         let activeUtterance = null;
+        let indonesianVoice = null;
+        let activeAudio = null;
+
+        // FUNGSI GLOBAL UNTUK MEMUAT SUARA INDONESIA SEJAK AWAL LOG SKRIP
+        function loadIndonesianVoice() {
+            if (!('speechSynthesis' in window)) return;
+            const voices = window.speechSynthesis.getVoices();
+            if (!voices || voices.length === 0) return;
+            
+            // Prioritas 1: Suara Indonesia dengan nama lokal asli (Gadis, Andika, Damayanti)
+            let selected = voices.find(v => {
+                const lang = v.lang.toLowerCase().replace('_', '-');
+                const name = v.name.toLowerCase();
+                return (lang === 'id-id' || lang === 'id') && 
+                       (name.includes('gadis') || name.includes('andika') || name.includes('damayanti') || name.includes('indonesia'));
+            });
+            
+            // Prioritas 2: Suara Indonesia apa saja (seperti Google Bahasa Indonesia)
+            if (!selected) {
+                selected = voices.find(v => {
+                    const lang = v.lang.toLowerCase().replace('_', '-');
+                    return lang === 'id-id' || lang === 'id' || lang.startsWith('id');
+                });
+            }
+            
+            if (selected) {
+                indonesianVoice = selected;
+            }
+        }
+
+        // Jalankan pendengar event suara global sebelum onload
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = loadIndonesianVoice;
+            loadIndonesianVoice();
+        }
 
         // Variabel Webhook Discord & Logo
-        let discordWebhookUrl = localStorage.getItem('mers_discord_webhook') || '';
-        let hospitalLogoUrl = localStorage.getItem('mers_hospital_logo') || '';
+        let discordWebhookUrl = safeStorage.getItem('mers_discord_webhook') || '';
+        let hospitalLogoUrl = safeStorage.getItem('mers_hospital_logo') || '';
+
+        // Struktur data statistik performa respon SLA unit bulanan
+        let monthlySlaStats = {
+            monthKey: "",
+            lastSentMonth: "",
+            units: {}
+        };
 
         const ADMIN_PASS = '1234Pasien';
         let unitPasswords = {'PONEK':'1111', 'OK':'2222', 'BloodBank':'3333', 'ICU':'4444'};
@@ -481,35 +572,95 @@
         let unitTemplates={}, senderFacilities=[], redirectDestinations=[], cases=[], etaOptions=[];
         const el = id => document.getElementById(id);
 
+        // FUNGSI UTUHKAN PERENDERAN LOGO YANG SEBELUMNYA TIDAK TERDEFINISI
+        function updateLogoDisplay(url) {
+            const logoEl = el('main-hospital-logo');
+            if (logoEl) logoEl.src = url || "https://placehold.co/100x100?text=sisTENG";
+        }
+
+        // FUNGSI UNTUK MENGIRIM NOTIFIKASI DISCORD WEBHOOK SECARA GLOBAL
+        async function sendDiscordWebhook(c, eventType) {
+            if(!discordWebhookUrl) return;
+
+            const pendingUnits = c.mandatoryUnits.filter(u => !c.unitStatuses[u] || c.unitStatuses[u].status === 'PENDING').map(u => unitTemplates[u]?.label || u);
+            const processedUnits = c.mandatoryUnits.filter(u => c.unitStatuses[u] && c.unitStatuses[u].status !== 'PENDING').map(u => `${unitTemplates[u]?.label} (${c.unitStatuses[u].status})`);
+
+            let color = 16776960; // Yellow (Default)
+            let statusLabel = c.status;
+
+            if(c.status === 'PENDING_REVIEW') color = 16711680; // Red
+            if(c.status === 'ACCEPTED') color = 65280; // Green
+            if(c.status === 'REDIRECTED') color = 3447003; // Blue
+            
+            if(c.status === 'OUTCOME_DECLARED') {
+                if(c.outcome === 'Discharged') { color = 65280; statusLabel = 'SELESAI (SELAMAT/RAWAT INAP)'; }
+                else if(c.outcome === 'Near Miss') { color = 16776960; statusLabel = 'NEAR MISS (SELAMAT BERISIKO)'; }
+                else if(c.outcome === 'PAPS') { color = 16738740; statusLabel = 'PULANG ATAS PERMINTAAN SENDIRI (PAPS)'; }
+                else if(c.outcome === 'Deceased') { color = 0; statusLabel = 'PASIEN MENINGGAL DUNIA'; }
+                else { color = 8421504; statusLabel = 'STATUS AKHIR DITETAPKAN'; }
+            }
+
+            const payload = {
+                content: `🚨 **Notifikasi sisTENG: ${eventType}** 🚨`,
+                embeds: [{
+                    title: `Pasien: ${c.name} (${c.age}th)`,
+                    description: `**Kategori Kasus:** ${c.category}\n**Diagnosis Awal:** ${c.diagnosis}\n**Waktu Respon (SLA):** ${Math.floor(c.slaElapsed / 60)} Menit ${c.slaElapsed % 60} Detik`,
+                    fields: [
+                        {name: "Asal Rujukan", value: c.puskesmas, inline: true},
+                        {name: "Estimasi Tiba (ETA)", value: `${c.eta} Menit`, inline: true},
+                        {name: "Status Pasien", value: statusLabel, inline: true},
+                        {name: "Kesiapan RS", value: c.readiness, inline: true},
+                        {name: "Tanda Vital", value: `TD: ${c.td || '-'} | DJJ: ${c.djj || '-'} | Kesadaran: ${c.kesadaran || '-'}`, inline: false},
+                        {name: "Unit Belum Bertindak", value: pendingUnits.length > 0 ? pendingUnits.join(', ') : 'Tidak ada (Semua sudah merespon)', inline: false},
+                        {name: "Unit Sudah Proses", value: processedUnits.length > 0 ? processedUnits.join('\n') : 'Belum ada unit bertindak', inline: false}
+                    ],
+                    color: color,
+                    footer: { text: "The sisTENG Command Center" },
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            try {
+                await fetch(discordWebhookUrl, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+            } catch(e) { console.log("Gagal kirim webhook Discord"); }
+        }
+
         // ==========================================
         // DATABASE & STORAGE INIT & SUPABASE SYNC
         // ==========================================
         function initializeDatabase() {
-            unitTemplates = JSON.parse(localStorage.getItem('mers_unit_templates')) || JSON.parse(JSON.stringify(defaultUnitTemplates));
-            senderFacilities = JSON.parse(localStorage.getItem('mers_sender_facilities')) || ["Puskesmas Pulau Sembilan", "Puskesmas Balangnipa", "Puskesmas Sinjai Tengah", "Puskesmas Sinjai Barat", "Klinik Bersalin Bunda", "BPM Bidan Hartati Mandiri"];
-            redirectDestinations = JSON.parse(localStorage.getItem('mers_redirect_destinations')) || [
+            unitTemplates = JSON.parse(safeStorage.getItem('mers_unit_templates')) || JSON.parse(JSON.stringify(defaultUnitTemplates));
+            senderFacilities = JSON.parse(safeStorage.getItem('mers_sender_facilities')) || ["Puskesmas Pulau Sembilan", "Puskesmas Balangnipa", "Puskesmas Sinjai Tengah", "Puskesmas Sinjai Barat", "Klinik Bersalin Bunda", "BPM Bidan Hartati Mandiri"];
+            redirectDestinations = JSON.parse(safeStorage.getItem('mers_redirect_destinations')) || [
                 { name: "RSUP Dr. Wahidin Sudirohusodo Makassar", eta: 45, type: "Tersier", note: "Rujukan Tersier (Provinsi)" },
                 { name: "RSUD Tenriawaru Bone", eta: 30, type: "Regional", note: "Rujukan Regional (Kab. Bone)" },
                 { name: "RSUD Pratama Sinjai", eta: 15, type: "Mitra", note: "Mitra Faskes Alternatif" }
             ];
             
             // ETA Options dari Storage atau Default
-            etaOptions = JSON.parse(localStorage.getItem('mers_eta_options')) || [10, 15, 20, 30];
+            etaOptions = JSON.parse(safeStorage.getItem('mers_eta_options')) || [10, 15, 20, 30];
 
-            // Membuka data lokal hanya sebagai backup awal sebelum terkoneksi database online
-            cases = JSON.parse(localStorage.getItem('mers_cases')) || [];
+            // 100% PEMBERANTASAN CACHE: Kita set data rujukan awal kosong untuk mencegah overlap data sisa localstorage
+            cases = [];
             
             if(el('discord-webhook-url')) el('discord-webhook-url').value = discordWebhookUrl;
             if(el('hospital-logo-input')) el('hospital-logo-input').value = hospitalLogoUrl;
             updateLogoDisplay(hospitalLogoUrl);
+            updateAppIdentityDisplay();
         }
 
         function saveToLocalStorage() {
-            localStorage.setItem('mers_unit_templates', JSON.stringify(unitTemplates));
-            localStorage.setItem('mers_sender_facilities', JSON.stringify(senderFacilities));
-            localStorage.setItem('mers_redirect_destinations', JSON.stringify(redirectDestinations));
-            localStorage.setItem('mers_cases', JSON.stringify(cases));
-            localStorage.setItem('mers_eta_options', JSON.stringify(etaOptions));
+            safeStorage.setItem('mers_unit_templates', JSON.stringify(unitTemplates));
+            safeStorage.setItem('mers_sender_facilities', JSON.stringify(senderFacilities));
+            safeStorage.setItem('mers_redirect_destinations', JSON.stringify(redirectDestinations));
+            safeStorage.setItem('mers_eta_options', JSON.stringify(etaOptions));
+            safeStorage.setItem('mers_app_title', appTitle);
+            safeStorage.setItem('mers_app_subtitle', appSubtitle);
+            safeStorage.setItem('mers_monthly_sla_stats', JSON.stringify(monthlySlaStats));
         }
 
         // LOAD GLOBAL CONFIG DARI BARIS DATABASE KHUSUS (Mencegah keterbatasan localStorage antar browser/device)
@@ -519,6 +670,9 @@
                 const cfg = configRow.unitStatuses;
                 if (cfg.senderFacilities) senderFacilities = cfg.senderFacilities;
                 if (cfg.etaOptions) etaOptions = cfg.etaOptions;
+                if (cfg.unitTemplates) unitTemplates = cfg.unitTemplates;
+                if (cfg.unitPasswords) unitPasswords = cfg.unitPasswords;
+                if (cfg.redirectDestinations) redirectDestinations = cfg.redirectDestinations;
                 if (cfg.discordWebhookUrl) {
                     discordWebhookUrl = cfg.discordWebhookUrl;
                     if (el('discord-webhook-url')) el('discord-webhook-url').value = discordWebhookUrl;
@@ -528,9 +682,38 @@
                     if (el('hospital-logo-input')) el('hospital-logo-input').value = hospitalLogoUrl;
                     updateLogoDisplay(hospitalLogoUrl);
                 }
+                if (cfg.appTitle) {
+                    appTitle = cfg.appTitle;
+                    if (el('app-title-input')) el('app-title-input').value = appTitle;
+                }
+                if (cfg.appSubtitle) {
+                    appSubtitle = cfg.appSubtitle;
+                    if (el('app-subtitle-input')) el('app-subtitle-input').value = appSubtitle;
+                }
+                if (cfg.monthlySlaStats) {
+                    monthlySlaStats = cfg.monthlySlaStats;
+                }
+                updateAppIdentityDisplay();
                 saveToLocalStorage();
             }
         }
+
+        // SINKRONISASI IDENTITAS WEB (Title & Subtitle)
+        function updateAppIdentityDisplay() {
+            if (el('app-title-display')) el('app-title-display').innerText = appTitle || "The sisTENG";
+            if (el('app-subtitle-display')) el('app-subtitle-display').innerText = appSubtitle || "One System, Always Ready";
+            document.title = (appTitle || "The sisTENG") + " - " + (appSubtitle || "One System, Always Ready");
+        }
+
+        window.saveAppIdentity = async function() {
+            appTitle = el('app-title-input').value.trim();
+            appSubtitle = el('app-subtitle-input').value.trim();
+            safeStorage.setItem('mers_app_title', appTitle);
+            safeStorage.setItem('mers_app_subtitle', appSubtitle);
+            updateAppIdentityDisplay();
+            await saveConfigToSupabase();
+            showTemporaryToast('Identitas Web App Berhasil Diperbarui', 'success');
+        };
 
         // SIMPAN CONFIG KE SUPABASE (Menjadikan Supabase sebagai Single Source of Truth bagi seluruh Device & Browser)
         async function saveConfigToSupabase() {
@@ -544,7 +727,13 @@
                     senderFacilities: senderFacilities,
                     etaOptions: etaOptions,
                     discordWebhookUrl: discordWebhookUrl,
-                    hospitalLogoUrl: hospitalLogoUrl
+                    hospitalLogoUrl: hospitalLogoUrl,
+                    unitTemplates: unitTemplates,
+                    unitPasswords: unitPasswords,
+                    redirectDestinations: redirectDestinations,
+                    appTitle: appTitle,
+                    appSubtitle: appSubtitle,
+                    monthlySlaStats: monthlySlaStats
                 }
             };
             try {
@@ -572,6 +761,9 @@
                     // Ekstrak data konfigurasi sistem terlebih dahulu
                     loadConfigFromCases(data);
 
+                    // Pengecekan real-time pengiriman laporan SLA Bulanan otomatis ke Discord
+                    checkAndSendMonthlySlaReport();
+
                     // SINKRONISASI ABSOLUT: Timpa seluruh memori lokal dengan data Supabase (Kecuali baris konfigurasi)
                     cases = data.filter(c => c.id !== 'system_config');
                     
@@ -579,6 +771,9 @@
                     
                     saveToLocalStorage();
                     renderAll();
+
+                    // Perbarui tampilan data master jika admin sedang membukanya
+                    window.renderMasterData();
                 }
             } catch (err) {
                 console.warn("Gagal menarik data dari Supabase.");
@@ -636,91 +831,20 @@
         }
 
         // ==========================================
-        // FITUR WEBHOOK DISCORD & LOGO RS
-        // ==========================================
-        window.saveDiscordWebhook = async function() {
-            const url = el('discord-webhook-url').value.trim();
-            localStorage.setItem('mers_discord_webhook', url);
-            discordWebhookUrl = url;
-            await saveConfigToSupabase();
-            showTemporaryToast('URL Webhook Discord Berhasil Disimpan', 'success');
-        };
-
-        window.saveLogoUrl = async function() {
-            let url = el('hospital-logo-input').value.trim();
-            // Konversi Google Drive Link
-            const gdriveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-            if (gdriveMatch && gdriveMatch[1]) {
-                url = `https://drive.google.com/uc?export=view&id=${gdriveMatch[1]}`;
-            }
-            localStorage.setItem('mers_hospital_logo', url);
-            hospitalLogoUrl = url;
-            updateLogoDisplay(url);
-            await saveConfigToSupabase();
-            showTemporaryToast('Logo berhasil diperbarui!', 'success');
-        };
-
-        function updateLogoDisplay(url) {
-            const logoEl = el('main-hospital-logo');
-            if (logoEl) logoEl.src = url || "https://placehold.co/100x100?text=sisTENG";
-        }
-
-        async function sendDiscordWebhook(c, eventType) {
-            if(!discordWebhookUrl) return;
-
-            const pendingUnits = c.mandatoryUnits.filter(u => !c.unitStatuses[u] || c.unitStatuses[u].status === 'PENDING').map(u => unitTemplates[u]?.label || u);
-            const processedUnits = c.mandatoryUnits.filter(u => c.unitStatuses[u] && c.unitStatuses[u].status !== 'PENDING').map(u => `${unitTemplates[u]?.label} (${c.unitStatuses[u].status})`);
-
-            let color = 16776960; // Yellow (Default)
-            let statusLabel = c.status;
-
-            if(c.status === 'PENDING_REVIEW') color = 16711680; // Red
-            if(c.status === 'ACCEPTED') color = 65280; // Green
-            if(c.status === 'REDIRECTED') color = 3447003; // Blue
-            
-            if(c.status === 'OUTCOME_DECLARED') {
-                if(c.outcome === 'Discharged') { color = 65280; statusLabel = 'SELESAI (SELAMAT/RAWAT INAP)'; }
-                else if(c.outcome === 'Near Miss') { color = 16776960; statusLabel = 'NEAR MISS (SELAMAT BERISIKO)'; }
-                else if(c.outcome === 'Deceased') { color = 0; statusLabel = 'PASIEN MENINGGAL DUNIA'; }
-                else { color = 8421504; statusLabel = 'STATUS AKHIR DITETAPKAN'; }
-            }
-
-            const payload = {
-                content: `🚨 **Notifikasi sisTENG: ${eventType}** 🚨`,
-                embeds: [{
-                    title: `Pasien: ${c.name} (${c.age}th)`,
-                    description: `**Kategori Kasus:** ${c.category}\n**Diagnosis Awal:** ${c.diagnosis}\n**Waktu Respon (SLA):** ${Math.floor(c.slaElapsed / 60)} Menit ${c.slaElapsed % 60} Detik`,
-                    fields: [
-                        {name: "Asal Rujukan", value: c.puskesmas, inline: true},
-                        {name: "Estimasi Tiba (ETA)", value: `${c.eta} Menit`, inline: true},
-                        {name: "Status Sistem", value: statusLabel, inline: true},
-                        {name: "Unit Belum Bertindak", value: pendingUnits.length > 0 ? pendingUnits.join(', ') : 'Tidak ada (Semua sudah merespon)', inline: false},
-                        {name: "Unit Sudah Proses", value: processedUnits.length > 0 ? processedUnits.join('\n') : 'Belum ada unit bertindak', inline: false}
-                    ],
-                    color: color,
-                    footer: { text: "The sisTENG Command Center" },
-                    timestamp: new Date().toISOString()
-                }]
-            };
-
-            try {
-                await fetch(discordWebhookUrl, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(payload)
-                });
-            } catch(e) { console.log("Gagal kirim webhook Discord"); }
-        }
-
-        // ==========================================
         // SYSTEM NAVIGATION
         // ==========================================
         function handleRouting() {
             const hash = window.location.hash || '#/hospital';
             currentPortal = hash.replace('#/', '');
+            if (currentPortal === '' || currentPortal === '#') {
+                currentPortal = 'hospital';
+            }
             if(el('active-route-badge')) el('active-route-badge').innerText = currentPortal === 'hospital' ? 'WEB UTAMA (The sisTENG)' : currentPortal;
 
             ['portal-hospital', 'portal-admin'].forEach(id => el(id)?.classList.add('hidden'));
+
+            const navMenu = el('portal-nav-menu');
+            if (navMenu) navMenu.style.display = (currentPortal === 'sender') ? 'none' : 'flex';
 
             if (currentPortal === 'admin') {
                 el('portal-admin')?.classList.remove('hidden');
@@ -781,11 +905,7 @@
 
             if (tabId === 'links') generateDistributionLinks();
             if (tabId === 'master') { 
-                renderMasterFacilitiesList(); 
-                renderMasterRedirectsList(); 
-                renderMasterUnitDropdown(); 
-                renderMasterUnitsList(); 
-                window.renderMasterEtaList();
+                window.renderMasterData();
             }
         };
 
@@ -795,6 +915,7 @@
         function renderAll() {
             renderActiveCasesList(); renderUnitStatusesMonitorList(); renderSplitMandatoryUnitsSummary();
             renderAdminKpis();
+            renderSlaLeaderboard();
             if (currentHospitalTab === 'outcome') renderOutcomeTab();
         }
 
@@ -869,7 +990,7 @@
             }
 
             listContainer.innerHTML = handledCases.map(c => `
-                <div onclick="selectedCaseId='${c.id}'; window.renderOutcomeTab();" class="p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors ${c.id===selectedCaseId ? 'ring-2 ring-amber-500':''}">
+                <div onclick="selectedCaseId='${c.id}'; window.renderOutcomeTab();" class="p-3 bg-white border rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors ${c.id===selectedCaseId ? 'ring-2 ring-brand-primary':''}">
                     <h4 class="text-xs font-bold text-brand-dark">${c.name}</h4>
                     <p class="text-[10px] text-gray-500">${c.puskesmas}</p>
                 </div>
@@ -883,27 +1004,34 @@
                         <h3 class="text-base font-extrabold text-brand-primary uppercase">${ac.name}</h3>
                         <p class="text-xs text-brand-dark font-bold mt-1">${ac.diagnosis}</p>
                     </div>
-                    <p class="text-xs font-semibold text-gray-500 mb-6 w-full max-w-md">Silakan pilih status akhir pelayanan pasien ini:</p>
+                    <p class="text-xs font-semibold text-gray-500 mb-4 w-full max-w-md">Silakan pilih status akhir pelayanan pasien ini:</p>
                     
-                    <div class="w-full max-w-md space-y-3">
-                        <button onclick="window.declareOutcome('Discharged')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-start gap-3">
-                            <i class="ph-bold ph-check-circle text-xl"></i>
-                            <span class="font-bold text-sm">Selesai (Selamat / Rawat Inap)</span>
-                        </button>
-                        
-                        <button onclick="window.declareOutcome('Near Miss')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-start gap-3">
-                            <i class="ph-bold ph-warning text-xl"></i>
-                            <span class="font-bold text-sm">Near Miss Maternal (Selamat berisiko)</span>
-                        </button>
-                        
-                        <button onclick="window.declareOutcome('Deceased')" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-start gap-3">
-                            <i class="ph-bold ph-skull text-xl"></i>
-                            <span class="font-bold text-sm">Pasien Meninggal Dunia</span>
-                        </button>
+                    <div class="w-full max-w-md">
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <button onclick="window.declareOutcome('Discharged')" class="bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-xl shadow-md transition-all flex flex-col items-center justify-center text-center gap-1">
+                                <i class="ph-bold ph-check-circle text-lg"></i>
+                                <span class="font-bold text-[11px] leading-tight">Selesai (Selamat / Rawat Inap)</span>
+                            </button>
+                            
+                            <button onclick="window.declareOutcome('Near Miss')" class="bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-xl shadow-md transition-all flex flex-col items-center justify-center text-center gap-1">
+                                <i class="ph-bold ph-warning text-lg"></i>
+                                <span class="font-bold text-[11px] leading-tight">Near Miss Maternal (Selamat berisiko)</span>
+                            </button>
+                            
+                            <button onclick="window.declareOutcome('PAPS')" class="bg-pink-600 hover:bg-pink-700 text-white p-3 rounded-xl shadow-md transition-all flex flex-col items-center justify-center text-center gap-1">
+                                <i class="ph-bold ph-house text-lg"></i>
+                                <span class="font-bold text-[11px] leading-tight">Pulang Atas Permintaan Sendiri (PAPS)</span>
+                            </button>
+                            
+                            <button onclick="window.declareOutcome('Deceased')" class="bg-slate-800 hover:bg-slate-900 text-white p-3 rounded-xl shadow-md transition-all flex flex-col items-center justify-center text-center gap-1">
+                                <i class="ph-bold ph-skull text-lg"></i>
+                                <span class="font-bold text-[11px] leading-tight">Pasien Meninggal Dunia</span>
+                            </button>
+                        </div>
                         
                         <div class="relative py-2"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-300"></div></div><div class="relative flex justify-center"><span class="bg-white/80 px-4 text-[10px] font-bold text-gray-400 uppercase">ATAU</span></div></div>
                         
-                        <button onclick="window.showRedirectModal()" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-3 border border-red-800 animate-pulse">
+                        <button onclick="window.showRedirectModal()" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-3 border border-red-800 animate-pulse mt-2">
                             <i class="ph-bold ph-ambulance text-xl"></i>
                             <span class="font-bold text-sm uppercase tracking-wide">Alihkan (Redirect) Ke RS Lain</span>
                         </button>
@@ -922,6 +1050,7 @@
                 let idnStatus = outcomeStr;
                 if(outcomeStr === 'Discharged') idnStatus = 'Selesai (Selamat / Rawat Inap)';
                 if(outcomeStr === 'Near Miss') idnStatus = 'Near Miss Maternal (Selamat berisiko)';
+                if(outcomeStr === 'PAPS') idnStatus = 'Pulang Atas Permintaan Sendiri (PAPS)';
                 if(outcomeStr === 'Deceased') idnStatus = 'Pasien Meninggal Dunia';
 
                 c.status = 'OUTCOME_DECLARED';
@@ -938,7 +1067,6 @@
             }
         };
 
-        // Dashboard Monitor List
         function renderUnitStatusesMonitorList() {
             const container = el('unit-detail-monitor-body'); if (!container) return;
             const ac = cases.find(c => c.id === selectedCaseId);
@@ -964,55 +1092,136 @@
             }).join('');
         }
 
-        function renderSplitMandatoryUnitsSummary() {
-            const cp = el('unit-pending-summary'), cv = el('unit-verified-summary');
-            if(!cp || !cv) return;
-            const ac = cases.find(c => c.id === selectedCaseId);
-            if(!ac) { cp.innerHTML=''; cv.innerHTML=''; return; }
+        function renderAdminKpis() {
+            if(el('stat-total-referrals')) el('stat-total-referrals').innerText = cases.length;
+            let saved = 0, nearMiss = 0, deceased = 0, paps = 0;
+            let ktd = 0, knc = 0, ktc = 0; 
 
-            if(el('hospital-readiness-label')) el('hospital-readiness-label').innerText = ac.readiness;
-            if(el('mandatory-count-label')) el('mandatory-count-label').innerText = `${ac.mandatoryUnits.length} Unit Wajib`;
-
-            cp.innerHTML = ''; cv.innerHTML = '';
-            ac.mandatoryUnits.forEach(u => {
-                const s = ac.unitStatuses[u] ? ac.unitStatuses[u].status : 'PENDING';
-                const lbl = unitTemplates[u] ? unitTemplates[u].label : u;
-                const d = `<div class="p-2 bg-gray-50 border rounded text-[10px] font-bold text-center">${lbl}<br><span class="text-[9px] ${s==='READY'?'text-emerald-600':''}">${s}</span></div>`;
-                if(s==='PENDING') cp.innerHTML += d; else cv.innerHTML += d;
+            cases.forEach(c => {
+                const cl = 5 * 60, wl = 3 * 60; 
+                
+                if (c.status === 'OUTCOME_DECLARED') {
+                    if (['Discharged','Control'].includes(c.outcome)) saved++;
+                    if (c.outcome === 'Near Miss') { saved++; nearMiss++; }
+                    if (c.outcome === 'PAPS') { saved++; paps++; }
+                    if (['Deceased','Dead On Arrival'].includes(c.outcome)) deceased++;
+                    
+                    if (c.outcome === 'Deceased') ktd++;
+                    else if (c.outcome === 'Near Miss') { if (c.slaElapsed >= cl) ktd++; else knc++; }
+                    else if (['Discharged','Control'].includes(c.outcome) && c.slaElapsed >= wl) ktc++;
+                } else {
+                    saved++;
+                }
             });
+            const total = cases.length || 1;
+            if(el('stat-save-rate')) el('stat-save-rate').innerText = `${((saved / total) * 100).toFixed(1)}%`;
+
+            const bars = el('clinical-outcomes-progress-bars');
+            if (bars) bars.innerHTML = `
+                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Ibu Selamat</span><span>${saved - nearMiss - paps}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-brand-primary h-2 rounded-full" style="width: ${(((saved - nearMiss - paps)/total)*100)}%"></div></div></div>
+                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Near Miss Maternal</span><span>${nearMiss}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-yellow-500 h-2 rounded-full" style="width: ${((nearMiss/total)*100)}%"></div></div></div>
+                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Pulang Atas Permintaan Sendiri (PAPS)</span><span>${paps}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-pink-600 h-2 rounded-full" style="width: ${((paps/total)*100)}%"></div></div></div>
+                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Kematian Ibu</span><span>${deceased}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-red-600 h-2 rounded-full" style="width: ${((deceased/total)*100)}%"></div></div></div>
+            `;
+
+            const ikpBars = el('ikp-report-bars');
+            if (ikpBars) ikpBars.innerHTML = `
+                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Kejadian Tidak Diharapkan (KTD)</span><span>${ktd}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-red-600 h-2 rounded-full" style="width: ${(ktd/total*100)}%"></div></div></div>
+                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Kejadian Nyaris Cedera (KNC)</span><span>${knc}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-amber-500 h-2 rounded-full" style="width: ${(knc/total*100)}%"></div></div></div>
+                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Kejadian Tidak Cedera (KTC)</span><span>${ktc}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-blue-500 h-2 rounded-full" style="width: ${(ktc/total*100)}%"></div></div></div>
+            `;
         }
 
+        window.printReport = function(type) {
+            let content = ''; let title = '';
+            if(type === 'outcome') { content = el('clinical-outcomes-progress-bars').innerHTML; title = 'Laporan Outcome Kematian & Near Miss Maternal'; } 
+            else { content = el('ikp-report-bars').innerHTML; title = 'Laporan Insiden Keselamatan Pasien (IKP)'; }
+            const pw = window.open('', '', 'height=600,width=800');
+            pw.document.write(`<html><head><title>${title}</title><style>body{font-family:sans-serif; padding:40px;} .w-full{width:100%; background:#eee; height:20px; border-radius:10px; margin-bottom:20px; overflow:hidden;} .h-2{height:20px;} .bg-brand-primary{background:#2D6A4F;} .bg-yellow-500{background:#EAB308;} .bg-pink-600{background:#DB2777;} .bg-red-600{background:#DC2626;} .bg-amber-500{background:#F59E0B;} .bg-blue-500{background:#3B82F6;} .flex{display:flex; justify-content:space-between; margin-bottom:8px; font-size:14px; font-weight:bold; color:#333;}</style></head><body><h2 style="border-bottom:2px solid #ccc; padding-bottom:10px; margin-bottom:30px;">${title}</h2><div>${content}</div></body></html>`);
+            pw.document.close(); pw.focus(); setTimeout(() => { pw.print(); pw.close(); }, 500);
+        };
+
+        window.downloadReportCSV = function(type) {
+            let csv = "data:text/csv;charset=utf-8,Kategori,Jumlah\n";
+            if(type === 'outcome') {
+                let saved = 0, nearMiss = 0, deceased = 0, paps = 0;
+                cases.forEach(c => { 
+                    if (c.status === 'OUTCOME_DECLARED') { 
+                        if (['Discharged','Control'].includes(c.outcome)) saved++; 
+                        if (c.outcome === 'Near Miss') { saved++; nearMiss++; } 
+                        if (c.outcome === 'PAPS') { saved++; paps++; } 
+                        if (['Deceased','Dead On Arrival'].includes(c.outcome)) deceased++; 
+                    } else saved++; 
+                });
+                csv += `Ibu Selamat,${saved - nearMiss - paps}\nNear Miss Maternal,${nearMiss}\nPAPS,${paps}\nKematian Ibu,${deceased}\n`;
+            } else {
+                let ktd = 0, knc = 0, ktc = 0;
+                cases.forEach(c => { const cl = 5 * 60, wl = 3 * 60; if (c.status === 'OUTCOME_DECLARED') { if (c.outcome === 'Deceased') ktd++; else if (c.outcome === 'Near Miss') { if (c.slaElapsed >= cl) ktd++; else knc++; } else if (['Discharged','Control'].includes(c.outcome) && c.slaElapsed >= wl) ktc++; } });
+                csv += `Kejadian Tidak Diharapkan (KTD),${ktd}\nKejaris Cedera (KNC),${knc}\nKejadian Tidak Cedera (KTC),${ktc}\n`;
+            }
+            const encodedUri = encodeURI(csv); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `laporan_${type}_sisteng.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        };
+
         // ==========================================
-        // 5. MASTER DATA (FASKES & REDIRECT)
+        // MASTER DATA HANDLERS DENGAN SINKRONISASI SUPABASE
         // ==========================================
+        window.renderMasterData = function() {
+            renderMasterFacilitiesList();
+            renderMasterRedirectsList();
+            renderMasterUnitDropdown();
+            renderMasterUnitsList();
+            if (typeof window.renderMasterEtaList === 'function') window.renderMasterEtaList();
+        };
+
         window.saveSenderFacility = async function() {
             const name = el('master-facility-name')?.value.trim(); if (!name) return;
             const idx = el('master-facility-index')?.value;
             if (idx !== "") { senderFacilities[idx] = name; } else { senderFacilities.push(name); }
             saveToLocalStorage(); 
             clearFacilityForm(); 
-            renderMasterFacilitiesList(); 
             await saveConfigToSupabase();
+            window.renderMasterData();
         };
         window.clearFacilityForm = function() { if(el('master-facility-index')) el('master-facility-index').value=''; if(el('master-facility-name')) el('master-facility-name').value=''; };
         window.editSenderFacility = function(idx) { if(el('master-facility-index')) el('master-facility-index').value=idx; if(el('master-facility-name')) el('master-facility-name').value=senderFacilities[idx]; };
         window.deleteSenderFacility = async function(idx) { 
             senderFacilities.splice(idx,1); 
             saveToLocalStorage(); 
-            renderMasterFacilitiesList(); 
             await saveConfigToSupabase();
+            window.renderMasterData();
         };
 
-        window.saveRedirectDestination = function() {
+        window.saveRedirectDestination = async function() {
             const name = el('master-redirect-name')?.value.trim(); if (!name) return;
             const eta = parseInt(el('master-redirect-eta')?.value) || 0, type = el('master-redirect-type')?.value, note = el('master-redirect-note')?.value.trim();
             const idx = el('master-redirect-index')?.value;
             if (idx !== "") { redirectDestinations[idx] = { name, eta, type, note }; } else { redirectDestinations.push({ name, eta, type, note }); }
-            saveToLocalStorage(); clearRedirectForm(); renderMasterRedirectsList(); renderRedirectModalDestinations();
+            saveToLocalStorage(); 
+            clearRedirectForm(); 
+            await saveConfigToSupabase();
+            window.renderMasterData();
+            renderRedirectModalDestinations();
         };
         window.clearRedirectForm = function() { if(el('master-redirect-index')) el('master-redirect-index').value=''; if(el('master-redirect-name')) el('master-redirect-name').value=''; };
-        window.editRedirectDestination = function(idx) { const d=redirectDestinations[idx]; if(el('master-redirect-index')) el('master-redirect-index').value=idx; if(el('master-redirect-name')) el('master-redirect-name').value=d.name; if(el('master-redirect-eta')) el('master-redirect-eta').value=d.eta; if(el('master-redirect-type')) el('master-redirect-type').value=d.type; if(el('master-redirect-note')) el('master-redirect-note').value=d.note; };
-        window.deleteRedirectDestination = function(idx) { redirectDestinations.splice(idx,1); saveToLocalStorage(); renderMasterRedirectsList(); renderRedirectModalDestinations(); };
+        window.editRedirectDestination = function(idx) { 
+            const d = redirectDestinations[idx]; 
+            if(el('master-redirect-index')) el('master-redirect-index').value = idx; 
+            if(el('master-redirect-name')) el('master-redirect-name').value = d.name; 
+            if(el('master-redirect-eta')) el('master-redirect-eta').value = d.eta; 
+            if(el('master-redirect-type')) el('master-redirect-type').value = d.type; 
+            if(el('master-redirect-note')) el('master-redirect-note').value = d.note; 
+        };
+        window.deleteRedirectDestination = async function(idx) { 
+            redirectDestinations.splice(idx,1); 
+            saveToLocalStorage(); 
+            await saveConfigToSupabase();
+            window.renderMasterData();
+            renderRedirectModalDestinations();
+        };
+
+        function renderMasterFacilitiesList() { const l=el('master-facilities-list'); if(l) l.innerHTML=senderFacilities.map((f,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><span class="text-xs">${f}</span><div><button onclick="window.editSenderFacility(${idx})" class="p-1 text-brand-primary"><i class="ph ph-pencil"></i></button><button onclick="window.deleteSenderFacility(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
+        function renderMasterRedirectsList() { const l=el('master-redirects-list'); if(l) l.innerHTML=redirectDestinations.map((d,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><div><p class="text-xs font-bold">${d.name}</p></div><div><button onclick="window.editRedirectDestination(${idx})" class="p-1 text-brand-primary"><i class="ph ph-pencil"></i></button><button onclick="window.deleteRedirectDestination(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
+        function renderRedirectModalDestinations() { const c=el('redirect-list-container'); if(c) c.innerHTML=redirectDestinations.map(d=>`<div onclick="window.executeRedirect('${d.name}', ${d.eta})" class="p-3 border rounded-xl hover:bg-emerald-50 shadow-sm cursor-pointer mb-2"><h4 class="text-xs font-bold">${d.name}</h4><p class="text-[9px] text-gray-500">${d.note} (+${d.eta} mnt)</p></div>`).join(''); }
 
         function renderMasterUnitDropdown() {
             const s = el('master-unit-select'); if(!s) return;
@@ -1042,11 +1251,11 @@
             `).join('');
         }
 
-        window.saveNewMasterUnit = function() {
+        window.saveNewMasterUnit = async function() {
             const idInput = el('master-new-unit-id');
             const lblInput = el('master-new-unit-label');
             const pinInput = el('master-new-unit-pin');
-            if(!idInput || !lblInput || !pinInput) return;
+            if(!idInput || lblInput || !pinInput) return;
 
             const id = idInput.value.trim().toUpperCase().replace(/\s+/g, '_');
             const lbl = lblInput.value.trim();
@@ -1062,21 +1271,20 @@
             saveToLocalStorage(); 
             idInput.value = ''; lblInput.value = ''; pinInput.value = '';
             
-            renderMasterUnitDropdown(); 
-            renderMasterUnitsList();
+            await saveConfigToSupabase();
+            window.renderMasterData();
             renderUnitButtons();
             showTemporaryToast("Unit baru berhasil ditambah", "success"); 
         };
 
-        window.deleteMasterUnit = function() {
+        window.deleteMasterUnit = async function() {
             const k = el('master-unit-select').value; if (!k) return;
             delete unitTemplates[k];
             delete unitPasswords[k];
             delete unlockedUnits[k];
             saveToLocalStorage(); 
-            renderMasterUnitDropdown(); 
-            window.loadMasterUnitDetails(); 
-            renderMasterUnitsList();
+            await saveConfigToSupabase();
+            window.renderMasterData();
             renderUnitButtons(); 
             renderUnitSimulator();
             showTemporaryToast("Unit dihapus!", "success"); 
@@ -1115,19 +1323,19 @@
             }
         };
 
-        window.deleteMasterUnitDirect = function(u) {
+        window.deleteMasterUnitDirect = async function(u) {
             delete unitTemplates[u];
             delete unitPasswords[u];
             delete unlockedUnits[u];
             saveToLocalStorage();
-            renderMasterUnitDropdown();
-            renderMasterUnitsList();
+            await saveConfigToSupabase();
+            window.renderMasterData();
             renderUnitButtons();
             renderUnitSimulator();
             showTemporaryToast("Unit berhasil dihapus!", "success");
         };
 
-        window.addMasterChecklist = function() {
+        window.addMasterChecklist = async function() {
             const k = el('master-unit-select').value;
             const input = el('master-new-checklist-text');
             const editIndexInput = el('edit-checklist-item-index');
@@ -1148,40 +1356,16 @@
 
             saveToLocalStorage(); 
             window.cancelChecklistItemEdit();
+            await saveConfigToSupabase();
             renderMasterChecklistItems(k);
         };
 
-        window.editMasterChecklistItem = function(idx) {
-            const k = el('master-unit-select').value;
-            const input = el('master-new-checklist-text');
-            const editIndexInput = el('edit-checklist-item-index');
-            const btnSave = el('btn-save-checklist-item');
-            const btnCancel = el('btn-cancel-checklist-item-edit');
-            if (!k || !input || !editIndexInput || !btnSave || !btnCancel) return;
-
-            const currentText = unitTemplates[k].checklists[idx];
-            input.value = currentText;
-            editIndexInput.value = idx;
-            btnSave.innerText = "Simpan";
-            btnCancel.classList.remove('hidden');
-        };
-
-        window.cancelChecklistItemEdit = function() {
-            const input = el('master-new-checklist-text');
-            const editIndexInput = el('edit-checklist-item-index');
-            const btnSave = el('btn-save-checklist-item');
-            const btnCancel = el('btn-cancel-checklist-item-edit');
-            if (input) input.value = '';
-            if (editIndexInput) editIndexInput.value = '';
-            if (btnSave) btnSave.innerText = "Tambah";
-            if (btnCancel) btnCancel.classList.add('hidden');
-        };
-
-        window.deleteMasterChecklistItem = function(idx) {
+        window.deleteMasterChecklistItem = async function(idx) {
             const k = el('master-unit-select').value;
             unitTemplates[k].checklists.splice(idx, 1);
             saveToLocalStorage();
             window.cancelChecklistItemEdit();
+            await saveConfigToSupabase();
             renderMasterChecklistItems(k);
             showTemporaryToast("Ceklist dihapus!", "success");
         };
@@ -1244,13 +1428,22 @@
             const i = s.checked.indexOf(idx); if (i > -1) s.checked.splice(i, 1); else s.checked.push(idx); renderUnitSimulator();
         };
 
-        window.saveSimulatedUnitDataSim = function() {
+        window.saveSimulatedUnitDataSim = async function() {
             const ac = cases.find(c => c.id === selectedCaseId); 
             const s = ac.unitStatuses[simulatedUnitRole];
             
-            s.status = el('sim-unit-status-sim').value; 
+            const oldStatus = s.status || 'PENDING';
+            const newStatus = el('sim-unit-status-sim').value;
+            
+            s.status = newStatus; 
             s.petugas = el('sim-unit-petugas-sim').value || 'Petugas Jaga'; 
             s.notes = el('sim-unit-notes-sim').value;
+            
+            // Catat waktu respon unit jika status berubah dari non-aktif (PENDING/CHECKING) ke aktif (READY/LIMITED)
+            if ((oldStatus === 'PENDING' || oldStatus === 'CHECKING') && (newStatus === 'READY' || newStatus === 'LIMITED')) {
+                const elapsedSeconds = Math.floor((Date.now() - ac.timestamp) / 1000);
+                recordUnitSlaResponse(simulatedUnitRole, elapsedSeconds);
+            }
             
             recalculateHospitalReadiness(ac); 
             saveToLocalStorage();
@@ -1310,7 +1503,17 @@
             if(c){ 
                 c.status = s; 
                 if(s==='ACCEPTED') {
-                    clearInterval(audioInterval);
+                    if (audioInterval) {
+                        clearInterval(audioInterval);
+                        audioInterval = null;
+                    }
+                    if (activeAudio) {
+                        try { activeAudio.pause(); } catch(e) {}
+                        activeAudio = null;
+                    }
+                    if (window.speechSynthesis) {
+                        window.speechSynthesis.cancel();
+                    }
                     sendDiscordWebhook(c, "Pasien Diterima (Diproses)");
                 }
                 saveToLocalStorage(); 
@@ -1341,26 +1544,139 @@
             } 
         };
 
-        function playVoiceAssistant(message) {
-            if (isMuted || !isSystemStarted || !('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            
-            // Simpan utterance pada variabel global agar tidak dihapus paksa oleh Garbage Collector browser (anti-terpotong)
-            activeUtterance = new SpeechSynthesisUtterance(message);
-            const voices = window.speechSynthesis.getVoices();
-            const indoVoice = voices.find(v => v.lang === 'id-ID' || v.lang === 'id_ID' || v.name.includes('Indonesia'));
-            if (indoVoice) activeUtterance.voice = indoVoice;
-            activeUtterance.lang = 'id-ID'; activeUtterance.rate = 0.95; activeUtterance.pitch = 1.0; 
-            activeUtterance.volume = 1.0; // Desibel Volume Maksimal
-            window.speechSynthesis.speak(activeUtterance);
+        async function playVoiceAssistant(message, onEndCallback) {
+            if (isMuted || !isSystemStarted) {
+                if (onEndCallback) onEndCallback();
+                return;
+            }
+
+            // Batalkan suara lokal lama jika sedang berjalan
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+
+            // Hentikan audio ElevenLabs yang lama jika masih menyala
+            if (activeAudio) {
+                try { activeAudio.pause(); } catch(e) {}
+                activeAudio = null;
+            }
+
+            const ELEVENLABS_API_KEY = "03f3a891ebf9ebe2b2f3adfe1c3049c56b88026eefd55d2c32789ee5f37330f9";
+            const VOICE_ID = "I7sakys8pBZ1Z5f0UhT9"; // ID Suara Indonesia Pilihan Anda
+
+            try {
+                const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+                    method: 'POST',
+                    headers: {
+                        'accept': 'audio/mpeg',
+                        'content-type': 'application/json',
+                        'xi-api-key': ELEVENLABS_API_KEY
+                    },
+                    body: JSON.stringify({
+                        text: message,
+                        model_id: "eleven_multilingual_v2", // Model multibahasa terbaik ElevenLabs
+                        voice_settings: {
+                            stability: 0.5,
+                            similarity_boost: 0.75
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("API ElevenLabs melempar kode respon error: " + response.status);
+                }
+
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                activeAudio = new Audio(audioUrl);
+                activeAudio.volume = 1.0;
+
+                activeAudio.onended = function() {
+                    activeAudio = null;
+                    if (onEndCallback) onEndCallback();
+                };
+
+                activeAudio.onerror = function() {
+                    activeAudio = null;
+                    playLocalVoiceBackup(message, onEndCallback);
+                };
+
+                await activeAudio.play();
+
+            } catch (error) {
+                console.warn("ElevenLabs tidak dapat diakses atau kuota habis, mengalihkan ke cadangan lokal gratis:", error);
+                playLocalVoiceBackup(message, onEndCallback);
+            }
         }
 
-        function triggerReferralAlarm(sourceMsg) { 
-            clearInterval(audioInterval); 
-            audioInterval = setInterval(playMedicalBeep, 1500); 
+        function playLocalVoiceBackup(message, onEndCallback) {
+            if (isMuted || !isSystemStarted || !('speechSynthesis' in window)) {
+                if (onEndCallback) onEndCallback();
+                return;
+            }
+            window.speechSynthesis.cancel();
+            
+            // Timeout kecil (100ms) membantu mesin speechSynthesis browser mereset state cancel secara bersih sebelum memutar suara baru
             setTimeout(() => {
-                playVoiceAssistant("Perhatian Command Center. Rujukan darurat maternal telah masuk dari " + (sourceMsg || "Fasilitas Kesehatan") + ". Mohon segera lakukan verifikasi kesiapan unit.");
-            }, 1000);
+                activeUtterance = new SpeechSynthesisUtterance(message);
+                activeUtterance.lang = 'id-ID';
+                activeUtterance.rate = 0.95;
+                activeUtterance.pitch = 1.0; 
+                activeUtterance.volume = 1.0; 
+
+                // Simpan referensi ke memori global window guna mem-bypass bug Garbage Collection Chrome
+                if (!window.utterances) window.utterances = [];
+                window.utterances.push(activeUtterance);
+
+                // Gunakan suara Indonesia global yang telah dikunci sejak awal muat halaman
+                if (indonesianVoice) {
+                    activeUtterance.voice = indonesianVoice;
+                } else {
+                    // Percobaan kedua jika asinkronitas belum selesai
+                    loadIndonesianVoice();
+                    if (indonesianVoice) {
+                        activeUtterance.voice = indonesianVoice;
+                    }
+                }
+
+                // Callback onend & onerror diikat kuat agar sekuensial alarm bip medis selalu menyala
+                activeUtterance.onend = function() {
+                    window.utterances = window.utterances.filter(u => u !== activeUtterance);
+                    if (onEndCallback) onEndCallback();
+                };
+
+                activeUtterance.onerror = function() {
+                    window.utterances = window.utterances.filter(u => u !== activeUtterance);
+                    if (onEndCallback) onEndCallback();
+                };
+
+                window.speechSynthesis.speak(activeUtterance);
+            }, 100);
+        }
+
+        // PERBAIKAN SEKUENSAL AUDIO: AI ROBOT SELESAI BICARA BARU ALARM BIP BERBUNYI
+        function triggerReferralAlarm(sourceMsg) { 
+            if (audioInterval) {
+                clearInterval(audioInterval);
+                audioInterval = null;
+            }
+            if (activeAudio) {
+                try { activeAudio.pause(); } catch(e) {}
+                activeAudio = null;
+            }
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            
+            const speechText = "Perhatian Command Center. Rujukan darurat maternal telah masuk dari " + (sourceMsg || "Fasilitas Kesehatan") + ". Mohon segera lakukan verifikasi kesiapan unit.";
+            playVoiceAssistant(speechText, function() {
+                // Bunyikan alarm beeping medis HANYA setelah suara robot AI selesai berbicara secara tuntas tanpa overlap
+                const hasPendingReview = cases.some(c => c.status === 'PENDING_REVIEW');
+                if (hasPendingReview && !audioInterval) {
+                    audioInterval = setInterval(playMedicalBeep, 1500); 
+                }
+            });
         }
         
         function playMedicalBeep() { 
@@ -1381,7 +1697,6 @@
             const b = window.location.origin + window.location.pathname; 
             // Mendistribusikan link secara presisi ke file pengirim eksternal 'sender.html' di domain yang sama
             if(el('url-sender')) el('url-sender').value = b.replace('index.html', '') + 'sender.html'; 
-            if(el('url-hospital')) el('url-hospital').value = b; 
         }
         window.copyPortalLink = function(id, btnId) { el(id).select(); document.execCommand('copy'); el(btnId).innerText = 'Tersalin!'; setTimeout(()=>el(btnId).innerText='Salin Tautan', 2000); };
         
@@ -1389,7 +1704,7 @@
         window.downloadBackupFile = function() { const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([generateBackupDataJson()], {type:"application/json"})); a.download="MERS_Backup.json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); showTemporaryToast("Berkas backup diunduh", "success"); };
         window.handleRestoreFileInput = function(e) { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ try{ applyRestoredBackupPayload(JSON.parse(ev.target.result)); e.target.value=''; }catch(err){ showTemporaryToast("File JSON Tidak Valid", "danger"); } }; r.readAsText(f); };
         function applyRestoredBackupPayload(p) { if(!p||!p.cases) return; cases=p.cases; senderFacilities=p.senderFacilities||senderFacilities; redirectDestinations=p.redirectDestinations||redirectDestinations; unitTemplates=p.unitTemplates||unitTemplates; unitPasswords=p.unitPasswords||unitPasswords; etaOptions=p.etaOptions||etaOptions; selectedCaseId=cases[0]?.id; saveToLocalStorage(); renderAll(); renderUnitButtons(); renderMasterUnitsList(); renderMasterUnitDropdown(); window.renderMasterEtaList(); showTemporaryToast("Sistem Berhasil Dipulihkan", "success"); }
-        window.executeDangerousSystemReset = function() { if(el('reset-confirm-password').value===ADMIN_PASS) { localStorage.clear(); cases=[]; initializeDatabase(); renderAll(); renderMasterUnitsList(); renderMasterUnitDropdown(); window.renderMasterEtaList(); showTemporaryToast("Sistem Direset Total", "success"); el('reset-confirm-password').value=''; } else { if(el('reset-feedback-msg')) el('reset-feedback-msg').innerText="Sandi Salah!"; } };
+        window.executeDangerousSystemReset = function() { if(el('reset-confirm-password').value===ADMIN_PASS) { safeStorage.clear(); cases=[]; initializeDatabase(); renderAll(); renderMasterUnitsList(); renderMasterUnitDropdown(); window.renderMasterEtaList(); showTemporaryToast("Sistem Direset Total", "success"); el('reset-confirm-password').value=''; } else { if(el('reset-feedback-msg')) el('reset-feedback-msg').innerText="Sandi Salah!"; } };
 
         // ==========================================
         // FITUR KELOLA ETA DINAMIS (MASTER DATA)
@@ -1441,6 +1756,199 @@
             await saveConfigToSupabase();
             showTemporaryToast("Opsi ETA berhasil dihapus!", "success");
         };
+
+        // GAYA VISUAL BARU UNIT MEDIS KONTRASTING (MERAH PUTIH & HIJAU PUTIH)
+        function renderSplitMandatoryUnitsSummary() {
+            const cp = el('unit-pending-summary'), cv = el('unit-verified-summary');
+            if(!cp || !cv) return;
+            const ac = cases.find(c => c.id === selectedCaseId);
+            if(!ac) { cp.innerHTML=''; cv.innerHTML=''; return; }
+
+            if(el('hospital-readiness-label')) el('hospital-readiness-label').innerText = ac.readiness;
+            if(el('mandatory-count-label')) el('mandatory-count-label').innerText = `${ac.mandatoryUnits.length} Unit Wajib`;
+
+            cp.innerHTML = ''; cv.innerHTML = '';
+            ac.mandatoryUnits.forEach(u => {
+                const s = ac.unitStatuses[u] ? ac.unitStatuses[u].status : 'PENDING';
+                const lbl = unitTemplates[u] ? unitTemplates[u].label : u;
+                if(s === 'PENDING') {
+                    // Belum Bertindak: Kotak Berwarna Merah, Tulisan Putih
+                    const d = `<div class="p-2 bg-red-600 text-white border border-red-700 rounded text-[10px] font-extrabold text-center shadow-md animate-pulse">${lbl}<br><span class="text-[8px] text-red-100 uppercase tracking-widest font-black">${s}</span></div>`;
+                    cp.innerHTML += d;
+                } else {
+                    // Sudah Proses: Kotak Berwarna Hijau, Tulisan Putih
+                    const d = `<div class="p-2 bg-emerald-600 text-white border border-emerald-700 rounded text-[10px] font-extrabold text-center shadow-md">${lbl}<br><span class="text-[8px] text-emerald-100 uppercase tracking-widest font-black">${s}</span></div>`;
+                    cv.innerHTML += d;
+                }
+            });
+        }
+
+        // ==========================================
+        // SISTEM KOMPETISI SLA BULANAN (SENDER SINKRON)
+        // ==========================================
+        function recordUnitSlaResponse(unitKey, seconds) {
+            const d = new Date();
+            const monthKey = d.getFullYear() + "-" + (d.getMonth() + 1).toString().padStart(2, '0');
+            
+            // Reset otomatis jika ganti bulan baru
+            if (monthlySlaStats.monthKey !== monthKey) {
+                monthlySlaStats.monthKey = monthKey;
+                monthlySlaStats.units = {};
+            }
+            
+            if (!monthlySlaStats.units[unitKey]) {
+                monthlySlaStats.units[unitKey] = { fastest: seconds, slowest: seconds, total: seconds, count: 1 };
+            } else {
+                const u = monthlySlaStats.units[unitKey];
+                if (u.fastest === null || seconds < u.fastest) u.fastest = seconds;
+                if (u.slowest === null || seconds > u.slowest) u.slowest = seconds;
+                u.total += seconds;
+                u.count += 1;
+            }
+            saveToLocalStorage();
+            saveConfigToSupabase();
+            renderSlaLeaderboard();
+        }
+
+        function checkAndSendMonthlySlaReport() {
+            const d = new Date();
+            const today = d.getDate();
+            const monthKey = d.getFullYear() + "-" + (d.getMonth() + 1).toString().padStart(2, '0');
+            
+            if (monthlySlaStats.monthKey !== monthKey) {
+                monthlySlaStats.monthKey = monthKey;
+                monthlySlaStats.units = {};
+                saveToLocalStorage();
+                saveConfigToSupabase();
+                return;
+            }
+            
+            // Pengiriman Laporan SLA Bulanan otomatis di Discord setiap tanggal 28 akhir bulan
+            if (today === 28 && monthlySlaStats.lastSentMonth !== monthKey) {
+                sendMonthlySlaReportToDiscord(monthKey);
+            }
+        }
+
+        async function sendMonthlySlaReportToDiscord(monthKey) {
+            if (!discordWebhookUrl) return;
+            
+            let fields = [];
+            let hasData = false;
+            
+            Object.keys(unitTemplates).forEach(key => {
+                const u = monthlySlaStats.units[key];
+                const label = unitTemplates[key].label;
+                if (u && u.count > 0) {
+                    hasData = true;
+                    fields.push({
+                        name: `🏆 Unit: ${label}`,
+                        value: `⚡ **Tercepat:** ${formatDuration(u.fastest)}\n🐢 **Terlambat:** ${formatDuration(u.slowest)}\n📊 **Rerata:** ${formatDuration(Math.round(u.total / u.count))}\n🔄 **Total Respon:** ${u.count} kali`,
+                        inline: false
+                    });
+                } else {
+                    fields.push({
+                        name: `🏆 Unit: ${label}`,
+                        value: `📭 Belum ada data respon bulan ini.`,
+                        inline: false
+                    });
+                }
+            });
+            
+            const payload = {
+                content: `📊 **LAPORAN SLA BULANAN (Kompetisi Respon Unit Tercepat vs Terlambat)** 📊`,
+                embeds: [{
+                    title: `Periode Laporan: ${monthKey}`,
+                    description: `Laporan performa respon unit medis maternal yang dikirimkan secara otomatis setiap tanggal 28 akhir bulan.`,
+                    fields: fields,
+                    color: 3447003, // Blue
+                    footer: { text: "The sisTENG Command Center" },
+                    timestamp: new Date().toISOString()
+                }]
+            };
+            
+            try {
+                const res = await fetch(discordWebhookUrl, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    monthlySlaStats.lastSentMonth = monthKey; 
+                    saveToLocalStorage();
+                    await saveConfigToSupabase();
+                    showTemporaryToast("Laporan SLA Bulanan berhasil terkirim ke Discord!", "success");
+                }
+            } catch (e) {
+                console.error("Gagal mengirim laporan SLA bulanan ke Discord:", e);
+            }
+        }
+
+        window.triggerManualMonthlySlaReport = function() {
+            const currentMonth = monthlySlaStats.monthKey || new Date().getFullYear() + "-" + (new Date().getMonth() + 1).toString().padStart(2, '0');
+            sendMonthlySlaReportToDiscord(currentMonth);
+        };
+
+        function formatDuration(seconds) {
+            if (seconds === null || seconds === undefined) return "-";
+            if (seconds < 60) return `${seconds} Detik`;
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m} Menit ${s} Detik`;
+        }
+
+        function renderSlaLeaderboard() {
+            const container = el('sla-leaderboard-container');
+            if (!container) return;
+            
+            const unitsKeys = Object.keys(unitTemplates);
+            if (unitsKeys.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-400 italic">Belum ada unit yang terdaftar.</p>`;
+                return;
+            }
+            
+            let html = `<div class="space-y-3">`;
+            unitsKeys.forEach(key => {
+                const u = monthlySlaStats.units[key];
+                const label = unitTemplates[key].label;
+                if (u && u.count > 0) {
+                    html += `
+                        <div class="p-3 bg-white border border-gray-150 rounded-xl shadow-sm space-y-2">
+                          <div class="flex justify-between items-center border-b pb-1.5 border-gray-100">
+                              <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                                  <i class="ph ph-trophy text-amber-500"></i> ${label}
+                              </span>
+                              <span class="text-[10px] bg-brand-light text-brand-primary px-2 py-0.5 rounded-full font-bold">${u.count} Respon</span>
+                          </div>
+                          <div class="grid grid-cols-3 gap-2 text-center text-[10px]">
+                              <div class="bg-emerald-50 p-1.5 rounded border border-emerald-100">
+                                  <p class="text-gray-500 font-bold uppercase text-[8px]">Tercepat</p>
+                                  <p class="font-extrabold text-emerald-700 mt-0.5">${formatDuration(u.fastest)}</p>
+                              </div>
+                              <div class="bg-red-50 p-1.5 rounded border border-red-100">
+                                  <p class="text-gray-500 font-bold uppercase text-[8px]">Terlambat</p>
+                                  <p class="font-extrabold text-red-700 mt-0.5">${formatDuration(u.slowest)}</p>
+                              </div>
+                              <div class="bg-slate-50 p-1.5 rounded border border-gray-150">
+                                  <p class="text-gray-500 font-bold uppercase text-[8px]">Rerata</p>
+                                  <p class="font-extrabold text-slate-700 mt-0.5">${formatDuration(Math.round(u.total / u.count))}</p>
+                              </div>
+                          </div>
+                      </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="p-3 bg-white border border-gray-150 rounded-xl shadow-sm flex justify-between items-center">
+                          <span class="text-xs font-bold text-slate-500 flex items-center gap-1.5">
+                              <i class="ph ph-calendar-blank text-gray-400"></i> ${label}
+                          </span>
+                          <span class="text-[10px] text-gray-400 italic">Belum ada data bulan ini</span>
+                        </div>
+                    `;
+                }
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
 
         // ==========================================
         // INITIALIZATION
