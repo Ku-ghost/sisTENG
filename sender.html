@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Rujukan Maternal - UPT RSUD Sinjai</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        brand: { light: '#dff0e6', soft: '#52B788', primary: '#2D6A4F', dark: '#081C15', accent: '#D4AF37', danger: '#E63946', warning: '#FF9F1C' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: radial-gradient(circle at 50% 50%, #b3c5bc 0%, #899d94 100%);
+            min-height: 100vh; color: #081C15; background-attachment: fixed;
+            display: flex; flex-direction: column;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: 0 15px 45px -8px rgba(4, 24, 15, 0.15), 0 4px 12px rgba(4, 24, 15, 0.05);
+            border-radius: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel:hover { box-shadow: 0 20px 55px -6px rgba(4, 24, 15, 0.2), 0 6px 16px rgba(4, 24, 15, 0.08); }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 8px 24px -6px rgba(4, 24, 15, 0.08); border-radius: 18px;
+        }
+        .glass-input {
+            background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(45, 106, 79, 0.25); border-radius: 12px;
+            padding: 8px 14px; outline: none; height: 42px; transition: all 0.2s ease-in-out; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+        .glass-input:focus { border-color: #2D6A4F; background: rgba(255, 255, 255, 1); box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.3); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(45, 106, 79, 0.25); border-radius: 10px; }
+    </style>
+</head>
+<body class="p-3 md:p-6 font-sans antialiased relative">
+
+    <div class="max-w-screen-2xl mx-auto w-full flex-1 space-y-6">
+
+        <!-- ================= PORTAL PENGIRIM ================= -->
+        <div id="portal-sender" class="space-y-6">
+            <header class="glass-panel px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-white">
+                <div class="flex items-center gap-4">
+                    <div class="bg-amber-600 p-3 rounded-xl text-white shadow-md"><i class="ph-fill ph-ambulance text-3xl"></i></div>
+                    <div><h1 class="text-lg font-extrabold text-brand-dark leading-none">Portal Rujukan Maternal</h1><p class="text-amber-800 text-[11px] font-semibold mt-1">SISTEM INTEGRASI FASILITAS KESEHATAN</p></div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 glass-panel p-5 flex flex-col justify-between border border-white">
+                    <h2 class="text-base font-extrabold text-brand-dark mb-4 flex items-center gap-2"><i class="ph ph-paper-plane-tilt text-amber-600"></i> Kirim Formulir Rujukan Instan</h2>
+                    <form id="referral-form" onsubmit="window.submitReferral(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Fasilitas Pengirim</label><select id="form-sender-facility" class="glass-input cursor-pointer font-bold text-xs"></select></div>
+                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Rumah Sakit Tujuan</label><select id="form-target-hospital" class="glass-input cursor-pointer font-bold text-xs text-brand-primary bg-emerald-50"><option value="UPT RSUD Sinjai">UPT RSUD Sinjai (Utama)</option></select></div>
+                        </div>
+                        <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Nama Pasien</label><input type="text" id="form-patient-name" required placeholder="Ny. Ratna Sari" class="glass-input text-xs font-semibold"></div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Usia Ibu</label><input type="number" id="form-patient-age" required placeholder="26" class="glass-input text-xs"></div>
+                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Kategori Kasus</label><select id="form-case-category" class="glass-input cursor-pointer text-xs"><option value="Perdarahan Berat">Perdarahan Berat</option><option value="Preeklamsia Berat">Preeklamsia Berat</option><option value="Partus Macet">Partus Macet</option><option value="Sepsis">Demam Tinggi / Sepsis</option></select></div>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-xl border border-gray-200/80 space-y-2 shadow-inner">
+                            <p class="text-[10px] font-extrabold text-brand-dark uppercase tracking-wider mb-1">Tanda Vital</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input type="text" id="form-td" required placeholder="TD: 120/80" class="glass-input text-xs py-1.5 px-2">
+                                <input type="text" id="form-djj" required placeholder="DJJ: 140" class="glass-input text-xs py-1.5 px-2">
+                                <select id="form-kesadaran" class="glass-input text-[11px] py-1 px-1.5"><option value="Compos Mentis">Compos Mentis</option><option value="Apatis">Apatis</option><option value="Somnolen">Somnolen</option></select>
+                            </div>
+                            <input type="text" id="form-patient-cond" placeholder="Catatan: Ketuban pecah dini, kejang..." class="glass-input text-xs py-1.5 px-2 w-full mt-2">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase">ETA (Waktu Tiba)</label>
+                            <select id="form-eta" class="glass-input cursor-pointer text-xs">
+                                <!-- Rendered dynamically by renderEtaDropdown() -->
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-brand-primary hover:bg-brand-soft text-white font-bold py-3.5 rounded-xl shadow-md">KIRIM RUJUKAN MATERNAL</button>
+                    </form>
+                </div>
+                <div class="lg:col-span-7 glass-panel p-5 border border-white">
+                    <h2 class="text-base font-extrabold text-brand-dark mb-4 flex items-center gap-2"><i class="ph ph-radar text-brand-primary"></i> Status & Pelacakan Rujukan Aktif Anda</h2>
+                    <div id="puskesmas-cases-list" class="space-y-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <script>
+        window.showTemporaryToast = function(m, t) {
+            const d = document.createElement('div');
+            d.className = `fixed bottom-5 right-5 p-4 bg-white border-l-4 ${t === 'success' ? 'border-brand-primary' : 'border-red-500'} shadow-2xl z-[90] font-bold text-xs rounded-lg transition-all duration-300 transform translate-y-10 opacity-0`;
+            d.innerHTML = m;
+            document.body.appendChild(d);
+            setTimeout(() => { d.classList.remove('translate-y-10', 'opacity-0'); }, 10);
+            setTimeout(() => { d.classList.add('translate-y-10', 'opacity-0'); setTimeout(() => d.remove(), 300); }, 4000);
+        };
+
+        const SUPABASE_URL = "https://dcluqkzjhazvfwimnyps.supabase.co"; 
+        const SUPABASE_ANON_KEY = "sb_publishable_YvIvL9HV893L-S7pSdSXVw_99No_g_b"; 
+        let supabaseClient = null;
+        try { 
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); 
+        } catch (err) { 
+            console.warn("Supabase Init Error."); 
+        }
+
+        let discordWebhookUrl = localStorage.getItem('mers_discord_webhook') || '';
+        let senderFacilities = [], cases = [], etaOptions = [];
+        const el = id => document.getElementById(id);
+
+        function initializeDatabase() {
+            senderFacilities = JSON.parse(localStorage.getItem('mers_sender_facilities')) || ["Puskesmas Pulau Sembilan", "Puskesmas Balangnipa", "Puskesmas Sinjai Tengah", "Puskesmas Sinjai Barat", "Klinik Bersalin Bunda", "BPM Bidan Hartati Mandiri"];
+            etaOptions = JSON.parse(localStorage.getItem('mers_eta_options')) || [10, 15, 20, 30];
+            cases = JSON.parse(localStorage.getItem('mers_cases')) || [];
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('mers_cases', JSON.stringify(cases));
+        }
+
+        async function fetchCasesFromSupabase(isInitial = false) {
+            if (!supabaseClient) return;
+            try {
+                const { data, error } = await supabaseClient.from('cases').select('*').order('timestamp', { ascending: false });
+                if (error) return;
+                if (data) {
+                    cases = data;
+                    saveToLocalStorage();
+                    renderAll();
+                }
+            } catch (err) { /* silent */ }
+        }
+
+        function setupRealtimeSubscription() {
+            if (!supabaseClient) return;
+
+            let isIframe = false;
+            try { isIframe = window.self !== window.top; } catch (e) { isIframe = true; }
+
+            if (isIframe) {
+                setInterval(() => fetchCasesFromSupabase(false), 5000);
+                return;
+            }
+
+            try {
+                supabaseClient.channel('public:cases')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'cases' }, payload => {
+                        fetchCasesFromSupabase(false);
+                    })
+                    .subscribe((status) => {
+                        if (status === 'CHANNEL_ERROR') {
+                            setInterval(() => fetchCasesFromSupabase(false), 5000);
+                        }
+                    });
+            } catch (err) {
+                setInterval(() => fetchCasesFromSupabase(false), 5000);
+            }
+        }
+
+        async function insertToSupabase(table, rowData) { 
+            if (supabaseClient) {
+                try { 
+                    const { error } = await supabaseClient.from(table).insert([rowData]); 
+                    if (error) console.error("Gagal menyimpan ke Supabase:", error);
+                } 
+                catch (err) { console.error("Koneksi Supabase Bermasalah:", err); } 
+            }
+        }
+
+        async function sendDiscordWebhook(c, eventType) {
+            if(!discordWebhookUrl) return;
+            const payload = {
+                content: `🚨 **Notifikasi Portal Pengirim: ${eventType}** 🚨`,
+                embeds: [{
+                    title: `Pasien Baru: ${c.name} (${c.age}th)`,
+                    description: `**Kategori Kasus:** ${c.category}\n**Diagnosis Awal:** ${c.diagnosis}`,
+                    fields: [
+                        {name: "Asal Rujukan", value: c.puskesmas, inline: true},
+                        {name: "Estimasi Tiba (ETA)", value: `${c.eta} Menit`, inline: true}
+                    ],
+                    color: 16711680,
+                    timestamp: new Date().toISOString()
+                }]
+            };
+            try {
+                await fetch(discordWebhookUrl, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+            } catch(e) { }
+        }
+
+        function renderAll() {
+            renderPuskesmasTracking();
+        }
+
+        function renderPuskesmasTracking() {
+            const ct = el('puskesmas-cases-list');
+            if (ct) {
+                const activeCases = cases.filter(c => c.status !== 'OUTCOME_DECLARED');
+                if (activeCases.length === 0) {
+                    ct.innerHTML = `<p class="text-xs text-gray-500 italic p-4 text-center">Belum ada rujukan aktif saat ini.</p>`;
+                    return;
+                }
+                ct.innerHTML = activeCases.map(c => `
+                    <div class="glass-card p-4 border-l-4 border-amber-500 mb-3 space-y-2">
+                        <div class="flex justify-between items-center"><h3 class="font-bold text-xs text-brand-dark">${c.name} (${c.age}th)</h3><span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded">${c.status}</span></div>
+                        <p class="text-[10px] text-gray-600">${c.diagnosis}</p>
+                        <div class="pt-2 border-t flex justify-between items-center text-[9px] text-gray-400"><span>Status Kesiapan RS: <b class="text-brand-primary">${c.readiness}</b></span><span>ETA: <b>${c.eta} Menit</b></span></div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderSenderFacilitiesDropdown() { 
+            const d=el('form-sender-facility'); 
+            if(d) d.innerHTML=senderFacilities.map(f=>`<option value="${f}">${f}</option>`).join(''); 
+        }
+
+        function renderEtaDropdown() {
+            const select = el('form-eta');
+            if (select) {
+                etaOptions.sort((a, b) => a - b);
+                select.innerHTML = etaOptions.map(val => `<option value="${val}" ${val === 15 ? 'selected' : ''}>${val} Menit</option>`).join('');
+            }
+        }
+
+        window.submitReferral = async function(e) {
+            e.preventDefault();
+            const sender = el('form-sender-facility').value, name = el('form-patient-name').value, cat = el('form-case-category').value;
+            let mandatory = ['PONEK']; 
+            if(cat === 'Perdarahan Berat') mandatory = ['PONEK','OK','BloodBank','ICU'];
+            else if(cat === 'Preeklamsia Berat') mandatory = ['PONEK','ICU','OK'];
+            else if(cat === 'Partus Macet') mandatory = ['PONEK','OK'];
+            else if(cat === 'Sepsis') mandatory = ['PONEK','BloodBank'];
+
+            let us = {}; mandatory.forEach(u => us[u] = {status:'PENDING', checked:[], petugas:'', notes:''});
+            const newCase = { id: 'case_'+Date.now(), name, age:parseInt(el('form-patient-age').value)||26, diagnosis: cat, category: cat, td:el('form-td').value, djj:el('form-djj').value, kesadaran:el('form-kesadaran').value, puskesmas:sender, eta:parseInt(el('form-eta').value), timestamp:Date.now(), status:'PENDING_REVIEW', outcome:'', mandatoryUnits:mandatory, slaElapsed:0, hasWarned:false, hasEscalated:false, unitStatuses:us, readiness:'PENDING' };
+            
+            await insertToSupabase('cases', newCase); 
+            sendDiscordWebhook(newCase, "Rujukan Masuk Baru!");
+            showTemporaryToast("Berhasil! Rujukan telah terkirim ke Command Center.", "success"); 
+            el('referral-form')?.reset(); 
+            await fetchCasesFromSupabase(false);
+        };
+
+        window.onload = function() {
+            initializeDatabase();
+            fetchCasesFromSupabase(true);
+            setupRealtimeSubscription();
+            renderSenderFacilitiesDropdown();
+            renderEtaDropdown();
+        };
+    </script>
+</body>
+</html>
