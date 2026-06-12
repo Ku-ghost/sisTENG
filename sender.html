@@ -60,7 +60,7 @@
         <div id="portal-sender" class="space-y-6">
             <header class="glass-panel px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-white">
                 <div class="flex items-center gap-4">
-                    <div class="bg-amber-600 p-3 rounded-xl text-white shadow-md"><i class="ph-fill ph-ambulance text-3xl"></i></div>
+                    <img id="main-hospital-logo" src="https://placehold.co/100x100?text=sisTENG" alt="Logo sisTENG" class="w-12 h-12 rounded-full border-2 border-brand-soft shadow-md object-cover bg-white">
                     <div><h1 class="text-lg font-extrabold text-brand-dark leading-none">Portal Rujukan Maternal</h1><p class="text-amber-800 text-[11px] font-semibold mt-1">SISTEM INTEGRASI FASILITAS KESEHATAN</p></div>
                 </div>
             </header>
@@ -124,7 +124,8 @@
             console.warn("Supabase Init Error."); 
         }
 
-        let discordWebhookUrl = localStorage.getItem('mers_discord_webhook') || '';
+        let discordWebhookUrl = '';
+        let hospitalLogoUrl = '';
         let senderFacilities = [], cases = [], etaOptions = [];
         const el = id => document.getElementById(id);
 
@@ -136,6 +137,8 @@
 
         function saveToLocalStorage() {
             localStorage.setItem('mers_cases', JSON.stringify(cases));
+            localStorage.setItem('mers_sender_facilities', JSON.stringify(senderFacilities));
+            localStorage.setItem('mers_eta_options', JSON.stringify(etaOptions));
         }
 
         async function fetchCasesFromSupabase(isInitial = false) {
@@ -144,9 +147,25 @@
                 const { data, error } = await supabaseClient.from('cases').select('*').order('timestamp', { ascending: false });
                 if (error) return;
                 if (data) {
-                    cases = data;
+                    // Ambil baris konfigurasi global (Mencegah perbedaan opsi ETA/Logo/Fasilitas antar HP Puskesmas)
+                    const configRow = data.find(c => c.id === 'system_config');
+                    if (configRow && configRow.unitStatuses) {
+                        const cfg = configRow.unitStatuses;
+                        if (cfg.senderFacilities) senderFacilities = cfg.senderFacilities;
+                        if (cfg.etaOptions) etaOptions = cfg.etaOptions;
+                        if (cfg.discordWebhookUrl) discordWebhookUrl = cfg.discordWebhookUrl;
+                        if (cfg.hospitalLogoUrl) {
+                            hospitalLogoUrl = cfg.hospitalLogoUrl;
+                            const logoEl = el('main-hospital-logo');
+                            if (logoEl) logoEl.src = hospitalLogoUrl || "https://placehold.co/100x100?text=sisTENG";
+                        }
+                    }
+
+                    cases = data.filter(c => c.id !== 'system_config');
                     saveToLocalStorage();
                     renderAll();
+                    renderSenderFacilitiesDropdown();
+                    renderEtaDropdown();
                 }
             } catch (err) { /* silent */ }
         }
