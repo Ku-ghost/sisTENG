@@ -19,7 +19,7 @@
                 extend: {
                     fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
                     colors: {
-                        brand: { light: '#dff0e6', soft: '#52B788', primary: '#2D6A4F', dark: '#081C15', accent: '#D4AF37', danger: '#E63946', warning: '#FF9F1C' }
+                        brand: { light: '#eaf4ef', soft: '#52B788', primary: '#2D6A4F', dark: '#081C15', accent: '#D4AF37', danger: '#E63946', warning: '#FF9F1C' }
                     },
                     animation: { 'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
                 }
@@ -29,24 +29,24 @@
 
     <style>
         body {
-            background: radial-gradient(circle at 50% 50%, #cfead9 0%, #b7dac7 100%);
+            background: radial-gradient(circle at 50% 50%, #b3c5bc 0%, #899d94 100%);
             min-height: 100vh; color: #081C15; background-attachment: fixed;
             display: flex; flex-direction: column;
         }
         .glass-panel {
-            background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: 0 15px 45px -8px rgba(4, 24, 15, 0.15), 0 4px 12px rgba(4, 24, 15, 0.05);
+            background: rgba(255, 255, 255, 0.55); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 15px 45px -8px rgba(4, 24, 15, 0.1), 0 4px 12px rgba(4, 24, 15, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.6);
             border-radius: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .glass-panel:hover { box-shadow: 0 20px 55px -6px rgba(4, 24, 15, 0.2), 0 6px 16px rgba(4, 24, 15, 0.08); }
+        .glass-panel:hover { box-shadow: 0 20px 55px -6px rgba(4, 24, 15, 0.15), 0 6px 16px rgba(4, 24, 15, 0.05); }
         .glass-card {
-            background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(255, 255, 255, 0.85);
-            box-shadow: 0 8px 24px -6px rgba(4, 24, 15, 0.08); border-radius: 18px; transition: transform 0.2s, box-shadow 0.2s;
+            background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 24px -6px rgba(4, 24, 15, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.5); border-radius: 18px; transition: transform 0.2s, box-shadow 0.2s;
         }
-        .glass-card.active-selection { border-color: #2D6A4F; background: rgba(235, 247, 241, 0.95); box-shadow: 0 10px 25px -4px rgba(45, 106, 79, 0.22); }
+        .glass-card.active-selection { border-color: #2D6A4F; background: rgba(235, 247, 241, 0.85); box-shadow: 0 10px 25px -4px rgba(45, 106, 79, 0.15); }
         .glass-danger {
-            background: rgba(230, 57, 70, 0.96); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.35); box-shadow: 0 12px 36px rgba(230, 57, 70, 0.3); color: white;
+            background: rgba(230, 57, 70, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 12px 36px rgba(230, 57, 70, 0.2); color: white;
         }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -54,13 +54,13 @@
         ::-webkit-scrollbar-thumb:hover { background: rgba(45, 106, 79, 0.45); }
         .tab-btn.active { background-color: #2D6A4F; color: white; box-shadow: 0 6px 16px rgba(45, 106, 79, 0.35); }
         .glass-input {
-            background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(45, 106, 79, 0.25); border-radius: 12px;
+            background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(45, 106, 79, 0.2); border-radius: 12px;
             padding: 8px 14px; outline: none; height: 42px; transition: all 0.2s ease-in-out; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
         }
-        .glass-input:focus { border-color: #2D6A4F; background: rgba(255, 255, 255, 1); box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.3); }
+        .glass-input:focus { border-color: #2D6A4F; background: rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.2); }
         .custom-checkbox {
             appearance: none; width: 18px; height: 18px; border: 2px solid #52B788; border-radius: 5px;
-            outline: none; cursor: pointer; position: relative; background: rgba(255,255,255,0.7); transition: all 0.15s;
+            outline: none; cursor: pointer; position: relative; background: rgba(255,255,255,0.5); transition: all 0.15s;
         }
         .custom-checkbox:checked { background: #2D6A4F; border-color: #2D6A4F; }
         .custom-checkbox:checked::after { content: '✓'; position: absolute; color: white; font-size: 12px; font-weight: bold; top: 50%; left: 50%; transform: translate(-50%, -50%); }
@@ -74,7 +74,7 @@
             <span class="text-xs font-extrabold uppercase tracking-widest text-slate-400 font-mono">Status Sistem:</span>
             <span id="active-route-badge" class="bg-brand-primary text-white text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Memuat...</span>
         </div>
-        <div class="flex flex-wrap items-center gap-1.5">
+        <div id="portal-nav-menu" class="flex flex-wrap items-center gap-1.5">
             <span class="text-[10px] text-slate-500 font-bold mr-1">Akses Portal:</span>
             <button onclick="simulateRoute('#/hospital')" class="bg-slate-800 hover:bg-brand-primary text-slate-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-colors border border-slate-700">WEB UTAMA (The sisTENG)</button>
             <button onclick="simulateRoute('#/sender')" class="bg-slate-800 hover:bg-amber-600 text-slate-200 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors border border-slate-700">Link Rujukan</button>
@@ -481,6 +481,9 @@
         let isAdminAuth=false, selectedCaseId='case_default', tickerInterval=null;
         let currentPortal='hospital', currentHospitalTab='monitor', currentAdminTab='kpi', simulatedUnitRole='PONEK';
 
+        // Variabel Penyimpan Voice Speech Global agar tidak terhapus Garbage Collector (mencegah suara robot terpotong)
+        let activeUtterance = null;
+
         // Variabel Webhook Discord & Logo
         let discordWebhookUrl = localStorage.getItem('mers_discord_webhook') || '';
         let hospitalLogoUrl = localStorage.getItem('mers_hospital_logo') || '';
@@ -511,7 +514,7 @@
                 { name: "RSUD Pratama Sinjai", eta: 15, type: "Mitra", note: "Mitra Faskes Alternatif" }
             ];
             
-            // Fallback localStorage
+            // Membuka data lokal hanya sebagai backup awal sebelum terkoneksi database online
             cases = JSON.parse(localStorage.getItem('mers_cases')) || [];
             
             if(el('discord-webhook-url')) el('discord-webhook-url').value = discordWebhookUrl;
@@ -526,7 +529,7 @@
             localStorage.setItem('mers_cases', JSON.stringify(cases));
         }
 
-        // SUPABASE: FETCH DATA AWAL (SMART MERGE)
+        // SUPABASE: FETCH DATA AWAL (OVERWRITE UNTUK SINKRONISASI MUTLAK)
         async function fetchCasesFromSupabase(isInitial = false) {
             if (!supabaseClient) return;
             try {
@@ -536,18 +539,10 @@
                     return;
                 }
                 if (data) {
-                    data.forEach(dbCase => {
-                        const localIdx = cases.findIndex(c => c.id === dbCase.id);
-                        if (localIdx === -1) {
-                            cases.push(dbCase);
-                        } else {
-                            // Smart Merge: Pertahankan SLA lokal jika lebih besar
-                            if(cases[localIdx].slaElapsed > dbCase.slaElapsed) dbCase.slaElapsed = cases[localIdx].slaElapsed;
-                            Object.assign(cases[localIdx], dbCase);
-                        }
-                    });
+                    // SINKRONISASI ABSOLUT: Timpa seluruh memori lokal dengan data Supabase. 
+                    // Menghilangkan bug perbedaan rujukan 'hantu' antara Handphone & PC.
+                    cases = data;
                     
-                    cases.sort((a,b) => b.timestamp - a.timestamp);
                     if(cases.length > 0 && selectedCaseId === 'case_default') selectedCaseId = cases[0].id;
                     
                     saveToLocalStorage();
@@ -558,7 +553,7 @@
             }
         }
 
-        // SUPABASE: REALTIME LISTENER
+        // SUPABASE: REALTIME LISTENER (SINKRON SECARA INSTAN)
         function setupRealtimeSubscription() {
             if (!supabaseClient) return;
 
@@ -575,23 +570,8 @@
             try {
                 supabaseClient.channel('public:cases')
                     .on('postgres_changes', { event: '*', schema: 'public', table: 'cases' }, payload => {
-                        if (payload.eventType === 'INSERT') {
-                            const exists = cases.find(c => c.id === payload.new.id);
-                            if (!exists) {
-                                cases.unshift(payload.new);
-                                saveToLocalStorage();
-                                renderAll(); 
-                            }
-                        } else if (payload.eventType === 'UPDATE') {
-                            const idx = cases.findIndex(c => c.id === payload.new.id);
-                            if (idx !== -1) {
-                                const localSla = cases[idx].slaElapsed;
-                                cases[idx] = payload.new;
-                                if(localSla > cases[idx].slaElapsed) cases[idx].slaElapsed = localSla; 
-                                saveToLocalStorage();
-                                renderAll();
-                            }
-                        }
+                        // Tarik ulang data secara instan begitu ada perubahan di database
+                        fetchCasesFromSupabase(false);
                     })
                     .subscribe((status) => {
                         if (status === 'CHANNEL_ERROR') {
@@ -600,7 +580,7 @@
                         }
                     });
             } catch (err) {
-                console.warn("Lingkungan terdeteksi memblokir WebSocket (Canvas). Beralih ke Polling otomatis.", err);
+                console.warn("Exception saat setup WebSocket. Beralih ke Mode Polling.", err);
                 setInterval(() => fetchCasesFromSupabase(false), 5000);
             }
         }
@@ -615,8 +595,11 @@
 
         async function insertToSupabase(table, rowData) { 
             if (supabaseClient) {
-                try { await supabaseClient.from(table).insert([rowData]); } 
-                catch (err) { /* silent */ } 
+                try { 
+                    const { error } = await supabaseClient.from(table).insert([rowData]); 
+                    if (error) console.error("Gagal menyimpan ke Supabase:", error);
+                } 
+                catch (err) { console.error("Koneksi Supabase Bermasalah:", err); } 
             }
         }
 
@@ -705,6 +688,9 @@
             if(el('active-route-badge')) el('active-route-badge').innerText = currentPortal === 'hospital' ? 'WEB UTAMA (The sisTENG)' : currentPortal;
 
             ['portal-sender', 'portal-hospital', 'portal-admin'].forEach(id => el(id)?.classList.add('hidden'));
+
+            const navMenu = el('portal-nav-menu');
+            if (navMenu) navMenu.style.display = (currentPortal === 'sender') ? 'none' : 'flex';
 
             if (currentPortal === 'sender') {
                 el('portal-sender')?.classList.remove('hidden');
@@ -1018,7 +1004,7 @@
             } else {
                 let ktd = 0, knc = 0, ktc = 0;
                 cases.forEach(c => { const cl = 5 * 60, wl = 3 * 60; if (c.status === 'OUTCOME_DECLARED') { if (c.outcome === 'Deceased') ktd++; else if (c.outcome === 'Near Miss') { if (c.slaElapsed >= cl) ktd++; else knc++; } else if (['Discharged','Control'].includes(c.outcome) && c.slaElapsed >= wl) ktc++; } });
-                csv += `Kejadian Tidak Diharapkan (KTD),${ktd}\nKejadian Nyaris Cedera (KNC),${knc}\nKejadian Tidak Cedera (KTC),${ktc}\n`;
+                csv += `Kejadian Tidak Diharapkan (KTD),${ktd}\nKejaris Cedera (KNC),${knc}\nKejadian Tidak Cedera (KTC),${ktc}\n`;
             }
             const encodedUri = encodeURI(csv); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `laporan_${type}_sisteng.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
         };
@@ -1379,7 +1365,7 @@
             } 
         };
 
-        window.submitReferral = function(e) {
+        window.submitReferral = async function(e) {
             e.preventDefault();
             const sender = el('form-sender-facility').value, name = el('form-patient-name').value, cat = el('form-case-category').value;
             let mandatory = []; const allUnits = Object.keys(unitTemplates);
@@ -1392,27 +1378,29 @@
             let us = {}; mandatory.forEach(u => us[u] = {status:'PENDING', checked:[], petugas:'', notes:''});
             const newCase = { id: 'case_'+Date.now(), name, age:parseInt(el('form-patient-age').value)||26, diagnosis: cat, category: cat, td:el('form-td').value, djj:el('form-djj').value, kesadaran:el('form-kesadaran').value, puskesmas:sender, eta:parseInt(el('form-eta').value), timestamp:Date.now(), status:'PENDING_REVIEW', outcome:'', mandatoryUnits:mandatory, slaElapsed:0, hasWarned:false, hasEscalated:false, unitStatuses:us, readiness:'PENDING' };
             
-            cases.unshift(newCase);
-            selectedCaseId = newCase.id; 
-            saveToLocalStorage(); 
-            insertToSupabase('cases', newCase); 
+            // Simpan ke database Supabase terlebih dahulu agar tersinkronisasi instan ke semua perangkat
+            await insertToSupabase('cases', newCase); 
             
             sendDiscordWebhook(newCase, "Rujukan Masuk Baru!");
             
             showTemporaryToast("Berhasil! Rujukan telah terkirim ke Command Center.", "success"); 
             el('referral-form')?.reset(); 
-            renderAll();
+            
+            // Tarik ulang data secara sinkron
+            await fetchCasesFromSupabase(false);
         };
 
         function playVoiceAssistant(message) {
             if (isMuted || !isSystemStarted || !('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(message);
+            
+            // Simpan utterance pada variabel global agar tidak dihapus paksa oleh Garbage Collector browser (anti-terpotong)
+            activeUtterance = new SpeechSynthesisUtterance(message);
             const voices = window.speechSynthesis.getVoices();
             const indoVoice = voices.find(v => v.lang === 'id-ID' || v.lang === 'id_ID' || v.name.includes('Indonesia'));
-            if (indoVoice) utterance.voice = indoVoice;
-            utterance.lang = 'id-ID'; utterance.rate = 0.95; utterance.pitch = 1.0; utterance.volume = 1.0;
-            window.speechSynthesis.speak(utterance);
+            if (indoVoice) activeUtterance.voice = indoVoice;
+            activeUtterance.lang = 'id-ID'; activeUtterance.rate = 0.95; activeUtterance.pitch = 1.0; activeUtterance.volume = 1.0;
+            window.speechSynthesis.speak(activeUtterance);
         }
 
         function triggerReferralAlarm(sourceMsg) { 
