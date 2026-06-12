@@ -19,7 +19,7 @@
                 extend: {
                     fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
                     colors: {
-                        brand: { light: '#eaf4ef', soft: '#52B788', primary: '#2D6A4F', dark: '#081C15', accent: '#D4AF37', danger: '#E63946', warning: '#FF9F1C' }
+                        brand: { light: '#dff0e6', soft: '#52B788', primary: '#2D6A4F', dark: '#081C15', accent: '#D4AF37', danger: '#E63946', warning: '#FF9F1C' }
                     },
                     animation: { 'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
                 }
@@ -34,19 +34,19 @@
             display: flex; flex-direction: column;
         }
         .glass-panel {
-            background: rgba(255, 255, 255, 0.55); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 15px 45px -8px rgba(4, 24, 15, 0.1), 0 4px 12px rgba(4, 24, 15, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: 0 15px 45px -8px rgba(4, 24, 15, 0.15), 0 4px 12px rgba(4, 24, 15, 0.05);
             border-radius: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .glass-panel:hover { box-shadow: 0 20px 55px -6px rgba(4, 24, 15, 0.15), 0 6px 16px rgba(4, 24, 15, 0.05); }
+        .glass-panel:hover { box-shadow: 0 20px 55px -6px rgba(4, 24, 15, 0.2), 0 6px 16px rgba(4, 24, 15, 0.08); }
         .glass-card {
-            background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 8px 24px -6px rgba(4, 24, 15, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.5); border-radius: 18px; transition: transform 0.2s, box-shadow 0.2s;
+            background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 8px 24px -6px rgba(4, 24, 15, 0.08); border-radius: 18px; transition: transform 0.2s, box-shadow 0.2s;
         }
-        .glass-card.active-selection { border-color: #2D6A4F; background: rgba(235, 247, 241, 0.85); box-shadow: 0 10px 25px -4px rgba(45, 106, 79, 0.15); }
+        .glass-card.active-selection { border-color: #2D6A4F; background: rgba(235, 247, 241, 0.95); box-shadow: 0 10px 25px -4px rgba(45, 106, 79, 0.22); }
         .glass-danger {
-            background: rgba(230, 57, 70, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 12px 36px rgba(230, 57, 70, 0.2); color: white;
+            background: rgba(230, 57, 70, 0.96); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.35); box-shadow: 0 12px 36px rgba(230, 57, 70, 0.3); color: white;
         }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -54,13 +54,13 @@
         ::-webkit-scrollbar-thumb:hover { background: rgba(45, 106, 79, 0.45); }
         .tab-btn.active { background-color: #2D6A4F; color: white; box-shadow: 0 6px 16px rgba(45, 106, 79, 0.35); }
         .glass-input {
-            background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(45, 106, 79, 0.2); border-radius: 12px;
+            background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(45, 106, 79, 0.25); border-radius: 12px;
             padding: 8px 14px; outline: none; height: 42px; transition: all 0.2s ease-in-out; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
         }
-        .glass-input:focus { border-color: #2D6A4F; background: rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.2); }
+        .glass-input:focus { border-color: #2D6A4F; background: rgba(255, 255, 255, 1); box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.3); }
         .custom-checkbox {
             appearance: none; width: 18px; height: 18px; border: 2px solid #52B788; border-radius: 5px;
-            outline: none; cursor: pointer; position: relative; background: rgba(255,255,255,0.5); transition: all 0.15s;
+            outline: none; cursor: pointer; position: relative; background: rgba(255,255,255,0.7); transition: all 0.15s;
         }
         .custom-checkbox:checked { background: #2D6A4F; border-color: #2D6A4F; }
         .custom-checkbox:checked::after { content: '✓'; position: absolute; color: white; font-size: 12px; font-weight: bold; top: 50%; left: 50%; transform: translate(-50%, -50%); }
@@ -77,55 +77,12 @@
         <div id="portal-nav-menu" class="flex flex-wrap items-center gap-1.5">
             <span class="text-[10px] text-slate-500 font-bold mr-1">Akses Portal:</span>
             <button onclick="simulateRoute('#/hospital')" class="bg-slate-800 hover:bg-brand-primary text-slate-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-colors border border-slate-700">WEB UTAMA (The sisTENG)</button>
-            <button onclick="simulateRoute('#/sender')" class="bg-slate-800 hover:bg-amber-600 text-slate-200 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors border border-slate-700">Link Rujukan</button>
             <span class="text-slate-700 font-bold mx-1">|</span>
             <button onclick="simulateRoute('#/admin')" class="bg-slate-800 hover:bg-slate-600 text-slate-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-colors border border-slate-700">Admin</button>
         </div>
     </div>
 
     <div class="max-w-screen-2xl mx-auto w-full flex-1 space-y-6">
-
-        <!-- ================= PORTAL PENGIRIM ================= -->
-        <div id="portal-sender" class="hidden space-y-6">
-            <header class="glass-panel px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-white">
-                <div class="flex items-center gap-4">
-                    <div class="bg-amber-600 p-3 rounded-xl text-white shadow-md"><i class="ph-fill ph-ambulance text-3xl"></i></div>
-                    <div><h1 class="text-lg font-extrabold text-brand-dark leading-none">Portal Rujukan Maternal</h1><p class="text-amber-800 text-[11px] font-semibold mt-1">SISTEM INTEGRASI FASILITAS KESEHATAN</p></div>
-                </div>
-            </header>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <div class="lg:col-span-5 glass-panel p-5 flex flex-col justify-between border border-white">
-                    <h2 class="text-base font-extrabold text-brand-dark mb-4 flex items-center gap-2"><i class="ph ph-paper-plane-tilt text-amber-600"></i> Kirim Formulir Rujukan Instan</h2>
-                    <form id="referral-form" onsubmit="window.submitReferral(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Fasilitas Pengirim</label><select id="form-sender-facility" class="glass-input cursor-pointer font-bold text-xs"></select></div>
-                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Rumah Sakit Tujuan</label><select id="form-target-hospital" class="glass-input cursor-pointer font-bold text-xs text-brand-primary bg-emerald-50"><option value="UPT RSUD Sinjai">UPT RSUD Sinjai (Utama)</option></select></div>
-                        </div>
-                        <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Nama Pasien</label><input type="text" id="form-patient-name" required placeholder="Ny. Ratna Sari" class="glass-input text-xs font-semibold"></div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Usia Ibu</label><input type="number" id="form-patient-age" required placeholder="26" class="glass-input text-xs"></div>
-                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Kategori Kasus</label><select id="form-case-category" class="glass-input cursor-pointer text-xs"><option value="Perdarahan Berat">Perdarahan Berat</option><option value="Preeklamsia Berat">Preeklamsia Berat</option><option value="Partus Macet">Partus Macet</option><option value="Sepsis">Demam Tinggi / Sepsis</option></select></div>
-                        </div>
-                        <div class="p-3 bg-gray-50 rounded-xl border border-gray-200/80 space-y-2 shadow-inner">
-                            <p class="text-[10px] font-extrabold text-brand-dark uppercase tracking-wider mb-1">Tanda Vital</p>
-                            <div class="grid grid-cols-3 gap-2">
-                                <input type="text" id="form-td" required placeholder="TD: 120/80" class="glass-input text-xs py-1.5 px-2">
-                                <input type="text" id="form-djj" required placeholder="DJJ: 140" class="glass-input text-xs py-1.5 px-2">
-                                <select id="form-kesadaran" class="glass-input text-[11px] py-1 px-1.5"><option value="Compos Mentis">Compos Mentis</option><option value="Apatis">Apatis</option><option value="Somnolen">Somnolen</option></select>
-                            </div>
-                            <input type="text" id="form-patient-cond" placeholder="Catatan: Ketuban pecah dini, kejang..." class="glass-input text-xs py-1.5 px-2 w-full mt-2">
-                        </div>
-                        <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">ETA (Waktu Tiba)</label><select id="form-eta" class="glass-input cursor-pointer text-xs"><option value="10">10 Menit</option><option value="15" selected>15 Menit</option><option value="20">20 Menit</option><option value="30">30 Menit</option></select></div>
-                        <button type="submit" class="w-full bg-brand-primary hover:bg-brand-soft text-white font-bold py-3.5 rounded-xl shadow-md">KIRIM RUJUKAN MATERNAL</button>
-                    </form>
-                </div>
-                <div class="lg:col-span-7 glass-panel p-5 border border-white">
-                    <h2 class="text-base font-extrabold text-brand-dark mb-4 flex items-center gap-2"><i class="ph ph-radar text-brand-primary"></i> Status & Pelacakan Rujukan Aktif Anda</h2>
-                    <div id="puskesmas-cases-list" class="space-y-4"></div>
-                </div>
-            </div>
-        </div>
 
         <!-- ================= PORTAL RUMAH SAKIT (WEB UTAMA) ================= -->
         <div id="portal-hospital" class="hidden space-y-6">
@@ -194,7 +151,7 @@
                         </h3>
                         <div class="flex-1 bg-white/50 rounded-xl p-3 border border-white text-[11px] text-gray-600 space-y-2 overflow-y-auto">
                             <ol class="list-decimal pl-4 space-y-1.5 font-medium leading-relaxed">
-                                <li>Fasilitas pengirim memasukkan data rujukan via link pengirim.</li>
+                                <li>Fasilitas pengirim memasukkan data rujukan via link pengirim terpisah.</li>
                                 <li>Pihak Command Center memantau lalu lintas kasus rujukan aktif.</li>
                                 <li>Setiap unit medis siaga wajib melakukan verifikasi fisik kesiapan dari Portal Unit masing-masing menggunakan PIN otentikasi.</li>
                             </ol>
@@ -334,7 +291,7 @@
                             <!-- BAGIAN DISCORD WEBHOOK -->
                             <div class="bg-slate-100 border border-slate-300 rounded-2xl p-5 space-y-4 shadow-sm">
                                 <h4 class="text-xs font-extrabold text-indigo-700 flex items-center gap-1"><i class="ph-fill ph-discord-logo text-lg"></i> Pengaturan Webhook Discord</h4>
-                                <p class="text-[9px] text-gray-600">Terima notifikasi real-time saat pasien masuk, kesiapan unit berubah, dan status dialihkan.</p>
+                                <p class="text-[9px] text-gray-600">Terima fungsionalitas real-time saat pasien masuk faskes, kesiapan unit berubah, dan status akhir dialihkan.</p>
                                 <input id="discord-webhook-url" type="text" placeholder="https://discord.com/api/webhooks/..." class="w-full text-[10px] bg-white border p-2 rounded-lg font-mono">
                                 <button onclick="window.saveDiscordWebhook()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded-xl shadow transition-colors">Simpan Webhook URL</button>
                             </div>
@@ -413,6 +370,28 @@
                                     <div id="master-checklist-placeholder" class="bg-slate-50 p-8 rounded-xl border border-gray-200 border-dashed text-center text-gray-400 text-xs">
                                         Pilih unit di sebelah kiri untuk mengelola checklist fisiknya.
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEKSI KELOLA MASTER ETA -->
+                    <div class="lg:col-span-12 glass-panel p-6 flex flex-col border border-white mt-4">
+                        <h3 class="text-xs font-bold text-brand-dark mb-4 border-b pb-3 flex items-center gap-2">
+                            <i class="ph ph-clock text-amber-600 text-lg"></i> Kelola Opsi Estimasi Tiba (ETA)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-slate-900/40 p-5 rounded-xl border border-white/5 space-y-3">
+                                <h4 class="text-xs font-bold text-brand-primary uppercase tracking-wider mb-2">Tambah Opsi ETA Baru</h4>
+                                <div class="flex gap-2">
+                                    <input type="number" id="master-new-eta-value" placeholder="Durasi (Menit)..." class="glass-input text-xs flex-1">
+                                    <button onclick="window.saveNewMasterEta()" class="bg-brand-primary hover:bg-brand-soft text-white text-xs font-bold px-4 rounded-lg shadow">Tambah</button>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-brand-primary uppercase tracking-wider mb-2">Daftar Opsi ETA Aktif</h4>
+                                <div id="master-eta-list-container" class="space-y-1.5 max-h-[25vh] overflow-y-auto pr-1">
+                                    <!-- Terisi dinamis -->
                                 </div>
                             </div>
                         </div>
@@ -499,7 +478,7 @@
             'ICU': { label: 'Ruang ICU', checklists: ['Bed ICU Siap Pakai', 'Ventilator Mekanis Terkalibrasi & Berfungsi', 'Patient Monitor Vital Signs Aktif', 'Dokter Spesialis Anestesi/Kritis & Perawat ICU Standby'] }
         };
 
-        let unitTemplates={}, senderFacilities=[], redirectDestinations=[], cases=[];
+        let unitTemplates={}, senderFacilities=[], redirectDestinations=[], cases=[], etaOptions=[];
         const el = id => document.getElementById(id);
 
         // ==========================================
@@ -514,6 +493,9 @@
                 { name: "RSUD Pratama Sinjai", eta: 15, type: "Mitra", note: "Mitra Faskes Alternatif" }
             ];
             
+            // ETA Options dari Storage atau Default
+            etaOptions = JSON.parse(localStorage.getItem('mers_eta_options')) || [10, 15, 20, 30];
+
             // Membuka data lokal hanya sebagai backup awal sebelum terkoneksi database online
             cases = JSON.parse(localStorage.getItem('mers_cases')) || [];
             
@@ -527,6 +509,7 @@
             localStorage.setItem('mers_sender_facilities', JSON.stringify(senderFacilities));
             localStorage.setItem('mers_redirect_destinations', JSON.stringify(redirectDestinations));
             localStorage.setItem('mers_cases', JSON.stringify(cases));
+            localStorage.setItem('mers_eta_options', JSON.stringify(etaOptions));
         }
 
         // SUPABASE: FETCH DATA AWAL (OVERWRITE UNTUK SINKRONISASI MUTLAK)
@@ -540,7 +523,6 @@
                 }
                 if (data) {
                     // SINKRONISASI ABSOLUT: Timpa seluruh memori lokal dengan data Supabase. 
-                    // Menghilangkan bug perbedaan rujukan 'hantu' antara Handphone & PC.
                     cases = data;
                     
                     if(cases.length > 0 && selectedCaseId === 'case_default') selectedCaseId = cases[0].id;
@@ -593,16 +575,6 @@
             } catch (err) { /* silent */ }
         }
 
-        async function insertToSupabase(table, rowData) { 
-            if (supabaseClient) {
-                try { 
-                    const { error } = await supabaseClient.from(table).insert([rowData]); 
-                    if (error) console.error("Gagal menyimpan ke Supabase:", error);
-                } 
-                catch (err) { console.error("Koneksi Supabase Bermasalah:", err); } 
-            }
-        }
-
         // ==========================================
         // FITUR WEBHOOK DISCORD & LOGO RS
         // ==========================================
@@ -618,7 +590,6 @@
             // Konversi Google Drive Link
             const gdriveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
             if (gdriveMatch && gdriveMatch[1]) {
-                // Gunakan format uc?export=view yang lebih andal untuk gambar publik
                 url = `https://drive.google.com/uc?export=view&id=${gdriveMatch[1]}`;
             }
             localStorage.setItem('mers_hospital_logo', url);
@@ -687,15 +658,9 @@
             currentPortal = hash.replace('#/', '');
             if(el('active-route-badge')) el('active-route-badge').innerText = currentPortal === 'hospital' ? 'WEB UTAMA (The sisTENG)' : currentPortal;
 
-            ['portal-sender', 'portal-hospital', 'portal-admin'].forEach(id => el(id)?.classList.add('hidden'));
+            ['portal-hospital', 'portal-admin'].forEach(id => el(id)?.classList.add('hidden'));
 
-            const navMenu = el('portal-nav-menu');
-            if (navMenu) navMenu.style.display = (currentPortal === 'sender') ? 'none' : 'flex';
-
-            if (currentPortal === 'sender') {
-                el('portal-sender')?.classList.remove('hidden');
-                renderSenderFacilitiesDropdown();
-            } else if (currentPortal === 'admin') {
+            if (currentPortal === 'admin') {
                 el('portal-admin')?.classList.remove('hidden');
                 if (isAdminAuth) {
                     el('admin-login')?.classList.add('hidden');
@@ -753,7 +718,13 @@
             el(`tab-admin-${tabId}`)?.classList.add('active');
 
             if (tabId === 'links') generateDistributionLinks();
-            if (tabId === 'master') { renderMasterFacilitiesList(); renderMasterRedirectsList(); renderMasterUnitDropdown(); renderMasterUnitsList(); }
+            if (tabId === 'master') { 
+                renderMasterFacilitiesList(); 
+                renderMasterRedirectsList(); 
+                renderMasterUnitDropdown(); 
+                renderMasterUnitsList(); 
+                window.renderMasterEtaList();
+            }
         };
 
         // ==========================================
@@ -761,7 +732,7 @@
         // ==========================================
         function renderAll() {
             renderActiveCasesList(); renderUnitStatusesMonitorList(); renderSplitMandatoryUnitsSummary();
-            renderPuskesmasTracking(); renderAdminKpis();
+            renderAdminKpis();
             if (currentHospitalTab === 'outcome') renderOutcomeTab();
         }
 
@@ -780,6 +751,18 @@
                     }
                 });
                 if (alarmSource) { saveToLocalStorage(); triggerReferralAlarm(alarmSource); }
+            }
+
+            // DETEKSI KEADAAN MATI SECARA OTOMATIS (SUARA ALARM & AI HILANG JIKA TIDAK ADA KASUS REVIEW)
+            const hasPendingReview = cases.some(c => c.status === 'PENDING_REVIEW');
+            if (!hasPendingReview) {
+                if (audioInterval) {
+                    clearInterval(audioInterval);
+                    audioInterval = null;
+                }
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
             }
 
             if (!activeCases.length) {
@@ -937,17 +920,6 @@
             });
         }
 
-        function renderPuskesmasTracking() {
-            const ct = el('puskesmas-cases-list');
-            if (ct) ct.innerHTML = cases.map(c => `
-                <div class="glass-card p-4 border-l-4 border-amber-500 mb-3 space-y-2">
-                    <div class="flex justify-between items-center"><h3 class="font-bold text-xs text-brand-dark">${c.name} (${c.age}th)</h3><span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded">${c.status}</span></div>
-                    <p class="text-[10px] text-gray-600">${c.diagnosis}</p>
-                    <div class="pt-2 border-t flex justify-between items-center text-[9px] text-gray-400"><span>Status Kesiapan RS: <b class="text-brand-primary">${c.readiness}</b></span><span>ETA: <b>${c.eta} Menit</b></span></div>
-                </div>
-            `).join('');
-        }
-
         function renderAdminKpis() {
             if(el('stat-total-referrals')) el('stat-total-referrals').innerText = cases.length;
             let saved = 0, nearMiss = 0, deceased = 0;
@@ -1016,11 +988,11 @@
             const name = el('master-facility-name')?.value.trim(); if (!name) return;
             const idx = el('master-facility-index')?.value;
             if (idx !== "") { senderFacilities[idx] = name; } else { senderFacilities.push(name); }
-            saveToLocalStorage(); clearFacilityForm(); renderMasterFacilitiesList(); renderSenderFacilitiesDropdown();
+            saveToLocalStorage(); clearFacilityForm(); renderMasterFacilitiesList();
         };
         window.clearFacilityForm = function() { if(el('master-facility-index')) el('master-facility-index').value=''; if(el('master-facility-name')) el('master-facility-name').value=''; };
         window.editSenderFacility = function(idx) { if(el('master-facility-index')) el('master-facility-index').value=idx; if(el('master-facility-name')) el('master-facility-name').value=senderFacilities[idx]; };
-        window.deleteSenderFacility = function(idx) { senderFacilities.splice(idx,1); saveToLocalStorage(); renderMasterFacilitiesList(); renderSenderFacilitiesDropdown(); };
+        window.deleteSenderFacility = function(idx) { senderFacilities.splice(idx,1); saveToLocalStorage(); renderMasterFacilitiesList(); };
 
         window.saveRedirectDestination = function() {
             const name = el('master-redirect-name')?.value.trim(); if (!name) return;
@@ -1033,9 +1005,8 @@
         window.editRedirectDestination = function(idx) { const d=redirectDestinations[idx]; if(el('master-redirect-index')) el('master-redirect-index').value=idx; if(el('master-redirect-name')) el('master-redirect-name').value=d.name; if(el('master-redirect-eta')) el('master-redirect-eta').value=d.eta; if(el('master-redirect-type')) el('master-redirect-type').value=d.type; if(el('master-redirect-note')) el('master-redirect-note').value=d.note; };
         window.deleteRedirectDestination = function(idx) { redirectDestinations.splice(idx,1); saveToLocalStorage(); renderMasterRedirectsList(); renderRedirectModalDestinations(); };
 
-        function renderSenderFacilitiesDropdown() { const d=el('form-sender-facility'); if(d) d.innerHTML=senderFacilities.map(f=>`<option value="${f}">${f}</option>`).join(''); }
-        function renderMasterFacilitiesList() { const l=el('master-facilities-list'); if(l) l.innerHTML=senderFacilities.map((f,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><span class="text-xs">${f}</span><div><button onclick="window.editSenderFacility(${idx})" class="p-1 text-blue-600"><i class="ph ph-pencil"></i></button><button onclick="window.deleteSenderFacility(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
-        function renderMasterRedirectsList() { const l=el('master-redirects-list'); if(l) l.innerHTML=redirectDestinations.map((d,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><div><p class="text-xs font-bold">${d.name}</p></div><div><button onclick="window.editRedirectDestination(${idx})" class="p-1 text-blue-600"><i class="ph ph-pencil"></i></button><button onclick="window.deleteRedirectDestination(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
+        function renderMasterFacilitiesList() { const l=el('master-facilities-list'); if(l) l.innerHTML=senderFacilities.map((f,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><span class="text-xs">${f}</span><div><button onclick="window.editSenderFacility(${idx})" class="p-1 text-brand-primary"><i class="ph ph-pencil"></i></button><button onclick="window.deleteSenderFacility(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
+        function renderMasterRedirectsList() { const l=el('master-redirects-list'); if(l) l.innerHTML=redirectDestinations.map((d,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><div><p class="text-xs font-bold">${d.name}</p></div><div><button onclick="window.editRedirectDestination(${idx})" class="p-1 text-brand-primary"><i class="ph ph-pencil"></i></button><button onclick="window.deleteRedirectDestination(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
         function renderRedirectModalDestinations() { const c=el('redirect-list-container'); if(c) c.innerHTML=redirectDestinations.map(d=>`<div onclick="window.executeRedirect('${d.name}', ${d.eta})" class="p-3 border rounded-xl hover:bg-emerald-50 shadow-sm cursor-pointer mb-2"><h4 class="text-xs font-bold">${d.name}</h4><p class="text-[9px] text-gray-500">${d.note} (+${d.eta} mnt)</p></div>`).join(''); }
 
         function renderMasterUnitDropdown() {
@@ -1059,7 +1030,7 @@
                 <div class="flex items-start justify-between bg-white p-2 rounded border border-gray-150 gap-2 mb-1.5 shadow-sm">
                     <span class="text-[10px] text-gray-700 flex-1 leading-relaxed font-semibold">${txt}</span>
                     <div class="flex gap-1">
-                        <button onclick="window.editMasterChecklistItem(${idx})" class="p-1 text-blue-600 hover:bg-slate-100 rounded" title="Edit Item"><i class="ph ph-pencil-simple text-xs"></i></button>
+                        <button onclick="window.editMasterChecklistItem(${idx})" class="p-1 text-brand-primary hover:bg-slate-100 rounded" title="Edit Item"><i class="ph ph-pencil-simple text-xs"></i></button>
                         <button onclick="window.deleteMasterChecklistItem(${idx})" class="p-1 text-red-600 hover:bg-red-50 rounded" title="Hapus Item"><i class="ph ph-trash text-xs"></i></button>
                     </div>
                 </div>
@@ -1119,7 +1090,7 @@
                             <p class="text-[9px] text-gray-400 font-bold">PIN Jaga: ${pin}</p>
                         </div>
                         <div class="flex gap-1">
-                            <button onclick="window.editMasterUnit('${u}')" class="p-1 text-blue-600 hover:bg-slate-100 rounded" title="Edit Unit"><i class="ph ph-pencil-simple text-xs"></i></button>
+                            <button onclick="window.editMasterUnit('${u}')" class="p-1 text-brand-primary hover:bg-slate-100 rounded" title="Edit Unit"><i class="ph ph-pencil-simple text-xs"></i></button>
                             <button onclick="window.deleteMasterUnitDirect('${u}')" class="p-1 text-red-600 hover:bg-red-50 rounded" title="Hapus Unit"><i class="ph ph-trash text-xs"></i></button>
                         </div>
                     </div>
@@ -1365,31 +1336,6 @@
             } 
         };
 
-        window.submitReferral = async function(e) {
-            e.preventDefault();
-            const sender = el('form-sender-facility').value, name = el('form-patient-name').value, cat = el('form-case-category').value;
-            let mandatory = []; const allUnits = Object.keys(unitTemplates);
-            if(cat === 'Perdarahan Berat') mandatory = allUnits.filter(u=>['PONEK','OK','BloodBank','ICU'].includes(u));
-            else if(cat === 'Preeklamsia Berat') mandatory = allUnits.filter(u=>['PONEK','ICU','OK'].includes(u));
-            else if(cat === 'Partus Macet') mandatory = allUnits.filter(u=>['PONEK','OK'].includes(u));
-            else if(cat === 'Sepsis') mandatory = allUnits.filter(u=>['PONEK','BloodBank'].includes(u));
-            if(!mandatory.length && allUnits.length > 0) mandatory = [allUnits[0]]; 
-
-            let us = {}; mandatory.forEach(u => us[u] = {status:'PENDING', checked:[], petugas:'', notes:''});
-            const newCase = { id: 'case_'+Date.now(), name, age:parseInt(el('form-patient-age').value)||26, diagnosis: cat, category: cat, td:el('form-td').value, djj:el('form-djj').value, kesadaran:el('form-kesadaran').value, puskesmas:sender, eta:parseInt(el('form-eta').value), timestamp:Date.now(), status:'PENDING_REVIEW', outcome:'', mandatoryUnits:mandatory, slaElapsed:0, hasWarned:false, hasEscalated:false, unitStatuses:us, readiness:'PENDING' };
-            
-            // Simpan ke database Supabase terlebih dahulu agar tersinkronisasi instan ke semua perangkat
-            await insertToSupabase('cases', newCase); 
-            
-            sendDiscordWebhook(newCase, "Rujukan Masuk Baru!");
-            
-            showTemporaryToast("Berhasil! Rujukan telah terkirim ke Command Center.", "success"); 
-            el('referral-form')?.reset(); 
-            
-            // Tarik ulang data secara sinkron
-            await fetchCasesFromSupabase(false);
-        };
-
         function playVoiceAssistant(message) {
             if (isMuted || !isSystemStarted || !('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
@@ -1399,7 +1345,8 @@
             const voices = window.speechSynthesis.getVoices();
             const indoVoice = voices.find(v => v.lang === 'id-ID' || v.lang === 'id_ID' || v.name.includes('Indonesia'));
             if (indoVoice) activeUtterance.voice = indoVoice;
-            activeUtterance.lang = 'id-ID'; activeUtterance.rate = 0.95; activeUtterance.pitch = 1.0; activeUtterance.volume = 1.0;
+            activeUtterance.lang = 'id-ID'; activeUtterance.rate = 0.95; activeUtterance.pitch = 1.0; 
+            activeUtterance.volume = 1.0; // Desibel Volume Maksimal
             window.speechSynthesis.speak(activeUtterance);
         }
 
@@ -1407,7 +1354,7 @@
             clearInterval(audioInterval); 
             audioInterval = setInterval(playMedicalBeep, 1500); 
             setTimeout(() => {
-                playVoiceAssistant(`Perhatian Command Center. Rujukan darurat maternal telah masuk dari ${sourceMsg || 'Fasilitas Kesehatan'}. Mohon segera lakukan verifikasi kesiapan unit.`);
+                playVoiceAssistant("Perhatian Command Center. Rujukan darurat maternal telah masuk dari " + (sourceMsg || "Fasilitas Kesehatan") + ". Mohon segera lakukan verifikasi kesiapan unit.");
             }, 1000);
         }
         
@@ -1416,23 +1363,77 @@
             let o1=audioCtx.createOscillator(), o2=audioCtx.createOscillator(), g=audioCtx.createGain(); 
             o1.type='square'; o1.frequency.setValueAtTime(880, audioCtx.currentTime); 
             o2.type='square'; o2.frequency.setValueAtTime(440, audioCtx.currentTime); 
-            g.gain.setValueAtTime(0.5, audioCtx.currentTime); 
-            g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.4); 
+            g.gain.setValueAtTime(1.0, audioCtx.currentTime); // Desibel Volume Maksimal untuk Alarm Bip Medis
+            g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime+0.45); 
             o1.connect(g); o2.connect(g); g.connect(audioCtx.destination); 
-            o1.start(); o2.start(); o1.stop(audioCtx.currentTime+0.4); o2.stop(audioCtx.currentTime+0.4); 
+            o1.start(); o2.start(); o1.stop(audioCtx.currentTime+0.45); o2.stop(audioCtx.currentTime+0.45); 
         }
 
         window.toggleAudioMute = function() { isMuted = !isMuted; document.querySelectorAll('.hospital-mute-icon').forEach(i => i.className = isMuted ? "ph-fill ph-speaker-slash text-lg hospital-mute-icon" : "ph-fill ph-speaker-high text-lg hospital-mute-icon"); if(!isMuted && audioCtx?.state==='suspended') audioCtx.resume(); };
         function initAudioOnInteraction() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if(audioCtx?.state==='suspended') audioCtx.resume(); document.removeEventListener('click', initAudioOnInteraction); document.removeEventListener('touchstart', initAudioOnInteraction); }
 
-        function generateDistributionLinks() { const b = window.location.origin + window.location.pathname; if(el('url-sender')) el('url-sender').value = b+'#/sender'; if(el('url-hospital')) el('url-hospital').value = b+'#/hospital'; }
+        function generateDistributionLinks() { 
+            const b = window.location.origin + window.location.pathname; 
+            // Mendistribusikan link secara presisi ke file pengirim eksternal 'sender.html' di domain yang sama
+            if(el('url-sender')) el('url-sender').value = b.replace('index.html', '') + 'sender.html'; 
+            if(el('url-hospital')) el('url-hospital').value = b; 
+        }
         window.copyPortalLink = function(id, btnId) { el(id).select(); document.execCommand('copy'); el(btnId).innerText = 'Tersalin!'; setTimeout(()=>el(btnId).innerText='Salin Tautan', 2000); };
         
-        function generateBackupDataJson() { return JSON.stringify({cases, senderFacilities, redirectDestinations, unitTemplates, unitPasswords}, null, 2); }
+        function generateBackupDataJson() { return JSON.stringify({cases, senderFacilities, redirectDestinations, unitTemplates, unitPasswords, etaOptions}, null, 2); }
         window.downloadBackupFile = function() { const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([generateBackupDataJson()], {type:"application/json"})); a.download="MERS_Backup.json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); showTemporaryToast("Berkas backup diunduh", "success"); };
         window.handleRestoreFileInput = function(e) { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ try{ applyRestoredBackupPayload(JSON.parse(ev.target.result)); e.target.value=''; }catch(err){ showTemporaryToast("File JSON Tidak Valid", "danger"); } }; r.readAsText(f); };
-        function applyRestoredBackupPayload(p) { if(!p||!p.cases) return; cases=p.cases; senderFacilities=p.senderFacilities||senderFacilities; redirectDestinations=p.redirectDestinations||redirectDestinations; unitTemplates=p.unitTemplates||unitTemplates; unitPasswords=p.unitPasswords||unitPasswords; selectedCaseId=cases[0]?.id; saveToLocalStorage(); renderAll(); renderUnitButtons(); renderMasterUnitsList(); renderMasterUnitDropdown(); showTemporaryToast("Sistem Berhasil Dipulihkan", "success"); }
-        window.executeDangerousSystemReset = function() { if(el('reset-confirm-password').value===ADMIN_PASS) { localStorage.clear(); cases=[]; initializeDatabase(); renderAll(); renderMasterUnitsList(); renderMasterUnitDropdown(); showTemporaryToast("Sistem Direset Total", "success"); el('reset-confirm-password').value=''; } else { if(el('reset-feedback-msg')) el('reset-feedback-msg').innerText="Sandi Salah!"; } };
+        function applyRestoredBackupPayload(p) { if(!p||!p.cases) return; cases=p.cases; senderFacilities=p.senderFacilities||senderFacilities; redirectDestinations=p.redirectDestinations||redirectDestinations; unitTemplates=p.unitTemplates||unitTemplates; unitPasswords=p.unitPasswords||unitPasswords; etaOptions=p.etaOptions||etaOptions; selectedCaseId=cases[0]?.id; saveToLocalStorage(); renderAll(); renderUnitButtons(); renderMasterUnitsList(); renderMasterUnitDropdown(); window.renderMasterEtaList(); showTemporaryToast("Sistem Berhasil Dipulihkan", "success"); }
+        window.executeDangerousSystemReset = function() { if(el('reset-confirm-password').value===ADMIN_PASS) { localStorage.clear(); cases=[]; initializeDatabase(); renderAll(); renderMasterUnitsList(); renderMasterUnitDropdown(); window.renderMasterEtaList(); showTemporaryToast("Sistem Direset Total", "success"); el('reset-confirm-password').value=''; } else { if(el('reset-feedback-msg')) el('reset-feedback-msg').innerText="Sandi Salah!"; } };
+
+        // ==========================================
+        // FITUR KELOLA ETA DINAMIS (MASTER DATA)
+        // ==========================================
+        window.renderMasterEtaList = function() {
+            const container = el('master-eta-list-container');
+            if (!container) return;
+            etaOptions.sort((a, b) => a - b);
+            container.innerHTML = etaOptions.map(val => `
+                <div class="flex justify-between items-center p-2.5 bg-slate-100 rounded-xl border border-gray-200 mb-1.5 shadow-sm">
+                    <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                        <i class="ph ph-clock text-amber-500"></i> ${val} Menit
+                    </span>
+                    <button onclick="window.deleteMasterEta(${val})" class="p-1 text-red-600 hover:bg-red-50 rounded transition-colors" title="Hapus">
+                        <i class="ph ph-trash text-xs"></i>
+                    </button>
+                </div>
+            `).join('');
+        };
+
+        window.saveNewMasterEta = function() {
+            const input = el('master-new-eta-value');
+            if (!input) return;
+            const val = parseInt(input.value);
+            if (isNaN(val) || val <= 0) {
+                showTemporaryToast("Durasi harus berupa angka positif!", "danger");
+                return;
+            }
+            if (etaOptions.includes(val)) {
+                showTemporaryToast("Opsi durasi ini sudah ada!", "danger");
+                return;
+            }
+            etaOptions.push(val);
+            saveToLocalStorage();
+            input.value = '';
+            window.renderMasterEtaList();
+            showTemporaryToast("Opsi ETA berhasil ditambahkan!", "success");
+        };
+
+        window.deleteMasterEta = function(val) {
+            if (etaOptions.length <= 1) {
+                showTemporaryToast("Minimal harus ada satu opsi ETA aktif!", "danger");
+                return;
+            }
+            etaOptions = etaOptions.filter(item => item !== val);
+            saveToLocalStorage();
+            window.renderMasterEtaList();
+            showTemporaryToast("Opsi ETA berhasil dihapus!", "success");
+        };
 
         // ==========================================
         // INITIALIZATION
@@ -1440,14 +1441,10 @@
         window.addEventListener('hashchange', handleRouting);
         window.onload = function() {
             initializeDatabase();
-            
             fetchCasesFromSupabase(true);
             setupRealtimeSubscription();
-
             renderUnitButtons();
-            renderSenderFacilitiesDropdown();
             renderRedirectModalDestinations();
-            
             isSystemStarted = true; 
             startSlaGlobalTicker();
             handleRouting();
