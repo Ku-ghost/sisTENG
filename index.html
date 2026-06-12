@@ -88,7 +88,7 @@
         <div id="portal-hospital" class="hidden space-y-6">
             <header class="glass-panel px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-white">
                 <div class="flex items-center gap-4">
-                    <img id="main-hospital-logo" src="https://placehold.co/100x100?text=sisTENG" alt="Logo sisTENG" class="w-12 h-12 rounded-full border-2 border-brand-soft shadow-md object-cover bg-white">
+                    <img id="main-hospital-logo" src="https://placehold.co/100x100?text=sisTENG" alt="Logo sisTENG" class="w-12 h-12 rounded-full border-2 border-brand-soft shadow-md object-cover bg-white animate-pulse">
                     <div><h1 class="text-xl font-black text-brand-dark leading-none">The sisTENG</h1><p class="text-brand-primary text-[10px] font-bold mt-1 uppercase tracking-widest">One System, Always Ready</p></div>
                 </div>
                 <div class="flex items-center bg-gray-100 p-1.5 rounded-xl border border-gray-200 shadow-inner flex-wrap gap-1">
@@ -102,7 +102,7 @@
                 </div>
             </header>
 
-            <div id="emergency-banner" class="hidden glass-danger px-6 py-4 rounded-2xl flex flex-col md:flex-row items-center justify-between border border-white shadow-lg transition-all duration-300">
+            <div id="emergency-banner" class="hidden glass-danger px-6 py-4 rounded-2xl flex flex-col md:flex-row items-center justify-between border border-white shadow-lg transition-all duration-300 animate-pulse-fast">
                 <div class="flex items-center gap-4">
                     <div class="flex items-center justify-center relative w-8 h-8"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span><span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-red-600 shadow-[0_0_8px_rgba(230,57,70,0.8)]"></span></div>
                     <div><h2 class="text-base font-extrabold uppercase flex items-center gap-2 text-white" id="banner-title">Rujukan Baru Masuk!</h2><p class="text-red-100 text-xs font-medium" id="banner-desc">Menunggu respon & kesiapan.</p></div>
@@ -186,7 +186,7 @@
                 </div>
             </div>
 
-            <!-- VIEW 2C: STATUS AKHIR PASIEN & REDIRECT (TAB BARU) -->
+            <!-- VIEW 2C: STATUS AKHIR PASIEN & REDIRECT -->
             <div id="sub-view-hospital-outcome" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <div class="lg:col-span-4 glass-panel p-5 flex flex-col h-auto lg:h-[75vh] border border-white">
                     <div class="flex justify-between items-center mb-4 border-b pb-3 border-gray-200/50">
@@ -512,6 +512,53 @@
             localStorage.setItem('mers_eta_options', JSON.stringify(etaOptions));
         }
 
+        // LOAD GLOBAL CONFIG DARI BARIS DATABASE KHUSUS (Mencegah keterbatasan localStorage antar browser/device)
+        function loadConfigFromCases(casesList) {
+            const configRow = casesList.find(c => c.id === 'system_config');
+            if (configRow && configRow.unitStatuses) {
+                const cfg = configRow.unitStatuses;
+                if (cfg.senderFacilities) senderFacilities = cfg.senderFacilities;
+                if (cfg.etaOptions) etaOptions = cfg.etaOptions;
+                if (cfg.discordWebhookUrl) {
+                    discordWebhookUrl = cfg.discordWebhookUrl;
+                    if (el('discord-webhook-url')) el('discord-webhook-url').value = discordWebhookUrl;
+                }
+                if (cfg.hospitalLogoUrl) {
+                    hospitalLogoUrl = cfg.hospitalLogoUrl;
+                    if (el('hospital-logo-input')) el('hospital-logo-input').value = hospitalLogoUrl;
+                    updateLogoDisplay(hospitalLogoUrl);
+                }
+                saveToLocalStorage();
+            }
+        }
+
+        // SIMPAN CONFIG KE SUPABASE (Menjadikan Supabase sebagai Single Source of Truth bagi seluruh Device & Browser)
+        async function saveConfigToSupabase() {
+            if (!supabaseClient) return;
+            const configData = {
+                id: 'system_config',
+                name: 'System Configuration',
+                status: 'SYSTEM_CONFIG',
+                timestamp: 0,
+                unitStatuses: {
+                    senderFacilities: senderFacilities,
+                    etaOptions: etaOptions,
+                    discordWebhookUrl: discordWebhookUrl,
+                    hospitalLogoUrl: hospitalLogoUrl
+                }
+            };
+            try {
+                const { data, error } = await supabaseClient.from('cases').select('id').eq('id', 'system_config');
+                if (data && data.length > 0) {
+                    await supabaseClient.from('cases').update(configData).eq('id', 'system_config');
+                } else {
+                    await supabaseClient.from('cases').insert([configData]);
+                }
+            } catch (err) {
+                console.error("Gagal menyimpan konfigurasi ke Supabase:", err);
+            }
+        }
+
         // SUPABASE: FETCH DATA AWAL (OVERWRITE UNTUK SINKRONISASI MUTLAK)
         async function fetchCasesFromSupabase(isInitial = false) {
             if (!supabaseClient) return;
@@ -522,8 +569,11 @@
                     return;
                 }
                 if (data) {
-                    // SINKRONISASI ABSOLUT: Timpa seluruh memori lokal dengan data Supabase. 
-                    cases = data;
+                    // Ekstrak data konfigurasi sistem terlebih dahulu
+                    loadConfigFromCases(data);
+
+                    // SINKRONISASI ABSOLUT: Timpa seluruh memori lokal dengan data Supabase (Kecuali baris konfigurasi)
+                    cases = data.filter(c => c.id !== 'system_config');
                     
                     if(cases.length > 0 && selectedCaseId === 'case_default') selectedCaseId = cases[0].id;
                     
@@ -575,17 +625,28 @@
             } catch (err) { /* silent */ }
         }
 
+        async function insertToSupabase(table, rowData) { 
+            if (supabaseClient) {
+                try { 
+                    const { error } = await supabaseClient.from(table).insert([rowData]); 
+                    if (error) console.error("Gagal menyimpan ke Supabase:", error);
+                } 
+                catch (err) { console.error("Koneksi Supabase Bermasalah:", err); } 
+            }
+        }
+
         // ==========================================
         // FITUR WEBHOOK DISCORD & LOGO RS
         // ==========================================
-        window.saveDiscordWebhook = function() {
+        window.saveDiscordWebhook = async function() {
             const url = el('discord-webhook-url').value.trim();
             localStorage.setItem('mers_discord_webhook', url);
             discordWebhookUrl = url;
+            await saveConfigToSupabase();
             showTemporaryToast('URL Webhook Discord Berhasil Disimpan', 'success');
         };
 
-        window.saveLogoUrl = function() {
+        window.saveLogoUrl = async function() {
             let url = el('hospital-logo-input').value.trim();
             // Konversi Google Drive Link
             const gdriveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
@@ -595,6 +656,7 @@
             localStorage.setItem('mers_hospital_logo', url);
             hospitalLogoUrl = url;
             updateLogoDisplay(url);
+            await saveConfigToSupabase();
             showTemporaryToast('Logo berhasil diperbarui!', 'success');
         };
 
@@ -920,79 +982,26 @@
             });
         }
 
-        function renderAdminKpis() {
-            if(el('stat-total-referrals')) el('stat-total-referrals').innerText = cases.length;
-            let saved = 0, nearMiss = 0, deceased = 0;
-            let ktd = 0, knc = 0, ktc = 0; 
-
-            cases.forEach(c => {
-                const cl = 5 * 60, wl = 3 * 60; 
-                
-                if (c.status === 'OUTCOME_DECLARED') {
-                    if (['Discharged','Control'].includes(c.outcome)) saved++;
-                    if (c.outcome === 'Near Miss') { saved++; nearMiss++; }
-                    if (['Deceased','Dead On Arrival'].includes(c.outcome)) deceased++;
-                    
-                    if (c.outcome === 'Deceased') ktd++;
-                    else if (c.outcome === 'Near Miss') { if (c.slaElapsed >= cl) ktd++; else knc++; }
-                    else if (['Discharged','Control'].includes(c.outcome) && c.slaElapsed >= wl) ktc++;
-                } else {
-                    saved++;
-                }
-            });
-            const total = cases.length || 1;
-            if(el('stat-save-rate')) el('stat-save-rate').innerText = `${((saved / total) * 100).toFixed(1)}%`;
-
-            const bars = el('clinical-outcomes-progress-bars');
-            if (bars) bars.innerHTML = `
-                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Ibu Selamat</span><span>${saved - nearMiss}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-brand-primary h-2 rounded-full" style="width: ${((saved - nearMiss)/total*100)}%"></div></div></div>
-                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Near Miss Maternal</span><span>${nearMiss}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-yellow-500 h-2 rounded-full" style="width: ${(nearMiss/total*100)}%"></div></div></div>
-                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Kematian Ibu</span><span>${deceased}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-red-600 h-2 rounded-full" style="width: ${(deceased/total*100)}%"></div></div></div>
-            `;
-
-            const ikpBars = el('ikp-report-bars');
-            if (ikpBars) ikpBars.innerHTML = `
-                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Kejadian Tidak Diharapkan (KTD)</span><span>${ktd}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-red-600 h-2 rounded-full" style="width: ${(ktd/total*100)}%"></div></div></div>
-                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Kejadian Nyaris Cedera (KNC)</span><span>${knc}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-amber-500 h-2 rounded-full" style="width: ${(knc/total*100)}%"></div></div></div>
-                <div><div class="flex justify-between text-xs font-bold text-slate-600 mb-1"><span>Kejadian Tidak Cedera (KTC)</span><span>${ktc}</span></div><div class="w-full bg-gray-200 h-2 rounded-full"><div class="bg-blue-500 h-2 rounded-full" style="width: ${(ktc/total*100)}%"></div></div></div>
-            `;
-        }
-
-        window.printReport = function(type) {
-            let content = ''; let title = '';
-            if(type === 'outcome') { content = el('clinical-outcomes-progress-bars').innerHTML; title = 'Laporan Outcome Kematian & Near Miss Maternal'; } 
-            else { content = el('ikp-report-bars').innerHTML; title = 'Laporan Insiden Keselamatan Pasien (IKP)'; }
-            const pw = window.open('', '', 'height=600,width=800');
-            pw.document.write(`<html><head><title>${title}</title><style>body{font-family:sans-serif; padding:40px;} .w-full{width:100%; background:#eee; height:20px; border-radius:10px; margin-bottom:20px; overflow:hidden;} .h-2{height:20px;} .bg-brand-primary{background:#2D6A4F;} .bg-yellow-500{background:#EAB308;} .bg-red-600{background:#DC2626;} .bg-amber-500{background:#F59E0B;} .bg-blue-500{background:#3B82F6;} .flex{display:flex; justify-content:space-between; margin-bottom:8px; font-size:14px; font-weight:bold; color:#333;}</style></head><body><h2 style="border-bottom:2px solid #ccc; padding-bottom:10px; margin-bottom:30px;">${title}</h2><div>${content}</div></body></html>`);
-            pw.document.close(); pw.focus(); setTimeout(() => { pw.print(); pw.close(); }, 500);
-        };
-
-        window.downloadReportCSV = function(type) {
-            let csv = "data:text/csv;charset=utf-8,Kategori,Jumlah\n";
-            if(type === 'outcome') {
-                let saved = 0, nearMiss = 0, deceased = 0;
-                cases.forEach(c => { if (c.status === 'OUTCOME_DECLARED') { if (['Discharged','Control'].includes(c.outcome)) saved++; if (c.outcome === 'Near Miss') { saved++; nearMiss++; } if (['Deceased','Dead On Arrival'].includes(c.outcome)) deceased++; } else saved++; });
-                csv += `Ibu Selamat,${saved - nearMiss}\nNear Miss Maternal,${nearMiss}\nKematian Ibu,${deceased}\n`;
-            } else {
-                let ktd = 0, knc = 0, ktc = 0;
-                cases.forEach(c => { const cl = 5 * 60, wl = 3 * 60; if (c.status === 'OUTCOME_DECLARED') { if (c.outcome === 'Deceased') ktd++; else if (c.outcome === 'Near Miss') { if (c.slaElapsed >= cl) ktd++; else knc++; } else if (['Discharged','Control'].includes(c.outcome) && c.slaElapsed >= wl) ktc++; } });
-                csv += `Kejadian Tidak Diharapkan (KTD),${ktd}\nKejaris Cedera (KNC),${knc}\nKejadian Tidak Cedera (KTC),${ktc}\n`;
-            }
-            const encodedUri = encodeURI(csv); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `laporan_${type}_sisteng.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
-        };
-
         // ==========================================
         // 5. MASTER DATA (FASKES & REDIRECT)
         // ==========================================
-        window.saveSenderFacility = function() {
+        window.saveSenderFacility = async function() {
             const name = el('master-facility-name')?.value.trim(); if (!name) return;
             const idx = el('master-facility-index')?.value;
             if (idx !== "") { senderFacilities[idx] = name; } else { senderFacilities.push(name); }
-            saveToLocalStorage(); clearFacilityForm(); renderMasterFacilitiesList();
+            saveToLocalStorage(); 
+            clearFacilityForm(); 
+            renderMasterFacilitiesList(); 
+            await saveConfigToSupabase();
         };
         window.clearFacilityForm = function() { if(el('master-facility-index')) el('master-facility-index').value=''; if(el('master-facility-name')) el('master-facility-name').value=''; };
         window.editSenderFacility = function(idx) { if(el('master-facility-index')) el('master-facility-index').value=idx; if(el('master-facility-name')) el('master-facility-name').value=senderFacilities[idx]; };
-        window.deleteSenderFacility = function(idx) { senderFacilities.splice(idx,1); saveToLocalStorage(); renderMasterFacilitiesList(); };
+        window.deleteSenderFacility = async function(idx) { 
+            senderFacilities.splice(idx,1); 
+            saveToLocalStorage(); 
+            renderMasterFacilitiesList(); 
+            await saveConfigToSupabase();
+        };
 
         window.saveRedirectDestination = function() {
             const name = el('master-redirect-name')?.value.trim(); if (!name) return;
@@ -1004,10 +1013,6 @@
         window.clearRedirectForm = function() { if(el('master-redirect-index')) el('master-redirect-index').value=''; if(el('master-redirect-name')) el('master-redirect-name').value=''; };
         window.editRedirectDestination = function(idx) { const d=redirectDestinations[idx]; if(el('master-redirect-index')) el('master-redirect-index').value=idx; if(el('master-redirect-name')) el('master-redirect-name').value=d.name; if(el('master-redirect-eta')) el('master-redirect-eta').value=d.eta; if(el('master-redirect-type')) el('master-redirect-type').value=d.type; if(el('master-redirect-note')) el('master-redirect-note').value=d.note; };
         window.deleteRedirectDestination = function(idx) { redirectDestinations.splice(idx,1); saveToLocalStorage(); renderMasterRedirectsList(); renderRedirectModalDestinations(); };
-
-        function renderMasterFacilitiesList() { const l=el('master-facilities-list'); if(l) l.innerHTML=senderFacilities.map((f,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><span class="text-xs">${f}</span><div><button onclick="window.editSenderFacility(${idx})" class="p-1 text-brand-primary"><i class="ph ph-pencil"></i></button><button onclick="window.deleteSenderFacility(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
-        function renderMasterRedirectsList() { const l=el('master-redirects-list'); if(l) l.innerHTML=redirectDestinations.map((d,idx)=>`<div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded"><div><p class="text-xs font-bold">${d.name}</p></div><div><button onclick="window.editRedirectDestination(${idx})" class="p-1 text-brand-primary"><i class="ph ph-pencil"></i></button><button onclick="window.deleteRedirectDestination(${idx})" class="p-1 text-red-600"><i class="ph ph-trash"></i></button></div></div>`).join(''); }
-        function renderRedirectModalDestinations() { const c=el('redirect-list-container'); if(c) c.innerHTML=redirectDestinations.map(d=>`<div onclick="window.executeRedirect('${d.name}', ${d.eta})" class="p-3 border rounded-xl hover:bg-emerald-50 shadow-sm cursor-pointer mb-2"><h4 class="text-xs font-bold">${d.name}</h4><p class="text-[9px] text-gray-500">${d.note} (+${d.eta} mnt)</p></div>`).join(''); }
 
         function renderMasterUnitDropdown() {
             const s = el('master-unit-select'); if(!s) return;
@@ -1405,7 +1410,7 @@
             `).join('');
         };
 
-        window.saveNewMasterEta = function() {
+        window.saveNewMasterEta = async function() {
             const input = el('master-new-eta-value');
             if (!input) return;
             const val = parseInt(input.value);
@@ -1421,10 +1426,11 @@
             saveToLocalStorage();
             input.value = '';
             window.renderMasterEtaList();
+            await saveConfigToSupabase();
             showTemporaryToast("Opsi ETA berhasil ditambahkan!", "success");
         };
 
-        window.deleteMasterEta = function(val) {
+        window.deleteMasterEta = async function(val) {
             if (etaOptions.length <= 1) {
                 showTemporaryToast("Minimal harus ada satu opsi ETA aktif!", "danger");
                 return;
@@ -1432,6 +1438,7 @@
             etaOptions = etaOptions.filter(item => item !== val);
             saveToLocalStorage();
             window.renderMasterEtaList();
+            await saveConfigToSupabase();
             showTemporaryToast("Opsi ETA berhasil dihapus!", "success");
         };
 
