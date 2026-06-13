@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Rujukan Maternal - UPT RSUD Sinjai</title>
+    <title>The sisTENG - Portal Cabang & Pengirim</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,290 +33,379 @@
             display: flex; flex-direction: column;
         }
         .glass-panel {
-            background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: 0 15px 45px -8px rgba(4, 24, 15, 0.15), 0 4px 12px rgba(4, 24, 15, 0.05);
-            border-radius: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.76); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(45, 106, 79, 0.15);
+            border-radius: 20px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .glass-panel:hover { box-shadow: 0 20px 55px -6px rgba(4, 24, 15, 0.2), 0 6px 16px rgba(4, 24, 15, 0.08); }
         .glass-card {
-            background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(255, 255, 255, 0.85);
-            box-shadow: 0 8px 24px -6px rgba(4, 24, 15, 0.08); border-radius: 18px;
+            background: rgba(255, 255, 255, 0.88); 
+            border: 1px solid rgba(45, 106, 79, 0.15);
+            border-radius: 16px; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .glass-input {
-            background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(45, 106, 79, 0.25); border-radius: 12px;
-            padding: 8px 14px; outline: none; height: 42px; transition: all 0.2s ease-in-out; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(45, 106, 79, 0.25); border-radius: 10px;
+            padding: 8px 12px; outline: none; height: 40px; transition: all 0.2s ease-in-out;
         }
-        .glass-input:focus { border-color: #2D6A4F; background: rgba(255, 255, 255, 1); box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.3); }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(45, 106, 79, 0.25); border-radius: 10px; }
+        .glass-input:focus { border-color: #2D6A4F; background: rgba(255, 255, 255, 1); box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.2); }
+        .custom-checkbox {
+            appearance: none; width: 18px; height: 18px; border: 2px solid #52B788; border-radius: 5px;
+            outline: none; cursor: pointer; position: relative; background: rgba(255,255,255,0.7); transition: all 0.15s;
+        }
+        .custom-checkbox:checked { background: #2D6A4F; border-color: #2D6A4F; }
+        .custom-checkbox:checked::after { content: '✓'; position: absolute; color: white; font-size: 12px; font-weight: bold; top: 50%; left: 50%; transform: translate(-50%, -50%); }
     </style>
 </head>
-<body class="p-3 md:p-6 font-sans antialiased relative">
+<body class="p-2 md:p-4 font-sans antialiased relative">
 
-    <div class="max-w-screen-2xl mx-auto w-full flex-1 space-y-6">
-
-        <!-- ================= PORTAL PENGIRIM ================= -->
-        <div id="portal-sender" class="space-y-6">
-            <header class="glass-panel px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-white">
-                <div class="flex items-center gap-4">
-                    <div class="bg-amber-600 p-3 rounded-xl text-white shadow-md"><i class="ph-fill ph-ambulance text-3xl"></i></div>
+    <div class="max-w-screen-2xl mx-auto w-full flex-1 space-y-3 md:space-y-4">
+        <!-- ================= PORTAL SENDER (PORTAL PENGIRIM CABANG) ================= -->
+        <div id="portal-sender" class="space-y-3 md:space-y-4">
+            <header class="glass-panel px-4 py-3 md:px-5 md:py-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <img id="sender-hospital-logo" src="https://placehold.co/100x100?text=SENDER" alt="Logo" class="w-10 h-10 md:w-11 md:h-11 rounded-full border border-emerald-500 bg-white object-cover">
                     <div>
-                        <h1 id="app-title-display" class="text-lg font-extrabold text-brand-dark leading-none">Portal Rujukan Maternal</h1>
-                        <p id="app-subtitle-display" class="text-amber-800 text-[11px] font-semibold mt-1">SISTEM INTEGRASI FASILITAS KESEHATAN</p>
+                        <h1 class="text-base md:text-lg font-black text-brand-dark leading-none">Portal Cabang & Pengirim</h1>
+                        <p class="text-emerald-700 text-[10px] font-bold mt-1 uppercase tracking-wider">Sistem Pengiriman Rujukan Maternal Terintegrasi</p>
                     </div>
                 </div>
+                <span class="bg-emerald-100 text-emerald-800 text-[10px] md:text-xs font-bold px-3 py-1 rounded-full uppercase"><i class="ph ph-shield-check"></i> Faskes Terverifikasi</span>
             </header>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <div class="lg:col-span-5 glass-panel p-5 flex flex-col justify-between border border-white">
-                    <h2 class="text-base font-extrabold text-brand-dark mb-4 flex items-center gap-2"><i class="ph ph-paper-plane-tilt text-amber-600"></i> Kirim Formulir Rujukan Instan</h2>
-                    <form id="referral-form" onsubmit="window.submitReferral(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Fasilitas Pengirim</label><select id="form-sender-facility" class="glass-input cursor-pointer font-bold text-xs"></select></div>
-                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Rumah Sakit Tujuan</label><select id="form-target-hospital" class="glass-input cursor-pointer font-bold text-xs text-brand-primary bg-emerald-50"><option value="UPT RSUD Sinjai">UPT RSUD Sinjai (Utama)</option></select></div>
-                        </div>
-                        <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Nama Pasien</label><input type="text" id="form-patient-name" required placeholder="Ny. Ratna Sari" class="glass-input text-xs font-semibold"></div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Usia Ibu</label><input type="number" id="form-patient-age" required placeholder="26" class="glass-input text-xs"></div>
-                            <div class="flex flex-col gap-1"><label class="text-[10px] font-bold text-gray-500 uppercase">Kategori Kasus</label><select id="form-case-category" class="glass-input cursor-pointer text-xs"><option value="Perdarahan Berat">Perdarahan Berat</option><option value="Preeklamsia Berat">Preeklamsia Berat</option><option value="Partus Macet">Partus Macet</option><option value="Sepsis">Demam Tinggi / Sepsis</option></select></div>
-                        </div>
-                        <div class="p-3 bg-gray-50 rounded-xl border border-gray-200/80 space-y-2 shadow-inner">
-                            <p class="text-[10px] font-extrabold text-brand-dark uppercase tracking-wider mb-1">Tanda Vital</p>
-                            <div class="grid grid-cols-3 gap-2">
-                                <input type="text" id="form-td" required placeholder="TD: 120/80" class="glass-input text-xs py-1.5 px-2">
-                                <input type="text" id="form-djj" required placeholder="DJJ: 140" class="glass-input text-xs py-1.5 px-2">
-                                <select id="form-kesadaran" class="glass-input text-[11px] py-1 px-1.5"><option value="Compos Mentis">Compos Mentis</option><option value="Apatis">Apatis</option><option value="Somnolen">Somnolen</option></select>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-4 items-start">
+                <!-- FORM RUJUKAN BARU -->
+                <div class="lg:col-span-5 glass-panel p-4 flex flex-col space-y-3">
+                    <h2 class="text-xs md:text-sm font-extrabold text-brand-dark border-b pb-2 border-gray-200/50 flex items-center gap-1.5"><i class="ph ph-note-pencil text-emerald-600"></i> Buat Rujukan Baru</h2>
+                    
+                    <div class="space-y-2.5">
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="col-span-2">
+                                <label class="text-[10px] font-extrabold text-gray-500 uppercase block mb-1">Nama Pasien</label>
+                                <input type="text" id="sender-patient-name" placeholder="Nn/Ny..." class="glass-input w-full text-xs h-9 px-2.5">
                             </div>
-                            <input type="text" id="form-patient-cond" placeholder="Catatan: Ketuban pecah dini, kejang..." class="glass-input text-xs py-1.5 px-2 w-full mt-2">
+                            <div>
+                                <label class="text-[10px] font-extrabold text-gray-500 uppercase block mb-1">Umur (Thn)</label>
+                                <input type="number" id="sender-patient-age" placeholder="Umur" class="glass-input w-full text-xs h-9 px-2.5">
+                            </div>
                         </div>
-                        <div class="flex flex-col gap-1">
-                            <label class="text-[10px] font-bold text-gray-500 uppercase">ETA (Waktu Tiba)</label>
-                            <select id="form-eta" class="glass-input cursor-pointer text-xs">
-                                <!-- Rendered dynamically by renderEtaDropdown() -->
-                            </select>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[10px] font-extrabold text-gray-500 uppercase block mb-1">Asal Faskes Anda</label>
+                                <select id="sender-patient-puskesmas" onchange="window.renderSenderTracking()" class="glass-input w-full text-xs h-9 py-0 px-2 cursor-pointer font-bold text-emerald-800"></select>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-extrabold text-gray-500 uppercase block mb-1">Kategori Darurat</label>
+                                <select id="sender-patient-category" class="glass-input w-full text-xs h-9 py-0 px-2 cursor-pointer font-bold text-red-600">
+                                    <option value="Darurat Berat (Preeklamsia)">Darurat Berat (Preeklamsia)</option>
+                                    <option value="Darurat Berat (Perdarahan)">Darurat Berat (Perdarahan)</option>
+                                    <option value="Darurat Sedang (Kala II Lama)">Darurat Sedang (Kala II Lama)</option>
+                                    <option value="Rujukan Ringan">Rujukan Ringan</option>
+                                </select>
+                            </div>
                         </div>
-                        <button type="submit" class="w-full bg-brand-primary hover:bg-brand-soft text-white font-bold py-3.5 rounded-xl shadow-md">KIRIM RUJUKAN MATERNAL</button>
-                    </form>
+
+                        <div class="grid grid-cols-3 gap-2 bg-white/40 p-2 rounded-lg border border-gray-150">
+                            <div>
+                                <label class="text-[9px] font-extrabold text-gray-500 block mb-0.5">Tensi (TD)</label>
+                                <input type="text" id="sender-patient-td" placeholder="120/80" class="glass-input w-full text-xs h-8 px-1.5 text-center">
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-extrabold text-gray-500 block mb-0.5">DJJ Janin</label>
+                                <input type="text" id="sender-patient-djj" placeholder="140" class="glass-input w-full text-xs h-8 px-1.5 text-center">
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-extrabold text-gray-500 block mb-0.5">Kesadaran</label>
+                                <input type="text" id="sender-patient-kesadaran" value="Compos Mentis" class="glass-input w-full text-xs h-8 px-1.5 text-center">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] font-extrabold text-gray-500 uppercase block mb-1">Diagnosa / Gejala Utama</label>
+                            <input type="text" id="sender-patient-diagnosis" placeholder="Gejala klinis pasien..." class="glass-input w-full text-xs h-9 px-2.5">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[10px] font-extrabold text-gray-500 uppercase block mb-1">Estimasi Tiba (ETA)</label>
+                                <select id="sender-patient-eta" class="glass-input w-full text-xs h-9 py-0 px-2 cursor-pointer font-bold text-brand-primary"></select>
+                            </div>
+                            <div class="flex flex-col justify-end">
+                                <label class="text-[10px] font-extrabold text-gray-500 uppercase block mb-1">Keamanan Transaksi</label>
+                                <span class="bg-gray-100 text-slate-700 text-[10px] font-bold py-2 rounded-lg text-center border border-gray-200">SSL ENCRYPTED</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-emerald-50/50 p-2.5 rounded-lg border border-emerald-100">
+                            <label class="text-[10px] font-extrabold text-emerald-800 uppercase block mb-1.5"><i class="ph ph-shield-warning"></i> Tandai Unit Medis yang Wajib Bersiap:</label>
+                            <div class="grid grid-cols-2 gap-2" id="sender-units-checkboxes-container">
+                                <!-- Terisi dinamis -->
+                            </div>
+                        </div>
+
+                        <button onclick="window.submitReferral()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2.5 rounded-xl text-xs md:text-sm shadow-md transition-all flex justify-center items-center gap-1.5"><i class="ph-bold ph-paper-plane-tilt"></i> KIRIM RUJUKAN SEKARANG</button>
+                    </div>
                 </div>
-                <div class="lg:col-span-7 glass-panel p-5 border border-white">
-                    <h2 class="text-base font-extrabold text-brand-dark mb-4 flex items-center gap-2"><i class="ph ph-radar text-brand-primary"></i> Status & Pelacakan Rujukan Aktif Anda</h2>
-                    <div id="puskesmas-cases-list" class="space-y-4"></div>
+
+                <!-- PELACAKAN RUJUKAN AKTIF -->
+                <div class="lg:col-span-7 glass-panel p-4 flex flex-col space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2 border-gray-200/50">
+                        <h2 class="text-xs md:text-sm font-extrabold text-brand-dark flex items-center gap-1.5"><i class="ph ph-radar text-emerald-600"></i> Status & Pelacakan Rujukan Anda</h2>
+                        <span id="sender-tracking-count" class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">0 Pasien</span>
+                    </div>
+                    
+                    <p class="text-[11px] md:text-xs text-gray-500">Pilih faskes Anda pada formulir sebelah kiri untuk menyaring dan memantau status kesiapan RS terhadap pasien rujukan Anda (UU PDP - Privasi Medis Terjaga).</p>
+                    
+                    <div id="sender-tracking-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+                        <!-- Terisi dinamis -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notifications -->
     <script>
+        const safeStorage = {
+            getItem: function(key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
+            setItem: function(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
+        };
+
         window.showTemporaryToast = function(m, t) {
             const d = document.createElement('div');
-            d.className = `fixed bottom-5 right-5 p-4 bg-white border-l-4 ${t === 'success' ? 'border-brand-primary' : 'border-red-500'} shadow-2xl z-[90] font-bold text-xs rounded-lg transition-all duration-300 transform translate-y-10 opacity-0`;
+            d.className = `fixed bottom-4 right-4 p-2.5 md:p-3 bg-white border-l-4 ${t === 'success' ? 'border-brand-primary' : 'border-red-500'} shadow-lg z-[90] font-bold text-[10px] md:text-xs rounded transition-all duration-300 transform translate-y-10 opacity-0`;
             d.innerHTML = m;
             document.body.appendChild(d);
             setTimeout(() => { d.classList.remove('translate-y-10', 'opacity-0'); }, 10);
-            setTimeout(() => { d.classList.add('translate-y-10', 'opacity-0'); setTimeout(() => d.remove(), 300); }, 4000);
-        };
-
-        // Safe Storage Helper
-        const safeStorage = {
-            getItem: function(key) {
-                try { return localStorage.getItem(key); } catch (e) { return null; }
-            },
-            setItem: function(key, value) {
-                try { localStorage.setItem(key, value); } catch (e) {}
-            }
+            setTimeout(() => { d.classList.add('translate-y-10', 'opacity-0'); setTimeout(() => d.remove(), 300); }, 3000);
         };
 
         const SUPABASE_URL = "https://dcluqkzjhazvfwimnyps.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_YvIvL9HV893L-S7pSdSXVw_99No_g_b"; 
         let supabaseClient = null;
-        try { 
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); 
-        } catch (err) { 
-            console.warn("Supabase Init Error."); 
-        }
+        try { supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch (err) {}
 
-        let discordWebhookUrl = '';
-        let senderFacilities = [], cases = [], etaOptions = [];
-        let appTitle = safeStorage.getItem('mers_app_title') || 'The sisTENG';
-        let appSubtitle = safeStorage.getItem('mers_app_subtitle') || 'One System, Always Ready';
+        let cases = [];
+        let senderFacilities = ["Puskesmas Pulau Sembilan", "Puskesmas Balangnipa", "Puskesmas Sinjai Tengah", "Puskesmas Sinjai Barat"];
+        let etaOptions = [10, 15, 20, 30];
+        let unitTemplates = {
+            'PONEK': { label: 'IGD PONEK', checklists: [] },
+            'OK': { label: 'Kamar Bedah (OK)', checklists: [] },
+            'BloodBank': { label: 'Bank Darah / Lab', checklists: [] },
+            'ICU': { label: 'Ruang ICU', checklists: [] }
+        };
 
         const el = id => document.getElementById(id);
 
-        function initializeDatabase() {
-            senderFacilities = JSON.parse(safeStorage.getItem('mers_sender_facilities')) || ["Puskesmas Pulau Sembilan", "Puskesmas Balangnipa", "Puskesmas Sinjai Tengah", "Puskesmas Sinjai Barat", "Klinik Bersalin Bunda", "BPM Bidan Hartati Mandiri"];
-            etaOptions = JSON.parse(safeStorage.getItem('mers_eta_options')) || [10, 15, 20, 30];
+        // Modul bedah mikro: Menjaga status value dropdown Puskesmas & ETA tetap persisten saat sinkronisasi real-time
+        window.populateSenderFormDropdowns = function() {
+            const facilitySelect = el('sender-patient-puskesmas');
+            const etaSelect = el('sender-patient-eta');
             
-            // 100% PEMBERANTASAN CACHE: Kosongkan rujukan lokal agar selalu akurat dari Supabase
-            cases = [];
-            updateAppIdentityDisplay();
-        }
-
-        function loadConfigFromCases(casesList) {
-            const configRow = casesList.find(c => c.id === 'system_config');
-            if (configRow && configRow.unitStatuses) {
-                const cfg = configRow.unitStatuses;
-                if (cfg.senderFacilities) {
-                    senderFacilities = cfg.senderFacilities;
-                    renderSenderFacilitiesDropdown();
+            if (facilitySelect) {
+                const prevVal = facilitySelect.value; // Amankan pilihan puskesmas sebelumnya
+                facilitySelect.innerHTML = senderFacilities.map(f => `<option value="${f}">${f}</option>`).join('');
+                if (prevVal && senderFacilities.includes(prevVal)) {
+                    facilitySelect.value = prevVal; // Pulihkan pilihan puskesmas secara instan
                 }
-                if (cfg.etaOptions) {
-                    etaOptions = cfg.etaOptions;
-                    renderEtaDropdown();
-                }
-                if (cfg.discordWebhookUrl) discordWebhookUrl = cfg.discordWebhookUrl;
-                if (cfg.appTitle) appTitle = cfg.appTitle;
-                if (cfg.appSubtitle) appSubtitle = cfg.appSubtitle;
-                
-                updateAppIdentityDisplay();
-                
-                safeStorage.setItem('mers_sender_facilities', JSON.stringify(senderFacilities));
-                safeStorage.setItem('mers_eta_options', JSON.stringify(etaOptions));
-                safeStorage.setItem('mers_app_title', appTitle);
-                safeStorage.setItem('mers_app_subtitle', appSubtitle);
             }
-        }
+            if (etaSelect) {
+                const prevVal = etaSelect.value; // Amankan pilihan ETA sebelumnya
+                etaOptions.sort((a,b)=>a-b);
+                etaSelect.innerHTML = etaOptions.map(o => `<option value="${o}">${o} Menit</option>`).join('');
+                if (prevVal && etaOptions.includes(parseInt(prevVal))) {
+                    etaSelect.value = prevVal; // Pulihkan pilihan ETA secara instan
+                }
+            }
+        };
 
-        function updateAppIdentityDisplay() {
-            if (el('app-title-display')) el('app-title-display').innerText = appTitle || "The sisTENG";
-            if (el('app-subtitle-display')) el('app-subtitle-display').innerText = appSubtitle || "One System, Always Ready";
-            document.title = (appTitle || "The sisTENG") + " - " + (appSubtitle || "One System, Always Ready");
-        }
+        window.renderSenderCheckboxes = function() {
+            const container = el('sender-units-checkboxes-container');
+            if (!container) return;
+            container.innerHTML = Object.keys(unitTemplates).map(key => {
+                const label = unitTemplates[key].label;
+                return `
+                <label class="flex items-center gap-2 bg-white px-2 py-1.5 rounded border border-emerald-100 hover:bg-emerald-50 cursor-pointer">
+                    <input type="checkbox" value="${key}" class="custom-checkbox sender-unit-cb" checked>
+                    <span class="text-[11px] font-bold text-slate-800">${label}</span>
+                </label>`;
+            }).join('');
+        };
 
-        async function fetchCasesFromSupabase(isInitial = false) {
+        window.submitReferral = async function() {
+            const name = el('sender-patient-name').value.trim();
+            const age = parseInt(el('sender-patient-age').value) || 0;
+            const diagnosis = el('sender-patient-diagnosis').value.trim();
+            const puskesmas = el('sender-patient-puskesmas').value;
+            const category = el('sender-patient-category').value;
+            const td = el('sender-patient-td').value.trim();
+            const djj = el('sender-patient-djj').value.trim();
+            const kesadaran = el('sender-patient-kesadaran').value.trim();
+            const eta = parseInt(el('sender-patient-eta').value) || 15;
+            
+            if (!name || age <= 0 || !diagnosis) {
+                return window.showTemporaryToast("Isi informasi pasien secara lengkap!", "danger");
+            }
+            
+            const selectedUnits = Array.from(document.querySelectorAll('.sender-unit-cb:checked')).map(cb => cb.value);
+            if (selectedUnits.length === 0) {
+                return window.showTemporaryToast("Pilih minimal 1 Unit Medis Wajib!", "danger");
+            }
+
+            const initialUnitStatuses = {};
+            selectedUnits.forEach(u => {
+                initialUnitStatuses[u] = { status: 'PENDING', checked: [], petugas: '', notes: '' };
+            });
+
+            const newCase = {
+                id: 'case_' + Date.now(),
+                name: name,
+                age: age,
+                category: category,
+                td: td || '120/80',
+                djj: djj || '140',
+                kesadaran: kesadaran || 'Compos Mentis',
+                diagnosis: diagnosis,
+                puskesmas: puskesmas,
+                eta: eta,
+                status: 'PENDING_REVIEW',
+                timestamp: Date.now(),
+                outcome: '',
+                mandatoryUnits: selectedUnits,
+                slaElapsed: 0,
+                hasWarned: false,
+                hasEscalated: false,
+                readiness: 'PENDING',
+                unitStatuses: initialUnitStatuses
+            };
+
+            window.showTemporaryToast("Mengirim rujukan...", "warning");
+
+            let isSaved = false;
+            if (supabaseClient) {
+                const { error } = await supabaseClient.from('cases').insert([newCase]);
+                if (error) {
+                    return window.showTemporaryToast("Gagal menyimpan ke pangkalan data server.", "danger");
+                }
+                isSaved = true;
+            }
+
+            if (isSaved) {
+                el('sender-patient-name').value = '';
+                el('sender-patient-age').value = '';
+                el('sender-patient-diagnosis').value = '';
+                
+                window.showTemporaryToast("Rujukan berhasil dikirim ke Command Center!", "success");
+                await window.fetchCasesFromSupabase();
+            }
+        };
+
+        window.renderSenderTracking = function() {
+            const container = el('sender-tracking-list-container');
+            if (!container) return;
+
+            const myFacility = el('sender-patient-puskesmas')?.value;
+            if (!myFacility) {
+                container.innerHTML = `<p class="text-xs text-gray-400 italic text-center py-10">Pilih faskes Anda di sebelah kiri untuk melihat pelacakan rujukan.</p>`;
+                return;
+            }
+
+            // Saring ketat berdasarkan Puskesmas Pengirim (Privasi UU PDP Terjaga)
+            const myCases = cases.filter(c => c.puskesmas === myFacility);
+            
+            if (el('sender-tracking-count')) {
+                el('sender-tracking-count').innerText = `${myCases.length} Pasien`;
+            }
+
+            if (myCases.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-xs text-gray-400 italic bg-white/40 border border-dashed rounded-xl">Tidak ada riwayat rujukan aktif dari faskes Anda.</div>`;
+                return;
+            }
+
+            container.innerHTML = myCases.map(c => {
+                let statusColor = "bg-amber-100 text-amber-800 border-amber-200";
+                if (c.status === "ACCEPTED") statusColor = "bg-blue-100 text-blue-800 border-blue-200";
+                else if (c.status === "REDIRECTED") statusColor = "bg-indigo-100 text-indigo-800 border-indigo-200";
+                else if (c.status === "OUTCOME_DECLARED") statusColor = "bg-emerald-100 text-emerald-800 border-emerald-200";
+
+                const elapsedMins = Math.floor(c.slaElapsed / 60);
+                const elapsedSecs = c.slaElapsed % 60;
+
+                return `
+                <div class="glass-card p-3 flex flex-col space-y-2 border-emerald-500/20">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-bold text-xs md:text-sm text-brand-dark">${c.name} (${c.age} Tahun)</h4>
+                            <p class="text-[10px] text-gray-500">Dikirim: ${new Date(c.timestamp).toLocaleTimeString('id-ID')}</p>
+                        </div>
+                        <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase border ${statusColor}">${c.status}</span>
+                    </div>
+
+                    <p class="text-xs text-slate-800 font-bold leading-tight bg-white/80 p-2 rounded border border-gray-150">${c.diagnosis}</p>
+                    
+                    <div class="grid grid-cols-3 gap-2 text-center text-[10px]">
+                        <div class="bg-gray-100 py-1 rounded border border-gray-200">
+                            <p class="text-gray-400 text-[8px] font-extrabold uppercase">ETA Tiba</p>
+                            <p class="font-extrabold text-brand-primary">${c.eta} Menit</p>
+                        </div>
+                        <div class="bg-gray-100 py-1 rounded border border-gray-200">
+                            <p class="text-gray-400 text-[8px] font-extrabold uppercase">SLA Penilaian</p>
+                            <p class="font-extrabold text-brand-primary font-mono">${elapsedMins}m ${elapsedSecs}s</p>
+                        </div>
+                        <div class="bg-emerald-50 py-1 rounded border border-emerald-100">
+                            <p class="text-emerald-500 text-[8px] font-extrabold uppercase">Ready Unit</p>
+                            <p class="font-extrabold text-emerald-800 uppercase">${c.readiness}</p>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        };
+
+        window.fetchCasesFromSupabase = async function() {
             if (!supabaseClient) return;
             try {
                 const { data, error } = await supabaseClient.from('cases').select('*').order('timestamp', { ascending: false });
                 if (error) return;
                 if (data) {
-                    loadConfigFromCases(data);
+                    const configRow = data.find(c => c.id === 'system_config');
+                    if (configRow && configRow.unitStatuses) {
+                        const cfg = configRow.unitStatuses;
+                        if (cfg.senderFacilities) senderFacilities = cfg.senderFacilities;
+                        if (cfg.etaOptions) etaOptions = cfg.etaOptions;
+                        if (cfg.unitTemplates) unitTemplates = cfg.unitTemplates;
+                    }
                     cases = data.filter(c => c.id !== 'system_config');
-                    renderAll();
+                    window.populateSenderFormDropdowns();
+                    window.renderSenderTracking();
                 }
-            } catch (err) { /* silent */ }
-        }
+            } catch (err) {}
+        };
 
-        function setupRealtimeSubscription() {
+        window.setupRealtimeSubscription = function() {
             if (!supabaseClient) return;
-
             let isIframe = false;
             try { isIframe = window.self !== window.top; } catch (e) { isIframe = true; }
-
+            
+            // Bypass koneksi WebSocket di dalam iframe sandbox Canvas untuk menghindari SecurityError
             if (isIframe) {
-                setInterval(() => fetchCasesFromSupabase(false), 5000);
+                setInterval(() => window.fetchCasesFromSupabase(), 5000);
                 return;
             }
-
-            try {
-                supabaseClient.channel('public:cases')
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'cases' }, payload => {
-                        fetchCasesFromSupabase(false);
-                    })
-                    .subscribe((status) => {
-                        if (status === 'CHANNEL_ERROR') {
-                            setInterval(() => fetchCasesFromSupabase(false), 5000);
-                        }
-                    });
-            } catch (err) {
-                setInterval(() => fetchCasesFromSupabase(false), 5000);
-            }
-        }
-
-        async function insertToSupabase(table, rowData) { 
-            if (supabaseClient) {
-                try { 
-                    const { error } = await supabaseClient.from(table).insert([rowData]); 
-                    if (error) console.error("Gagal menyimpan ke Supabase:", error);
-                } 
-                catch (err) { console.error("Koneksi Supabase Bermasalah:", err); } 
-            }
-        }
-
-        async function sendDiscordWebhook(c, eventType) {
-            if(!discordWebhookUrl) return;
-            const payload = {
-                content: `🚨 **Notifikasi Portal Pengirim: ${eventType}** 🚨`,
-                embeds: [{
-                    title: `Pasien Baru: ${c.name} (${c.age}th)`,
-                    description: `**Kategori Kasus:** ${c.category}\n**Diagnosis Awal:** ${c.diagnosis}`,
-                    fields: [
-                        {name: "Asal Rujukan", value: c.puskesmas, inline: true},
-                        {name: "Estimasi Tiba (ETA)", value: `${c.eta} Menit`, inline: true}
-                    ],
-                    color: 16711680,
-                    timestamp: new Date().toISOString()
-                }]
-            };
-            try {
-                await fetch(discordWebhookUrl, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(payload)
-                });
-            } catch(e) { }
-        }
-
-        function renderAll() {
-            renderPuskesmasTracking();
-        }
-
-        function renderPuskesmasTracking() {
-            const ct = el('puskesmas-cases-list');
-            if (ct) {
-                const activeCases = cases.filter(c => c.status !== 'OUTCOME_DECLARED');
-                if (activeCases.length === 0) {
-                    ct.innerHTML = `<p class="text-xs text-gray-500 italic p-4 text-center">Belum ada rujukan aktif saat ini.</p>`;
-                    return;
-                }
-                ct.innerHTML = activeCases.map(c => `
-                    <div class="glass-card p-4 border-l-4 border-amber-500 mb-3 space-y-2">
-                        <div class="flex justify-between items-center"><h3 class="font-bold text-xs text-brand-dark">${c.name} (${c.age}th)</h3><span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded">${c.status}</span></div>
-                        <p class="text-[10px] text-gray-600">${c.diagnosis}</p>
-                        <div class="pt-2 border-t flex justify-between items-center text-[9px] text-gray-400"><span>Status Kesiapan RS: <b class="text-brand-primary">${c.readiness}</b></span><span>ETA: <b>${c.eta} Menit</b></span></div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function renderSenderFacilitiesDropdown() { 
-            const d=el('form-sender-facility'); 
-            if(d) d.innerHTML=senderFacilities.map(f=>`<option value="${f}">${f}</option>`).join(''); 
-        }
-
-        function renderEtaDropdown() {
-            const select = el('form-eta');
-            if (select) {
-                etaOptions.sort((a, b) => a - b);
-                select.innerHTML = etaOptions.map(val => `<option value="${val}" ${val === 15 ? 'selected' : ''}>${val} Menit</option>`).join('');
-            }
-        }
-
-        window.submitReferral = async function(e) {
-            e.preventDefault();
-            const sender = el('form-sender-facility').value, name = el('form-patient-name').value, cat = el('form-case-category').value;
-            let mandatory = ['PONEK']; 
-            if(cat === 'Perdarahan Berat') mandatory = ['PONEK','OK','BloodBank','ICU'];
-            else if(cat === 'Preeklamsia Berat') mandatory = ['PONEK','ICU','OK'];
-            else if(cat === 'Partus Macet') mandatory = ['PONEK','OK'];
-            else if(cat === 'Sepsis') mandatory = ['PONEK','BloodBank'];
-
-            let us = {}; mandatory.forEach(u => us[u] = {status:'PENDING', checked:[], petugas:'', notes:''});
-            const newCase = { id: 'case_'+Date.now(), name, age:parseInt(el('form-patient-age').value)||26, diagnosis: cat, category: cat, td:el('form-td').value, djj:el('form-djj').value, kesadaran:el('form-kesadaran').value, puskesmas:sender, eta:parseInt(el('form-eta').value), timestamp:Date.now(), status:'PENDING_REVIEW', outcome:'', mandatoryUnits:mandatory, slaElapsed:0, hasWarned:false, hasEscalated:false, unitStatuses:us, readiness:'PENDING' };
             
-            await insertToSupabase('cases', newCase); 
-            sendDiscordWebhook(newCase, "Rujukan Masuk Baru!");
-            showTemporaryToast("Berhasil! Rujukan telah terkirim ke Command Center.", "success"); 
-            el('referral-form')?.reset(); 
-            await fetchCasesFromSupabase(false);
+            try {
+                supabaseClient.channel('public:cases').on('postgres_changes', { event: '*', schema: 'public', table: 'cases' }, payload => { window.fetchCasesFromSupabase(); }).subscribe((status) => {
+                    if (status === 'CHANNEL_ERROR') {
+                        setInterval(() => window.fetchCasesFromSupabase(), 5000);
+                    }
+                });
+            } catch (err) {
+                setInterval(() => window.fetchCasesFromSupabase(), 5000);
+            }
         };
 
         window.onload = function() {
-            initializeDatabase();
-            fetchCasesFromSupabase(true);
-            setupRealtimeSubscription();
-            renderSenderFacilitiesDropdown();
-            renderEtaDropdown();
+            window.populateSenderFormDropdowns();
+            window.renderSenderCheckboxes();
+            window.fetchCasesFromSupabase();
+            window.setupRealtimeSubscription();
         };
     </script>
 </body>
